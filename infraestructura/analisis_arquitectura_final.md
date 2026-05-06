@@ -40,5 +40,12 @@ La arquitectura se basa en una separación de capas (Tiered Architecture) para m
 - **Backend:** NestJS corriendo bajo el gestor de procesos **PM2** (Nombre: `backend`).
 - **Base de Datos:** PostgreSQL escuchando localmente en el puerto 5432.
 
+## 5. Mantenimiento y Actualizaciones
+
+Para actualizar el sistema después de cambios en el código (rama deseada):
+
+1. **Backend:** Ejecutar `git pull origin <rama>`, `npm run build` y `npx pm2 restart backend` en `instancia-db-backend`.
+2. **Frontend:** Ejecutar `git pull origin <rama>`, `npm run build` y copiar el contenido de `dist/` a `/var/www/frontend/` en `instancia-app`.
+
 ---
 **Documentación generada automáticamente para el respaldo del Proyecto de Administración de Redes.**

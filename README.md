@@ -34,5 +34,58 @@ Para replicar este entorno o ver los detalles técnicos, consulta la carpeta `/i
 - [Guía Paso a Paso](infraestructura/analisis_arquitectura_final.md)
 - [Scripts de Configuración](infraestructura/)
 
+## 💻 Ejecución Local (Para Desarrollo)
+
+Para probar los cambios en tu computadora antes de subirlos a GCP:
+
+### 1. Requisitos
+- Node.js v20+
+- PostgreSQL corriendo localmente.
+
+### 2. Levantar el Backend
+```bash
+cd backend
+npm install
+# Asegúrate de tener un .env con tus credenciales de Postgres local
+npm run start:dev
+```
+
+### 3. Levantar el Frontend
+```bash
+cd frontend
+npm install
+npm run start
+```
+La aplicación se abrirá en `http://localhost:4200` y se conectará automáticamente al backend en `localhost:3000`.
+
+## 🔄 Cómo actualizar los cambios en producción
+
+Cuando realices cambios en el código localmente, sigue estos pasos para reflejarlos en las VMs de GCP:
+
+### 1. En tu PC Local
+```bash
+git add .
+git commit -m "Descripción del cambio"
+git push origin <tu-rama>
+```
+
+### 2. En la VM de Backend (`instancia-db-backend`)
+```bash
+cd ~/ProyectoAdminRedes && git pull origin <tu-rama>
+cd backend
+npm install   # Solo si agregaste librerías
+npm run build
+npx pm2 restart backend
+```
+
+### 3. En la VM de Frontend (`instancia-app`)
+```bash
+cd ~/ProyectoAdminRedes && git pull origin <tu-rama>
+cd frontend
+npm install   # Solo si agregaste librerías
+npm run build -- --configuration production
+sudo cp -r dist/frontend/browser/* /var/www/frontend/
+```
+
 ---
 Proyecto desarrollado por **zKase**.

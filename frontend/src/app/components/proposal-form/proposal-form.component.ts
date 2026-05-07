@@ -10,7 +10,7 @@ import { CreateProposalDto } from '../../models/proposal.model';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="form-container">
-      <form (ngSubmit)="onSubmit()" #proposalForm="ngForm">
+      <form (ngSubmit)="onSubmit(proposalForm)" #proposalForm="ngForm" novalidate>
         <div class="form-group">
           <label for="title">Título</label>
           <input 
@@ -19,8 +19,13 @@ import { CreateProposalDto } from '../../models/proposal.model';
             name="title" 
             [(ngModel)]="proposal.title" 
             required 
+            minlength="10"
             placeholder="Ej: Nuevo parque en el centro"
+            aria-label="Título de la propuesta"
           >
+          <div class="field-error" *ngIf="titleInvalid(proposalForm)">
+            El título es obligatorio y debe tener al menos 10 caracteres.
+          </div>
         </div>
 
         <div class="form-group">
@@ -30,14 +35,18 @@ import { CreateProposalDto } from '../../models/proposal.model';
             name="category" 
             [(ngModel)]="proposal.category" 
             required
+            aria-label="Categoría de la propuesta"
           >
-            <option value="" disabled selected>Selecciona una categoría</option>
+            <option value="" disabled>Selecciona una categoría</option>
             <option value="Infraestructura">Infraestructura</option>
             <option value="Medio Ambiente">Medio Ambiente</option>
             <option value="Seguridad">Seguridad</option>
             <option value="Cultura">Cultura</option>
             <option value="Otro">Otro</option>
           </select>
+          <div class="field-error" *ngIf="categoryInvalid(proposalForm)">
+            Selecciona una categoría.
+          </div>
         </div>
 
         <div class="form-group">
@@ -47,14 +56,23 @@ import { CreateProposalDto } from '../../models/proposal.model';
             name="description" 
             [(ngModel)]="proposal.description" 
             required 
+            minlength="30"
             rows="4"
             placeholder="Describe tu propuesta detalladamente..."
+            aria-label="Descripción de la propuesta"
           ></textarea>
+          <div class="field-error" *ngIf="descriptionInvalid(proposalForm)">
+            La descripción es obligatoria y debe contener al menos 30 caracteres.
+          </div>
         </div>
 
-        <button type="submit" [disabled]="!proposalForm.form.valid || isSubmitting">
-          {{ isSubmitting ? 'Enviando...' : 'Publicar Propuesta' }}
-        </button>
+        <div class="form-actions">
+          <button type="submit" [disabled]="!isFormValid(proposalForm) || isSubmitting">
+            {{ isSubmitting ? 'Enviando...' : 'Publicar Propuesta' }}
+          </button>
+        </div>
+
+        <div class="submit-error" *ngIf="submitError">{{ submitError }}</div>
       </form>
     </div>
   `,
@@ -138,19 +156,42 @@ export class ProposalFormComponent {
     category: ''
   };
   isSubmitting = false;
+  submitError?: string;
 
-  onSubmit() {
+  // Submission handler with form passed in
+  onSubmit(form: any) {
+    if (!this.isFormValid(form)) return;
     this.isSubmitting = true;
+    this.submitError = undefined;
     this.proposalService.createProposal(this.proposal).subscribe({
       next: () => {
         this.proposalCreated.emit();
         this.proposal = { title: '', description: '', category: '' }; // Reset form
+        form.resetForm();
         this.isSubmitting = false;
       },
       error: (err) => {
         console.error('Error creating proposal', err);
+        this.submitError = 'No se pudo crear la propuesta. Intenta de nuevo.';
         this.isSubmitting = false;
       }
     });
+  }
+
+  isFormValid(form: any): boolean {
+    if (!form) return false;
+    return form.form && form.form.valid;
+  }
+
+  titleInvalid(form: any): boolean {
+    return !!form && form.submitted && form.form.controls?.title?.invalid;
+  }
+
+  categoryInvalid(form: any): boolean {
+    return !!form && form.submitted && form.form.controls?.category?.invalid;
+  }
+
+  descriptionInvalid(form: any): boolean {
+    return !!form && form.submitted && form.form.controls?.description?.invalid;
   }
 }

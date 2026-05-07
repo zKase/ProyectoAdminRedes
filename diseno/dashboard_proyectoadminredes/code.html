@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - ProyectoAdminRedes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-background": "#0d1c2f",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#dbe1ff",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#434654",
+                        "secondary": "#0051d5",
+                        "surface-bright": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-high": "#dde9ff",
+                        "on-surface": "#0d1c2f",
+                        "surface-container-highest": "#d5e3fd",
+                        "surface-tint": "#1b55d0",
+                        "tertiary-fixed": "#6ffbbe",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "surface-container-low": "#eff4ff",
+                        "inverse-primary": "#b4c5ff",
+                        "primary-container": "#004ac6",
+                        "on-secondary-fixed": "#00174b",
+                        "surface-variant": "#d5e3fd",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#00472f",
+                        "secondary-container": "#316bf3",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-container": "#006141",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#fefcff",
+                        "outline-variant": "#c3c6d6",
+                        "surface-dim": "#ccdbf4",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-primary-fixed": "#00174b",
+                        "primary": "#003594",
+                        "outline": "#737685",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-container": "#52e1a6",
+                        "on-primary-container": "#b8c8ff",
+                        "inverse-surface": "#233144",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e6eeff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xxl": "56px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label": ["Inter"],
+                        "caption": ["Inter"],
+                        "body": ["Inter"],
+                        "heading-lg": ["Inter"],
+                        "heading-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label": ["0.875rem", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "caption": ["0.75rem", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "body": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "heading-lg": ["1.8rem", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "heading-md": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-surface-container-lowest h-screen w-64 fixed left-0 top-0 border-r border-outline-variant dark:border-outline flex flex-col py-lg px-md gap-md z-40 hidden md:flex">
+<div class="flex items-center gap-sm mb-lg">
+<img alt="Organization Logo" class="w-10 h-10 rounded-full object-cover" data-alt="A clean, modern corporate logo showing a stylized network node or shield, rendered in deep indigo and white. The aesthetic is professional, corporate, and minimalist, suitable for a light-mode admin dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWxuRPpigKLtKR809fcHJ9koMIwVQ1JfMh88O6i7apZzW0-ZzygEaR1IVSFYO-DdTzsW6sfh3EzSZRyWCT8hLolgC3bjnp-l4Pu_Jk7VoXsUTKhLngLRH3jYF1qOg8lqrTH4HMcjfJW-ATSteyDI-wVz7Pi2cP8xbF67RPqydmCezUsi6K1zFolAtEH5QBXF5TOc9_qVsY5QSQ5ihaAceAYHs7XI9u9bkRzTqPIX1UXsqqTGsjrGoG8wb8_QaslSN4HxSSDbTdUlk"/>
+<div>
+<h1 class="font-heading-md text-heading-md text-primary dark:text-primary-fixed">Admin Panel</h1>
+<p class="font-caption text-caption text-on-surface-variant">Network Management</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-sm mt-md">
+<!-- Active Tab -->
+<a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-label text-label font-bold rounded-lg transition-all duration-200 ease-in-out hover:bg-surface-container-high dark:hover:bg-surface-container-highest" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Inactive Tabs -->
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant font-label text-label hover:bg-surface-variant transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<span>Incidents</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant font-label text-label hover:bg-surface-variant transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Reports</span>
+</a>
+</div>
+<button class="w-full py-sm px-md bg-primary-container text-on-primary font-label text-label rounded-lg hover:bg-primary transition-colors flex items-center justify-center gap-xs mt-auto">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Incident
+        </button>
+<div class="mt-xl flex flex-col gap-sm pt-md border-t border-outline-variant">
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant font-label text-label hover:bg-surface-variant transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant font-label text-label hover:bg-surface-variant transition-all duration-200 ease-in-out rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-lg py-sm w-full bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-md md:hidden">
+<span class="font-heading-md text-heading-md text-primary dark:text-primary-fixed-dim">ProyectoAdminRedes</span>
+</div>
+<div class="hidden md:flex items-center flex-1 max-w-md relative">
+<span class="material-symbols-outlined absolute left-sm text-on-surface-variant">search</span>
+<input class="w-full pl-xl pr-sm py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body text-body focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center gap-md ml-auto">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest p-sm rounded-full transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover cursor-pointer active:scale-95 transition-transform border border-outline-variant" data-alt="A professional headshot of an administrative user. The portrait is well-lit, clean, and set against a bright, neutral background, fitting a modern corporate light-mode dashboard style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPkYbpibpk7HANLC1UoO-w420yKTHQBBKDaTRKh-l6eaPbocVVOE1kHFiyIYukVXRVOlMBsP1oXUplLIm8s94auPum0MfQfbzx_HCvFjRBMrjQcxDl5S-At7f0_8rX5vR6Ddev712-zK9ZI1E7eFJjlF7ck8fK0r3ajdnHqhn8aCLHfUCzdfKwmbqR54X-eZdJgd3QpVm7GkCbcS76iYCQU1JASgekwiVyziHeXS_XuA2csTYuVFIbws0B6zYxRvLSvrtxzQ1I-nI"/>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<main class="flex-1 p-md md:p-lg lg:p-xl flex flex-col gap-lg lg:gap-xl overflow-y-auto">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-heading-lg text-heading-lg text-on-surface">Overview</h2>
+<p class="font-body text-body text-on-surface-variant mt-xs">Real-time network and incident metrics.</p>
+</div>
+<div class="hidden sm:flex gap-sm">
+<button class="px-md py-sm bg-surface-container-lowest border border-outline-variant text-on-surface font-label text-label rounded-lg hover:bg-surface-container-low transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        Last 30 Days
+                    </button>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md lg:gap-lg">
+<!-- Metric Card 1 -->
+<div class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant">Total Users</span>
+<span class="material-symbols-outlined text-primary bg-primary-container/10 p-xs rounded-full">group</span>
+</div>
+<div class="font-heading-lg text-heading-lg text-on-surface">12,450</div>
+<div class="font-caption text-caption text-tertiary-container flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+                        +5.2% this month
+                    </div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant">Open Incidents</span>
+<span class="material-symbols-outlined text-error bg-error-container/30 p-xs rounded-full">warning</span>
+</div>
+<div class="font-heading-lg text-heading-lg text-on-surface">34</div>
+<div class="font-caption text-caption text-error flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                        +2 since yesterday
+                    </div>
+</div>
+<!-- Metric Card 3 -->
+<div class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant">Resolved</span>
+<span class="material-symbols-outlined text-tertiary-container bg-tertiary-fixed/30 p-xs rounded-full">check_circle</span>
+</div>
+<div class="font-heading-lg text-heading-lg text-on-surface">1,204</div>
+<div class="font-caption text-caption text-on-surface-variant flex items-center gap-xs">
+                        94% resolution rate
+                    </div>
+</div>
+<!-- Metric Card 4 -->
+<div class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant">Avg Response</span>
+<span class="material-symbols-outlined text-secondary bg-secondary-fixed/50 p-xs rounded-full">timer</span>
+</div>
+<div class="font-heading-lg text-heading-lg text-on-surface">1.2h</div>
+<div class="font-caption text-caption text-tertiary-container flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">trending_down</span>
+                        -15m improvement
+                    </div>
+</div>
+</div>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg lg:gap-xl">
+<!-- Chart Area (Bento Layout Left) -->
+<div class="lg:col-span-2 bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-md">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-heading-md text-heading-md text-on-surface">Status by Category</h3>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface transition-colors">more_vert</button>
+</div>
+<!-- Faux Bar Chart -->
+<div class="flex-1 min-h-[250px] flex items-end gap-sm md:gap-md pt-xl border-b border-outline-variant relative">
+<!-- Y-Axis labels -->
+<div class="absolute left-0 top-0 h-full flex flex-col justify-between text-caption text-on-surface-variant pb-md">
+<span>100</span>
+<span>75</span>
+<span>50</span>
+<span>25</span>
+<span>0</span>
+</div>
+<!-- Bars Container (Offset for Y-axis) -->
+<div class="flex-1 h-full flex items-end justify-around pl-xl pb-xs">
+<!-- Bar Group 1 -->
+<div class="flex gap-xs items-end h-full w-full max-w-[60px] group">
+<div class="w-full bg-primary-container rounded-t-sm h-[60%] hover:bg-primary transition-colors relative">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface font-caption text-caption px-sm py-xs rounded text-xs whitespace-nowrap transition-opacity">60 Connectivity</div>
+</div>
+<div class="w-full bg-tertiary-container rounded-t-sm h-[20%] hover:bg-tertiary transition-colors"></div>
+</div>
+<!-- Bar Group 2 -->
+<div class="flex gap-xs items-end h-full w-full max-w-[60px] group">
+<div class="w-full bg-primary-container rounded-t-sm h-[85%] hover:bg-primary transition-colors relative">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface font-caption text-caption px-sm py-xs rounded text-xs whitespace-nowrap transition-opacity">85 Hardware</div>
+</div>
+<div class="w-full bg-tertiary-container rounded-t-sm h-[15%] hover:bg-tertiary transition-colors"></div>
+</div>
+<!-- Bar Group 3 -->
+<div class="flex gap-xs items-end h-full w-full max-w-[60px] group">
+<div class="w-full bg-primary-container rounded-t-sm h-[40%] hover:bg-primary transition-colors relative">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface font-caption text-caption px-sm py-xs rounded text-xs whitespace-nowrap transition-opacity">40 Security</div>
+</div>
+<div class="w-full bg-tertiary-container rounded-t-sm h-[45%] hover:bg-tertiary transition-colors"></div>
+</div>
+<!-- Bar Group 4 -->
+<div class="flex gap-xs items-end h-full w-full max-w-[60px] group">
+<div class="w-full bg-primary-container rounded-t-sm h-[30%] hover:bg-primary transition-colors relative">
+<div class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface font-caption text-caption px-sm py-xs rounded text-xs whitespace-nowrap transition-opacity">30 Account</div>
+</div>
+<div class="w-full bg-tertiary-container rounded-t-sm h-[10%] hover:bg-tertiary transition-colors"></div>
+</div>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex justify-around pl-xl font-caption text-caption text-on-surface-variant pt-sm">
+<span>Connectivity</span>
+<span>Hardware</span>
+<span>Security</span>
+<span>Account</span>
+</div>
+<!-- Legend -->
+<div class="flex justify-center gap-md mt-sm font-caption text-caption text-on-surface">
+<div class="flex items-center gap-xs"><div class="w-3 h-3 bg-primary-container rounded-sm"></div> Reported</div>
+<div class="flex items-center gap-xs"><div class="w-3 h-3 bg-tertiary-container rounded-sm"></div> Resolved</div>
+</div>
+</div>
+<!-- Recent Incidents Table / List (Bento Layout Right) -->
+<div class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] flex flex-col overflow-hidden">
+<div class="p-lg border-b border-[#e2e8f0] flex justify-between items-center bg-surface-container-lowest">
+<h3 class="font-heading-md text-heading-md text-on-surface">Recent Incidents</h3>
+<a class="font-label text-label text-primary-container hover:underline" href="#">View All</a>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- List Item 1 -->
+<div class="p-md border-b border-[#e2e8f0] hover:bg-surface-container-lowest transition-colors flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label font-bold text-on-surface">#INC-8492</span>
+<span class="px-sm py-xs bg-error-container/20 text-error font-caption text-caption rounded-[28px] border border-error/20 flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span> High
+                                </span>
+</div>
+<p class="font-body text-body text-on-surface">Main router offline in Zone B</p>
+<div class="flex justify-between items-center mt-xs">
+<span class="font-caption text-caption text-on-surface-variant">Oct 24, 10:30 AM</span>
+<span class="px-sm py-xs bg-surface-variant text-on-surface-variant font-caption text-caption rounded-[28px]">Open</span>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="p-md border-b border-[#e2e8f0] hover:bg-surface-container-lowest transition-colors flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label font-bold text-on-surface">#INC-8491</span>
+<span class="px-sm py-xs bg-secondary-fixed/30 text-primary-container font-caption text-caption rounded-[28px] border border-secondary-fixed flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span> Medium
+                                </span>
+</div>
+<p class="font-body text-body text-on-surface">User login timeout spikes</p>
+<div class="flex justify-between items-center mt-xs">
+<span class="font-caption text-caption text-on-surface-variant">Oct 24, 09:15 AM</span>
+<span class="px-sm py-xs bg-tertiary-fixed/30 text-tertiary-container font-caption text-caption rounded-[28px]">In Progress</span>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="p-md border-b border-[#e2e8f0] hover:bg-surface-container-lowest transition-colors flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label font-bold text-on-surface">#INC-8488</span>
+<span class="px-sm py-xs bg-surface-variant text-on-surface-variant font-caption text-caption rounded-[28px] border border-outline-variant flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-outline"></span> Low
+                                </span>
+</div>
+<p class="font-body text-body text-on-surface">Printer configuration error</p>
+<div class="flex justify-between items-center mt-xs">
+<span class="font-caption text-caption text-on-surface-variant">Oct 23, 16:45 PM</span>
+<span class="px-sm py-xs bg-tertiary-fixed/30 text-tertiary-container font-caption text-caption rounded-[28px]">Resolved</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

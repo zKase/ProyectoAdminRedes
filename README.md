@@ -58,6 +58,15 @@ npm run start
 ```
 La aplicación se abrirá en `http://localhost:4200` y se conectará automáticamente al backend en `localhost:3000`.
 
+## Credenciales de prueba (desarrollo)
+
+Para facilidad en entornos locales se ha creado un usuario admin de prueba. Úsalas solo en desarrollo.
+
+- email: admin@example.com
+- password: Password123!
+
+Por seguridad, cambia estas credenciales y el JWT_SECRET antes de desplegar a un entorno público.
+
 ## 🔄 Cómo actualizar los cambios en producción
 
 Cuando realices cambios en el código localmente, sigue estos pasos para reflejarlos en las VMs de GCP:

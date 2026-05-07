@@ -1,40 +1,32 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Habilitar CORS
-  app.enableCors({
-    origin: '*', // Modificar por el dominio en producción
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  app.setGlobalPrefix('api');
+  app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
-  // Validaciones globales automáticas usando class-validator y class-transformer
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
-
-  // Configuración de Swagger
   const config = new DocumentBuilder()
-    .setTitle('API - Plataforma de Participación Ciudadana')
-    .setDescription('Servicios backend para encuestas, propuestas y presupuestos')
+    .setTitle('Plataforma de Participacion Ciudadana')
+    .setDescription('API REST para propuestas, encuestas y presupuestos participativos')
     .setVersion('1.0')
-    .addBearerAuth() // Soporte para probar rutas protegidas con JWT
+    .addBearerAuth()
     .build();
-    
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  app.setGlobalPrefix('api');
-
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`🚀 NestJS ejecutándose en el puerto: ${port}`);
+  await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+
+void bootstrap();

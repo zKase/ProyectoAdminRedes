@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Proposal, CreateProposalDto } from '../models/proposal.model';
 import { environment } from '../../environments/environment';
 
@@ -12,14 +13,32 @@ export class ProposalService {
   private apiUrl = `${environment.apiUrl}/proposals`;
 
   getProposals(): Observable<Proposal[]> {
-    return this.http.get<Proposal[]>(this.apiUrl);
+    return this.http.get<Proposal[]>(this.apiUrl).pipe(
+      catchError((err: HttpErrorResponse) => {
+        console.error('Error fetching proposals', err);
+        const payload = { message: err.message || 'Error fetching proposals', status: err.status };
+        return throwError(() => payload);
+      })
+    );
   }
 
   createProposal(proposal: CreateProposalDto): Observable<Proposal> {
-    return this.http.post<Proposal>(this.apiUrl, proposal);
+    return this.http.post<Proposal>(this.apiUrl, proposal).pipe(
+      catchError((err: HttpErrorResponse) => {
+        console.error('Error creating proposal', err);
+        const payload = { message: err.message || 'Error creating proposal', status: err.status };
+        return throwError(() => payload);
+      })
+    );
   }
 
   vote(id: string): Observable<Proposal> {
-    return this.http.patch<Proposal>(`${this.apiUrl}/${id}/vote`, {});
+    return this.http.patch<Proposal>(`${this.apiUrl}/${id}/vote`, {}).pipe(
+      catchError((err: HttpErrorResponse) => {
+        console.error('Error voting proposal', err);
+        const payload = { message: err.message || 'Error voting proposal', status: err.status };
+        return throwError(() => payload);
+      })
+    );
   }
 }

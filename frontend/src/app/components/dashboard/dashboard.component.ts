@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProposalFormComponent } from '../proposal-form/proposal-form.component';
 import { Proposal, ProposalComment } from '../../models/proposal.model';
-import { Budget, Issue, ReportSummary, Survey } from '../../models/platform.model';
+import { Budget, CreateBudgetDto, CreateSurveyQuestionDto, CreateSurveyDto, Issue, ReportSummary, Survey, SurveyResponse, SubmitSurveyResponseDto } from '../../models/platform.model';
 import { AuthService } from '../../services/auth.service';
 import { PlatformService } from '../../services/platform.service';
 import { ProposalService } from '../../services/proposal.service';
@@ -129,19 +129,121 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
           </section>
 
           <section class="section-card" *ngIf="section() === 'surveys'">
-            <div class="section-heading"><div><p>RF01</p><h3>Consultas y encuestas</h3></div><button class="secondary-btn" (click)="loadSurveys()">Actualizar</button></div>
+            <div class="section-heading"><div><p>RF01</p><h3>Consultas y encuestas</h3></div><div class="flex gap-sm"><button *ngIf="isAdmin()" class="primary-btn" (click)="showSurveyForm.set(!showSurveyForm())">{{ showSurveyForm() ? 'Cancelar' : 'Crear encuesta' }}</button><button class="secondary-btn" (click)="loadSurveys()">Actualizar</button></div></div>
+
+            @if (showSurveyForm()) {
+              <form class="form-panel mb-lg" (ngSubmit)="createSurvey()">
+                <h4 class="font-heading-md text-heading-md mb-md">Nueva encuesta</h4>
+                <input class="input-field" name="surveyTitle" [(ngModel)]="surveyForm.title" placeholder="Título de la encuesta" required>
+                <textarea class="input-field min-h-20" name="surveyDescription" [(ngModel)]="surveyForm.description" placeholder="Descripción de la encuesta"></textarea>
+                <div class="flex flex-col gap-sm mb-md">
+                  @for (q of surveyForm.questions; track $index; let idx = $index) {
+                    <div class="flex gap-sm items-start bg-surface-container-lowest p-sm rounded-sm border border-outline-variant">
+                      <div class="flex-1 flex flex-col gap-xs">
+                        <input class="input-field" name="qText{{idx}}" [(ngModel)]="q.text" placeholder="Pregunta" required>
+                        <select class="input-field" name="qType{{idx}}" [(ngModel)]="q.type">
+                          <option value="TEXT">Texto libre</option>
+                          <option value="SINGLE_CHOICE">Opción única</option>
+                          <option value="MULTIPLE_CHOICE">Opción múltiple</option>
+                          <option value="RATING">Calificación</option>
+                          <option value="TEXTAREA">Texto largo</option>
+                        </select>
+                        <label class="flex items-center gap-xs font-caption text-caption"><input type="checkbox" name="qReq{{idx}}" [(ngModel)]="q.isRequired"> Obligatoria</label>
+                      </div>
+                      <button type="button" class="secondary-btn text-error" (click)="removeSurveyQuestion(idx)"><span class="material-symbols-outlined">delete</span></button>
+                    </div>
+                  }
+                </div>
+                <button type="button" class="secondary-btn mb-md" (click)="addSurveyQuestion()">+ Agregar pregunta</button>
+                <button class="primary-btn" type="submit">Crear encuesta</button>
+              </form>
+            }
+
+            @if (selectedSurvey()) {
+              <form class="form-panel mb-lg" (ngSubmit)="submitSurveyResponse(selectedSurvey()!.id)">
+                <div class="flex justify-between items-center mb-md">
+                  <h4 class="font-heading-md text-heading-md">Responder: {{ selectedSurvey()!.title }}</h4>
+                  <button type="button" class="secondary-btn" (click)="cancelSurveyResponse()">Cancelar</button>
+                </div>
+                @for (q of selectedSurvey()!.questions; track q.id; let idx = $index) {
+                  <div class="mb-md">
+                    <label class="font-label text-label mb-xs block">{{ q.text }} <span *ngIf="q.isRequired" class="text-error">*</span></label>
+                    @switch (q.type) {
+                      @case ('TEXT') { <input class="input-field" [name]="'resp-' + q.id" [(ngModel)]="surveyResponses[q.id]" required> }
+                      @case ('TEXTAREA') { <textarea class="input-field min-h-20" [name]="'resp-' + q.id" [(ngModel)]="surveyResponses[q.id]" required></textarea> }
+                      @case ('RATING') { <input type="number" class="input-field" min="1" max="5" [name]="'resp-' + q.id" [(ngModel)]="surveyResponses[q.id]" required> }
+                      @case ('SINGLE_CHOICE') {
+                        <select class="input-field" [name]="'resp-' + q.id" [(ngModel)]="surveyResponses[q.id]" required>
+                          <option value="">Selecciona una opción</option>
+                          @for (opt of q.options || []; track opt) { <option [value]="opt">{{ opt }}</option> }
+                        </select>
+                      }
+                      @case ('MULTIPLE_CHOICE') {
+                        @for (opt of q.options || []; track opt) {
+                          <label class="flex items-center gap-xs mb-xs"><input type="checkbox" [name]="'resp-' + q.id" [value]="opt" (change)="toggleMultiChoice(q.id, opt, $any($event).target.checked)">{{ opt }}</label>
+                        }
+                      }
+                    }
+                  </div>
+                }
+                <button class="primary-btn" type="submit">Enviar respuesta</button>
+              </form>
+            }
+
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
               @for (survey of surveys(); track survey.id) {
-                <article class="item-card"><div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div><h4>{{ survey.title }}</h4><p>{{ survey.description }}</p><div class="chip-row"><span>{{ survey.questions.length }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div></article>
+                <article class="item-card">
+                  <div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div>
+                  <h4>{{ survey.title }}</h4>
+                  <p>{{ survey.description }}</p>
+                  <div class="chip-row"><span>{{ survey.questions?.length || 0 }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div>
+                  <button *ngIf="survey.status === 'ACTIVE'" class="primary-btn mt-md" (click)="respondSurvey(survey)">Responder</button>
+                </article>
               } @empty { <p class="empty-state">No hay encuestas disponibles.</p> }
             </div>
           </section>
 
           <section class="section-card" *ngIf="section() === 'budgets'">
-            <div class="section-heading"><div><p>RNF01</p><h3>Presupuestos participativos</h3></div><button class="secondary-btn" (click)="loadBudgets()">Actualizar</button></div>
+            <div class="section-heading"><div><p>RNF01</p><h3>Presupuestos participativos</h3></div><div class="flex gap-sm"><button *ngIf="isAdmin()" class="primary-btn" (click)="showBudgetForm.set(!showBudgetForm())">{{ showBudgetForm() ? 'Cancelar' : 'Crear presupuesto' }}</button><button class="secondary-btn" (click)="loadBudgets()">Actualizar</button></div></div>
+
+            @if (showBudgetForm()) {
+              <form class="form-panel mb-lg" (ngSubmit)="createBudget()">
+                <h4 class="font-heading-md text-heading-md mb-md">Nuevo presupuesto participativo</h4>
+                <input class="input-field" name="budgetTitle" [(ngModel)]="budgetForm.title" placeholder="Título del presupuesto" required>
+                <textarea class="input-field min-h-20" name="budgetDescription" [(ngModel)]="budgetForm.description" placeholder="Descripción del presupuesto"></textarea>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-sm mb-md">
+                  <input class="input-field" name="budgetTotal" type="number" [(ngModel)]="budgetForm.totalAmount" placeholder="Monto total" required>
+                  <label class="flex items-center gap-sm font-label text-label"><input type="checkbox" name="budgetMulti" [(ngModel)]="budgetForm.allowMultipleVotes"> Permitir voto múltiple</label>
+                </div>
+                <div class="flex flex-col gap-sm mb-md">
+                  <label class="font-label text-label">Ítems del presupuesto</label>
+                  @for (item of budgetForm.items || []; track $index; let idx = $index) {
+                    <div class="bg-surface-container-lowest p-sm rounded-sm border border-outline-variant flex flex-col gap-xs">
+                      <input class="input-field" name="itemTitle{{idx}}" [(ngModel)]="item.title" placeholder="Título del ítem" required>
+                      <textarea class="input-field min-h-16" name="itemDesc{{idx}}" [(ngModel)]="item.description" placeholder="Descripción"></textarea>
+                      <input class="input-field" name="itemCost{{idx}}" type="number" [(ngModel)]="item.estimatedCost" placeholder="Costo estimado" required>
+                      <button type="button" class="secondary-btn text-error text-xs" (click)="removeBudgetItem(idx)">Eliminar ítem</button>
+                    </div>
+                  }
+                </div>
+                <button type="button" class="secondary-btn mb-md" (click)="addBudgetItem()">+ Agregar ítem</button>
+                <button class="primary-btn" type="submit">Crear presupuesto</button>
+              </form>
+            }
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
               @for (budget of budgets(); track budget.id) {
-                <article class="item-card"><div class="meta-row"><span>{{ budget.status }}</span><time>{{ budget.createdAt | date:'shortDate' }}</time></div><h4>{{ budget.title }}</h4><p>{{ budget.description }}</p><div class="chip-row"><span>{{ budget.totalAmount | currency }}</span><span>{{ budget.participantsCount }} participantes</span><span>{{ budget.allowMultipleVotes ? 'Voto múltiple' : 'Voto único' }}</span></div><div class="mt-md pt-md border-t border-outline-variant grid gap-sm">@for (item of budget.items; track item.id) {<div class="flex justify-between gap-sm items-center"><span>{{ item.title }} - {{ item.voteCount }} votos</span><button class="secondary-btn" [disabled]="budget.status !== 'ACTIVE'" (click)="voteBudget(budget.id, item.id)">Votar</button></div>}</div></article>
+                <article class="item-card">
+                  <div class="meta-row"><span>{{ budget.status }}</span><time>{{ budget.createdAt | date:'shortDate' }}</time></div>
+                  <h4>{{ budget.title }}</h4>
+                  <p>{{ budget.description }}</p>
+                  <div class="chip-row"><span>{{ budget.totalAmount | currency }}</span><span>{{ budget.participantsCount }} participantes</span><span>{{ budget.allowMultipleVotes ? 'Voto múltiple' : 'Voto único' }}</span></div>
+                  <div class="mt-md pt-md border-t border-outline-variant grid gap-sm">
+                    @for (item of budget.items || []; track item.id) {
+                      <div class="flex justify-between gap-sm items-center"><span>{{ item.title }} - {{ item.voteCount }} votos</span><button class="secondary-btn" [disabled]="budget.status !== 'ACTIVE'" (click)="voteBudget(budget.id, item.id)">Votar</button></div>
+                    }
+                  </div>
+                </article>
               } @empty { <p class="empty-state">No hay presupuestos disponibles.</p> }
             </div>
           </section>
@@ -229,6 +331,14 @@ export class DashboardComponent implements OnInit {
   commentDrafts: Record<string, string> = {};
   chatMessage = '';
   issueForm = { title: '', description: '', category: '', address: '', latitude: 0, longitude: 0 };
+
+  showSurveyForm = signal(false);
+  showBudgetForm = signal(false);
+  selectedSurvey = signal<Survey | null>(null);
+  surveyForm = { title: '', description: '', questions: [] as CreateSurveyQuestionDto[] };
+  budgetForm: CreateBudgetDto = { title: '', description: '', totalAmount: 0, items: [] };
+  surveyResponses: Record<string, string | string[] | number> = {};
+
   mobileSections: Array<{ key: Section; label: string }> = [
     { key: 'proposals', label: 'Propuestas' },
     { key: 'surveys', label: 'Encuestas' },
@@ -373,6 +483,88 @@ export class DashboardComponent implements OnInit {
   canViewReports() {
     const role = this.auth.user()?.role;
     return role === 'ADMIN' || role === 'MODERATOR';
+  }
+
+  isAdmin() {
+    const role = this.auth.user()?.role;
+    return role === 'ADMIN' || role === 'MODERATOR';
+  }
+
+  addSurveyQuestion() {
+    this.surveyForm.questions.push({ text: '', type: 'TEXT', isRequired: false });
+  }
+
+  removeSurveyQuestion(index: number) {
+    this.surveyForm.questions.splice(index, 1);
+  }
+
+  createSurvey() {
+    if (!this.surveyForm.title.trim()) return;
+    const dto: CreateSurveyDto = {
+      title: this.surveyForm.title,
+      description: this.surveyForm.description,
+      questions: this.surveyForm.questions.filter(q => q.text.trim()),
+    };
+    this.platformService.createSurvey(dto).subscribe({
+      next: (survey) => {
+        this.surveys.update(items => [survey, ...items]);
+        this.showSurveyForm.set(false);
+        this.surveyForm = { title: '', description: '', questions: [] };
+      },
+      error: (err) => this.setError('No se pudo crear la encuesta.', err),
+    });
+  }
+
+  addBudgetItem() {
+    if (!this.budgetForm.items) this.budgetForm.items = [];
+    this.budgetForm.items.push({ title: '', description: '', estimatedCost: 0 });
+  }
+
+  removeBudgetItem(index: number) {
+    this.budgetForm.items?.splice(index, 1);
+  }
+
+  createBudget() {
+    if (!this.budgetForm.title.trim() || !this.budgetForm.totalAmount) return;
+    this.platformService.createBudget(this.budgetForm).subscribe({
+      next: (budget) => {
+        this.budgets.update(items => [budget, ...items]);
+        this.showBudgetForm.set(false);
+        this.budgetForm = { title: '', description: '', totalAmount: 0, items: [] };
+      },
+      error: (err) => this.setError('No se pudo crear el presupuesto.', err),
+    });
+  }
+
+  respondSurvey(survey: Survey) {
+    this.selectedSurvey.set(survey);
+    this.surveyResponses = {};
+  }
+
+  submitSurveyResponse(surveyId: string) {
+    const responses: { questionId: string; response: string | string[] | number }[] = Object.entries(this.surveyResponses).map(([questionId, response]) => ({ questionId, response }));
+    this.platformService.submitSurveyResponse(surveyId, responses).subscribe({
+      next: () => {
+        this.loadSurveys();
+        this.selectedSurvey.set(null);
+      },
+      error: (err) => this.setError('No se pudo enviar la respuesta.', err),
+    });
+  }
+
+  cancelSurveyResponse() {
+    this.selectedSurvey.set(null);
+  }
+
+  toggleMultiChoice(questionId: string, option: string, checked: boolean) {
+    const current = this.surveyResponses[questionId] as string[] || [];
+    if (checked) {
+      if (!current.includes(option)) current.push(option);
+    } else {
+      const idx = current.indexOf(option);
+      if (idx > -1) current.splice(idx, 1);
+    }
+    this.surveyResponses[questionId] = current;
   }
 
   displayIssueStatus(status: Issue['status']) {

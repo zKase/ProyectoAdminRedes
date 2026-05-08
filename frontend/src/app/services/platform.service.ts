@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Budget, ChatbotResponse, CreateIssueDto, Issue, ReportSummary, Survey, Incident } from '../models/platform.model';
+import { Budget, ChatbotResponse, CreateBudgetDto, CreateIssueDto, CreateSurveyDto, Issue, ReportSummary, SubmitSurveyResponseDto, Survey, Incident } from '../models/platform.model';
 
 @Injectable({ providedIn: 'root' })
 export class PlatformService {
@@ -12,6 +12,14 @@ export class PlatformService {
     return this.http.get<Survey[]>(`${environment.apiUrl}/surveys`);
   }
 
+  createSurvey(survey: CreateSurveyDto) {
+    return this.http.post<Survey>(`${environment.apiUrl}/surveys`, survey);
+  }
+
+  submitSurveyResponse(surveyId: string, responses: { questionId: string; response: string | string[] | number }[]) {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/surveys/${surveyId}/submit`, { surveyId, responses });
+  }
+
   // Budget endpoints
   getBudgets() {
     return this.http.get<Budget[]>(`${environment.apiUrl}/budgets`);
@@ -19,6 +27,10 @@ export class PlatformService {
 
   voteBudget(budgetId: string, itemId: string) {
     return this.http.post<{ message: string; voteCount: number }>(`${environment.apiUrl}/budgets/${budgetId}/vote`, { itemId });
+  }
+
+  createBudget(budget: CreateBudgetDto) {
+    return this.http.post<Budget>(`${environment.apiUrl}/budgets`, budget);
   }
 
   // Participatory mapping endpoints

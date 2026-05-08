@@ -106,3 +106,45 @@ export interface ChatbotResponse {
   mode: 'local' | 'fallback' | 'openrouter';
   answer: string;
 }
+
+export interface CreateSurveyQuestionDto {
+  text: string;
+  type: 'TEXT' | 'MULTIPLE_CHOICE' | 'SINGLE_CHOICE' | 'RATING' | 'CHECKBOX' | 'TEXTAREA';
+  options?: string[];
+  isRequired?: boolean;
+  order?: number;
+}
+
+export interface CreateSurveyDto {
+  title: string;
+  description: string;
+  startDate?: string;
+  endDate?: string;
+  questions?: CreateSurveyQuestionDto[];
+}
+
+export interface SurveyResponse {
+  questionId: string;
+  response: string | string[] | number;
+}
+
+export interface SubmitSurveyResponseDto {
+  surveyId: string;
+  responses: SurveyResponse[];
+}
+
+export interface CreateBudgetItemDto {
+  title: string;
+  description: string;
+  estimatedCost: number;
+}
+
+export interface CreateBudgetDto {
+  title: string;
+  description: string;
+  totalAmount: number;
+  startDate?: string;
+  endDate?: string;
+  allowMultipleVotes?: boolean;
+  items?: CreateBudgetItemDto[];
+}

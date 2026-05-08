@@ -19,45 +19,45 @@ import { Incident } from '../../models/platform.model';
             <span class="material-symbols-outlined text-on-primary text-[20px]">shield</span>
           </div>
           <div>
-            <h1 class="font-heading-md text-heading-md text-primary">Admin Panel</h1>
-            <p class="font-caption text-caption text-on-surface-variant mt-xs">Network Management</p>
+            <h1 class="font-heading-md text-heading-md text-primary">Panel de Administración</h1>
+            <p class="font-caption text-caption text-on-surface-variant mt-xs">Gestión de la red</p>
           </div>
         </div>
         
         <button class="bg-primary-container text-on-primary font-label text-label py-md px-lg rounded-lg flex items-center justify-center gap-sm hover:bg-surface-container-high transition-all mb-md shadow-sm">
           <span class="material-symbols-outlined">add</span>
-          New Incident
-        </button>
+          Nuevo incidente
+            </button>
         
         <ul class="flex flex-col gap-xs flex-1">
           <li>
-            <a (click)="navigate('/dashboard')" class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
-              <span class="material-symbols-outlined">dashboard</span>
-              Dashboard
-            </a>
+              <a (click)="navigate('/dashboard')" class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+                <span class="material-symbols-outlined">dashboard</span>
+              Tablero
+              </a>
           </li>
           <li>
-            <a class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label bg-primary-container text-on-primary-container font-bold transition-all cursor-pointer">
-              <span class="material-symbols-outlined">report_problem</span>
-              Incidents
-            </a>
+              <a class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label bg-primary-container text-on-primary-container font-bold transition-all cursor-pointer">
+                <span class="material-symbols-outlined">report_problem</span>
+              Incidentes
+              </a>
           </li>
           <li>
-            <a class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
-              <span class="material-symbols-outlined">assessment</span>
-              Reports
-            </a>
+              <a class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+                <span class="material-symbols-outlined">assessment</span>
+              Informes
+              </a>
           </li>
         </ul>
         
         <div class="mt-auto pt-md border-t border-outline-variant flex flex-col gap-xs">
           <a class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
             <span class="material-symbols-outlined">settings</span>
-            Settings
+            Ajustes
           </a>
           <a (click)="logout()" class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
             <span class="material-symbols-outlined">logout</span>
-            Logout
+            Cerrar sesión
           </a>
         </div>
       </nav>
@@ -70,10 +70,10 @@ import { Incident } from '../../models/platform.model';
             <div class="md:hidden">
               <span class="font-heading-md text-heading-md text-primary font-bold">ProyectoAdminRedes</span>
             </div>
-            <div class="hidden md:flex relative w-full max-w-md items-center">
-              <span class="material-symbols-outlined absolute left-sm text-on-surface-variant">search</span>
-              <input class="w-full pl-xl pr-sm py-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow" placeholder="Search..." type="text"/>
-            </div>
+               <div class="hidden md:flex relative w-full max-w-md items-center">
+                <span class="material-symbols-outlined absolute left-sm text-on-surface-variant">search</span>
+               <input class="w-full pl-xl pr-sm py-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow" placeholder="Buscar..." type="text"/>
+              </div>
           </div>
           
           <div class="flex items-center gap-md">
@@ -90,52 +90,52 @@ import { Incident } from '../../models/platform.model';
         <main class="flex-1 p-md md:p-lg lg:p-xl overflow-y-auto">
           <!-- Header Section -->
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-xl">
-            <div>
-              <h2 class="font-heading-lg text-heading-lg text-on-background">Incidents</h2>
-              <p class="font-body text-body text-on-surface-variant mt-xs">Manage and track network issues.</p>
+              <div>
+              <h2 class="font-heading-lg text-heading-lg text-on-background">Incidentes</h2>
+              <p class="font-body text-body text-on-surface-variant mt-xs">Gestiona y rastrea problemas de la red.</p>
             </div>
-            <button class="bg-primary-container text-on-primary font-label text-label py-sm px-md rounded-lg flex items-center gap-xs hover:bg-secondary transition-colors whitespace-nowrap shadow-sm">
-              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
-              New Incident
-            </button>
+              <button class="bg-primary-container text-on-primary font-label text-label py-sm px-md rounded-lg flex items-center gap-xs hover:bg-secondary transition-colors whitespace-nowrap shadow-sm">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+              Nuevo incidente
+              </button>
           </div>
           
           <!-- Filters & Search Bar -->
           <div class="bg-surface-bright rounded-lg border border-outline-variant p-md mb-lg flex flex-col md:flex-row gap-md items-end md:items-center">
             <div class="flex-1 w-full relative">
-              <label class="font-label text-label text-on-surface-variant block mb-xs">Search Incidents</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-                <input class="w-full pl-xl pr-sm py-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow" placeholder="ID, Title, or Assignee..." type="text" [(ngModel)]="searchTerm" name="search"/>
+               <label class="font-label text-label text-on-surface-variant block mb-xs">Buscar incidentes</label>
+               <div class="relative">
+                 <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                 <input class="w-full pl-xl pr-sm py-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow" placeholder="ID, título o asignado..." type="text" [(ngModel)]="searchTerm" name="search"/>
               </div>
             </div>
             
             <div class="w-full md:w-48">
-              <label class="font-label text-label text-on-surface-variant block mb-xs">Status</label>
+               <label class="font-label text-label text-on-surface-variant block mb-xs">Estado</label>
               <select class="w-full py-sm px-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none appearance-none" [(ngModel)]="selectedStatus" name="status">
-                <option value="">All Statuses</option>
-                <option value="Open">Open</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Resolved">Resolved</option>
-                <option value="Closed">Closed</option>
+                 <option value="">Todos los estados</option>
+                  <option value="Open">Abierto</option>
+                  <option value="In Progress">En progreso</option>
+                  <option value="Resolved">Resuelto</option>
+                  <option value="Closed">Cerrado</option>
               </select>
             </div>
             
             <div class="w-full md:w-48">
-              <label class="font-label text-label text-on-surface-variant block mb-xs">Severity</label>
+               <label class="font-label text-label text-on-surface-variant block mb-xs">Severidad</label>
               <select class="w-full py-sm px-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none appearance-none" [(ngModel)]="selectedSeverity" name="severity">
-                <option value="">All Severities</option>
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
+                 <option value="">Todas las severidades</option>
+                 <option value="Critical">Crítica</option>
+                 <option value="High">Alta</option>
+                 <option value="Medium">Media</option>
+                 <option value="Low">Baja</option>
               </select>
             </div>
             
             <div class="w-full md:w-auto">
               <button class="w-full md:w-auto bg-surface-container-lowest text-on-surface border border-outline-variant font-label text-label py-sm px-md rounded-sm flex items-center justify-center gap-xs hover:bg-surface-container-low transition-colors h-[42px]">
                 <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                More Filters
+                Más filtros
               </button>
             </div>
           </div>
@@ -144,14 +144,14 @@ import { Incident } from '../../models/platform.model';
           <div class="bg-surface-bright rounded-xl border border-outline-variant overflow-hidden">
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
-                <thead>
+                 <thead>
                   <tr class="bg-surface-container-low border-b border-outline-variant">
-                    <th class="font-label text-label text-on-surface-variant py-md px-md whitespace-nowrap">ID</th>
-                    <th class="font-label text-label text-on-surface-variant py-md px-md">Incident Title</th>
-                    <th class="font-label text-label text-on-surface-variant py-md px-md">Status</th>
-                    <th class="font-label text-label text-on-surface-variant py-md px-md">Severity</th>
-                    <th class="font-label text-label text-on-surface-variant py-md px-md">Date Reported</th>
-                    <th class="font-label text-label text-on-surface-variant py-md px-md text-right">Actions</th>
+                     <th class="font-label text-label text-on-surface-variant py-md px-md whitespace-nowrap">ID</th>
+                     <th class="font-label text-label text-on-surface-variant py-md px-md">Título</th>
+                      <th class="font-label text-label text-on-surface-variant py-md px-md">Estado</th>
+                     <th class="font-label text-label text-on-surface-variant py-md px-md">Severidad</th>
+                     <th class="font-label text-label text-on-surface-variant py-md px-md">Fecha reportada</th>
+                     <th class="font-label text-label text-on-surface-variant py-md px-md text-right">Acciones</th>
                   </tr>
                 </thead>
                 <tbody class="font-body text-body">
@@ -159,28 +159,28 @@ import { Incident } from '../../models/platform.model';
                     <td class="py-md px-md text-on-surface-variant font-mono text-sm">{{ incident.id }}</td>
                     <td class="py-md px-md font-medium text-on-surface">{{ incident.title }}</td>
                     <td class="py-md px-md">
-                      <span [ngClass]="getStatusBadgeClass(incident.status)" class="inline-flex items-center gap-xs px-sm py-xs rounded-lg font-label text-caption">
-                        <span class="w-2 h-2 rounded-full" [ngClass]="getStatusDotClass(incident.status)"></span>
-                        {{ incident.status }}
+                        <span [ngClass]="getStatusBadgeClass(incident.status)" class="inline-flex items-center gap-xs px-sm py-xs rounded-lg font-label text-caption">
+                          <span class="w-2 h-2 rounded-full" [ngClass]="getStatusDotClass(incident.status)"></span>
+                        {{ displayStatus(incident.status) }}
                       </span>
                     </td>
                     <td class="py-md px-md">
-                      <span [ngClass]="getSeverityClass(incident.priority || incident.severity)" class="font-medium">{{ incident.priority || incident.severity || 'N/A' }}</span>
+                      <span [ngClass]="getSeverityClass(incident.priority || incident.severity)" class="font-medium">{{ displayPriority(incident.priority || incident.severity) || 'N/A' }}</span>
                     </td>
                     <td class="py-md px-md text-on-surface-variant">{{ incident.dateReported }}</td>
                     <td class="py-md px-md text-right">
                       <div class="flex justify-end gap-sm">
-                        <button (click)="navigate('/incidents/' + incident.id)" class="text-primary hover:bg-surface-container-high p-xs rounded-full transition-colors" title="View Details">
-                          <span class="material-symbols-outlined text-[20px]">visibility</span>
-                        </button>
-                        <button class="text-on-surface-variant hover:bg-surface-container-high p-xs rounded-full transition-colors" title="Edit">
+                          <button (click)="navigate('/incidents/' + incident.id)" class="text-primary hover:bg-surface-container-high p-xs rounded-full transition-colors" title="Ver detalles">
+                           <span class="material-symbols-outlined text-[20px]">visibility</span>
+                         </button>
+                        <button class="text-on-surface-variant hover:bg-surface-container-high p-xs rounded-full transition-colors" title="Editar">
                           <span class="material-symbols-outlined text-[20px]">edit</span>
                         </button>
                       </div>
                     </td>
                   </tr>
                   <tr *ngIf="filteredIncidents().length === 0">
-                    <td colspan="6" class="py-md px-md text-center text-on-surface-variant">No incidents found</td>
+                    <td colspan="6" class="py-md px-md text-center text-on-surface-variant">No se encontraron incidentes</td>
                   </tr>
                 </tbody>
               </table>
@@ -188,7 +188,7 @@ import { Incident } from '../../models/platform.model';
             
             <!-- Pagination -->
             <div class="bg-surface-container-lowest border-t border-outline-variant p-md flex flex-col sm:flex-row justify-between items-center gap-md">
-              <p class="font-caption text-caption text-on-surface-variant">Showing 1 to {{ filteredIncidents().length }} of {{ incidents().length }} entries</p>
+              <p class="font-caption text-caption text-on-surface-variant">Mostrando 1 a {{ filteredIncidents().length }} de {{ incidents().length }} entradas</p>
               <div class="flex items-center gap-xs">
                 <button class="p-xs rounded-sm border border-outline-variant text-on-surface-variant hover:bg-surface-container-low disabled:opacity-50" [disabled]="true">
                   <span class="material-symbols-outlined text-[20px]">chevron_left</span>
@@ -308,6 +308,39 @@ export class IncidentsListComponent implements OnInit {
         return 'text-on-surface-variant';
       default:
         return '';
+    }
+  }
+
+  // Map internal status values to Spanish display labels
+  displayStatus(status: string): string {
+    switch (status) {
+      case 'Open':
+        return 'Abierto';
+      case 'In Progress':
+        return 'En progreso';
+      case 'Resolved':
+        return 'Resuelto';
+      case 'Closed':
+        return 'Cerrado';
+      default:
+        return status;
+    }
+  }
+
+  // Map priority/severity to Spanish labels
+  displayPriority(priority: string | undefined): string | undefined {
+    if (!priority) return undefined;
+    switch (priority) {
+      case 'Critical':
+        return 'Crítica';
+      case 'High':
+        return 'Alta';
+      case 'Medium':
+        return 'Media';
+      case 'Low':
+        return 'Baja';
+      default:
+        return priority;
     }
   }
 }

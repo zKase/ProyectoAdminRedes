@@ -29,7 +29,7 @@ export class UsersService {
     // Verificar que el email no exista
     const existingUser = await this.usersRepository.findOneBy({ email });
     if (existingUser) {
-      throw new ConflictException('Email already registered');
+      throw new ConflictException('El correo electrónico ya está registrado');
     }
 
     // Hash de la contraseña
@@ -53,7 +53,7 @@ export class UsersService {
     });
 
     return {
-      message: 'User registered successfully',
+      message: 'Usuario registrado correctamente',
       user: {
         id: savedUser.id,
         email: savedUser.email,
@@ -74,18 +74,18 @@ export class UsersService {
     // Buscar usuario por email
     const user = await this.usersRepository.findOneBy({ email });
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Credenciales inválidas');
     }
 
     // Verificar contraseña
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Credenciales inválidas');
     }
 
     // Verificar que el usuario esté activo
     if (!user.isActive) {
-      throw new UnauthorizedException('User account is inactive');
+      throw new UnauthorizedException('La cuenta de usuario está inactiva');
     }
 
     // Generar token JWT
@@ -95,7 +95,7 @@ export class UsersService {
     });
 
     return {
-      message: 'Login successful',
+      message: 'Inicio de sesión correcto',
       user: {
         id: user.id,
         email: user.email,
@@ -113,7 +113,7 @@ export class UsersService {
   async findById(id: string) {
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Usuario no encontrado');
     }
     // No retornar contraseña
     const { password, ...userWithoutPassword } = user;
@@ -141,7 +141,7 @@ export class UsersService {
     // Verificar que el email no exista
     const existingUser = await this.usersRepository.findOneBy({ email });
     if (existingUser) {
-      throw new ConflictException('Email already registered');
+      throw new ConflictException('El correo electrónico ya está registrado');
     }
 
     // Hash de la contraseña
@@ -160,7 +160,7 @@ export class UsersService {
     const { password: _, ...userWithoutPassword } = savedUser;
 
     return {
-      message: `User created successfully with role ${role}`,
+      message: `Usuario creado correctamente con rol ${role}`,
       user: userWithoutPassword,
     };
   }
@@ -171,7 +171,7 @@ export class UsersService {
   async updateUserRole(userId: string, newRole: UserRole) {
     const user = await this.usersRepository.findOneBy({ id: userId });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Usuario no encontrado');
     }
 
     user.role = newRole;
@@ -179,7 +179,7 @@ export class UsersService {
     const { password, ...userWithoutPassword } = updatedUser;
 
     return {
-      message: 'User role updated successfully',
+      message: 'Rol de usuario actualizado correctamente',
       user: userWithoutPassword,
     };
   }
@@ -190,12 +190,12 @@ export class UsersService {
   async deactivateUser(userId: string) {
     const user = await this.usersRepository.findOneBy({ id: userId });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Usuario no encontrado');
     }
 
     user.isActive = false;
     await this.usersRepository.save(user);
 
-    return { message: 'User deactivated successfully' };
+    return { message: 'Usuario desactivado correctamente' };
   }
 }

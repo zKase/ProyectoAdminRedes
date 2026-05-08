@@ -12,7 +12,7 @@ Se ha implementado exitosamente todos los diseños proporcionados en la carpeta 
   - Campo de email con icono
   - Campo de contraseña con icono
   - Opción "Recuérdame"
-  - Enlace "Forgot password?"
+  - Enlace "¿Olvidó su contraseña?"
   - Indicador de carga durante login
   - Manejo de errores con mensajes de validación
   - Iconografía con Material Symbols
@@ -45,14 +45,14 @@ Se ha implementado exitosamente todos los diseños proporcionados en la carpeta 
     - Acciones (view, edit)
   - Pagination con controles
   - Búsqueda y filtrado dinámico con ngModel
-  - Clasificación por severidad (Critical, High, Medium, Low)
+  - Clasificación por severidad (valores internos: Critical, High, Medium, Low; etiquetas UI: Crítica, Alta, Media, Baja)
 
 ### 4. **Incident Detail Component** (`src/app/components/incident-detail/incident-detail.component.ts`)
 - **Diseño base**: `diseno/incident_detail_proyectoadminredes/code.html`
 - **Características**:
   - Vista detallada de un incidente
   - Sidebar de navegación
-  - Header con acciones (Edit, Resolve)
+  - Header con acciones (Editar, Resolver)
   - Estructura de tres columnas:
     - **Columna izquierda (2/3)**:
       - Título y descripción del incidente

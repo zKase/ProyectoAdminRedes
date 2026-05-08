@@ -54,7 +54,7 @@ Reemplaza el contenido actual con:
 export class CustomLoginComponent { }
 ```
 
-### 4. Dashboard Component
+### 4. Componente Tablero
 
 **Ubicación**: `src/app/components/dashboard-new/dashboard-new.component.ts`
 
@@ -82,7 +82,7 @@ this.incidents.set([
 ]);
 ```
 
-### 5. Incidents List Component
+### 5. Componente Lista de incidentes
 
 **Ubicación**: `src/app/components/incidents-list/incidents-list.component.ts`
 
@@ -184,14 +184,14 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err.error.message || 'Login failed');
+        this.errorMessage.set(err.error.message || 'Error de inicio de sesión');
       }
     });
   }
 }
 ```
 
-### Ejemplo: Conectar Incidents List con PlatformService
+### Ejemplo: Conectar Lista de incidentes con PlatformService
 
 ```typescript
 import { PlatformService } from '../../services/platform.service';

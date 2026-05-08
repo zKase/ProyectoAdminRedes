@@ -35,7 +35,7 @@ type Section = 'proposals' | 'surveys' | 'budgets';
               <input name="lastName" [(ngModel)]="authForm.lastName" placeholder="Apellido" required>
             </div>
             <input name="email" type="email" [(ngModel)]="authForm.email" placeholder="correo@ejemplo.com" required>
-            <input name="password" type="password" [(ngModel)]="authForm.password" placeholder="Contrasena" required minlength="8">
+            <input name="password" type="password" [(ngModel)]="authForm.password" placeholder="Contraseña" required minlength="8">
             <button type="submit" [disabled]="authLoading()">{{ authLoading() ? 'Procesando...' : authMode() === 'login' ? 'Entrar' : 'Crear cuenta' }}</button>
           </form>
           <p class="form-error" *ngIf="authError()">{{ authError() }}</p>
@@ -46,7 +46,7 @@ type Section = 'proposals' | 'surveys' | 'budgets';
             <span class="role">{{ auth.user()?.role }}</span>
             <h2>{{ auth.user()?.firstName }} {{ auth.user()?.lastName }}</h2>
             <p>{{ auth.user()?.email }}</p>
-            <button type="button" class="secondary" (click)="logout()">Cerrar sesion</button>
+            <button type="button" class="secondary" (click)="logout()">Cerrar sesión</button>
           </section>
         </ng-template>
       </header>
@@ -66,12 +66,12 @@ type Section = 'proposals' | 'surveys' | 'budgets';
         </article>
         <article>
           <strong>JWT</strong>
-          <span>Autenticacion</span>
+          <span>Autenticación</span>
         </article>
       </section>
 
       <div class="notice" *ngIf="!auth.isAuthenticated()">
-        Inicia sesion o crea una cuenta para consultar y participar en los modulos protegidos por los requisitos de seguridad.
+        Inicia sesión o crea una cuenta para consultar y participar en los módulos protegidos por los requisitos de seguridad.
       </div>
 
       <nav class="section-tabs">

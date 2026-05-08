@@ -171,7 +171,7 @@ export class ProposalFormComponent {
         this.isSubmitting = false;
       },
       error: (err) => {
-        console.error('Error creating proposal', err);
+        console.error('Error al crear propuesta', err);
         this.submitError = 'No se pudo crear la propuesta. Intenta de nuevo.';
         this.isSubmitting = false;
       }

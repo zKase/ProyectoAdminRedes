@@ -95,4 +95,36 @@ export class DashboardNewComponent implements OnInit {
         return '';
     }
   }
+
+  // Spanish display for priority
+  displayPriority(priority: string): string {
+    switch (priority) {
+      case 'Critical':
+        return 'Crítica';
+      case 'High':
+        return 'Alta';
+      case 'Medium':
+        return 'Media';
+      case 'Low':
+        return 'Baja';
+      default:
+        return priority;
+    }
+  }
+
+  // Spanish display for status
+  displayStatus(status: string): string {
+    switch (status) {
+      case 'Open':
+        return 'Abierto';
+      case 'In Progress':
+        return 'En progreso';
+      case 'Resolved':
+        return 'Resuelto';
+      case 'Closed':
+        return 'Cerrado';
+      default:
+        return status;
+    }
+  }
 }

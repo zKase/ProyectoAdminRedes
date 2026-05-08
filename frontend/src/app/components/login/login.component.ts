@@ -20,14 +20,14 @@ import { AuthService } from '../../services/auth.service';
           <!-- Title -->
           <div class="text-center space-y-sm w-full">
             <h1 class="font-heading-lg text-heading-lg text-primary">ProyectoAdminRedes</h1>
-            <p class="font-body text-body text-on-surface-variant">Administrative Secure Login</p>
+            <p class="font-body text-body text-on-surface-variant">Acceso administrativo seguro</p>
           </div>
           
           <!-- Form -->
           <form class="w-full space-y-md flex flex-col mt-sm" (ngSubmit)="onLogin()">
             <!-- Email Field -->
             <div class="flex flex-col gap-xs">
-              <label class="font-label text-label text-on-surface" for="email">Email Address</label>
+                <label class="font-label text-label text-on-surface" for="email">Correo electrónico</label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">mail</span>
                 <input 
@@ -44,7 +44,7 @@ import { AuthService } from '../../services/auth.service';
             
             <!-- Password Field -->
             <div class="flex flex-col gap-xs">
-              <label class="font-label text-label text-on-surface" for="password">Password</label>
+                <label class="font-label text-label text-on-surface" for="password">Contraseña</label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">lock</span>
                 <input 
@@ -63,15 +63,15 @@ import { AuthService } from '../../services/auth.service';
             <div class="flex justify-between items-center w-full pt-xs pb-sm">
               <div class="flex items-center gap-xs">
                 <input class="rounded text-primary focus:ring-primary border-outline-variant" id="remember" type="checkbox" [(ngModel)]="rememberMe" name="rememberMe"/>
-                <label class="font-caption text-caption text-on-surface-variant" for="remember">Remember me</label>
+                <label class="font-caption text-caption text-on-surface-variant" for="remember">Recuérdame</label>
               </div>
-              <a class="font-label text-label text-primary hover:text-primary-container transition-colors cursor-pointer" href="#">Forgot password?</a>
+              <a class="font-label text-label text-primary hover:text-primary-container transition-colors cursor-pointer" href="#">¿Olvidó su contraseña?</a>
             </div>
             
             <!-- Sign In Button -->
             <button class="w-full bg-primary-container text-on-primary font-label text-label py-md rounded-[18px] hover:bg-primary transition-colors flex justify-center items-center gap-xs disabled:opacity-50 disabled:cursor-not-allowed" type="submit" [disabled]="isLoading()">
               <span class="material-symbols-outlined text-[20px]">{{ isLoading() ? 'hourglass_empty' : 'login' }}</span>
-              {{ isLoading() ? 'Signing In...' : 'Sign In Securely' }}
+              {{ isLoading() ? 'Iniciando sesión...' : 'Iniciar sesión' }}
             </button>
           </form>
           
@@ -83,7 +83,7 @@ import { AuthService } from '../../services/auth.service';
           <!-- Footer -->
           <div class="w-full pt-md border-t border-outline-variant text-center">
             <p class="font-caption text-caption text-outline">
-              Authorized personnel only. Access is monitored.
+              Personal autorizado únicamente. El acceso está monitoreado.
             </p>
           </div>
         </div>
@@ -104,7 +104,7 @@ export class LoginComponent {
 
   onLogin() {
     if (!this.email || !this.password) {
-      this.errorMessage.set('Please fill in all fields');
+      this.errorMessage.set('Por favor, complete todos los campos');
       return;
     }
 
@@ -116,11 +116,11 @@ export class LoginComponent {
         this.isLoading.set(false);
         this.router.navigate(['/dashboard']);
       },
-      error: (err) => {
+        error: (err) => {
         this.isLoading.set(false);
-        const errorMsg = err?.error?.message || 'Login failed. Please check your credentials.';
+        const errorMsg = err?.error?.message || 'Error al iniciar sesión. Compruebe sus credenciales.';
         this.errorMessage.set(errorMsg);
-        console.error('Login error:', err);
+        console.error('Error de inicio de sesión:', err);
       }
     });
   }

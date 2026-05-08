@@ -15,8 +15,8 @@ export class ProposalService {
   getProposals(): Observable<Proposal[]> {
     return this.http.get<Proposal[]>(this.apiUrl).pipe(
       catchError((err: HttpErrorResponse) => {
-        console.error('Error fetching proposals', err);
-        const payload = { message: err.message || 'Error fetching proposals', status: err.status };
+        console.error('Error al obtener propuestas', err);
+        const payload = { message: err.message || 'Error al obtener propuestas', status: err.status };
         return throwError(() => payload);
       })
     );
@@ -25,8 +25,8 @@ export class ProposalService {
   createProposal(proposal: CreateProposalDto): Observable<Proposal> {
     return this.http.post<Proposal>(this.apiUrl, proposal).pipe(
       catchError((err: HttpErrorResponse) => {
-        console.error('Error creating proposal', err);
-        const payload = { message: err.message || 'Error creating proposal', status: err.status };
+        console.error('Error al crear propuesta', err);
+        const payload = { message: err.message || 'Error al crear propuesta', status: err.status };
         return throwError(() => payload);
       })
     );
@@ -35,8 +35,8 @@ export class ProposalService {
   vote(id: string): Observable<Proposal> {
     return this.http.patch<Proposal>(`${this.apiUrl}/${id}/vote`, {}).pipe(
       catchError((err: HttpErrorResponse) => {
-        console.error('Error voting proposal', err);
-        const payload = { message: err.message || 'Error voting proposal', status: err.status };
+        console.error('Error al votar propuesta', err);
+        const payload = { message: err.message || 'Error al votar propuesta', status: err.status };
         return throwError(() => payload);
       })
     );

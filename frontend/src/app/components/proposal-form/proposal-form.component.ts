@@ -80,8 +80,9 @@ import { CreateProposalDto } from '../../models/proposal.model';
     .form-container {
       background: #ffffff;
       padding: 1.5rem;
-      border-radius: 16px;
+      border-radius: 18px;
       box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      border: 1px solid #e2e8f0;
     }
 
     .form-group {
@@ -91,48 +92,54 @@ import { CreateProposalDto } from '../../models/proposal.model';
     label {
       display: block;
       font-size: 0.875rem;
-      font-weight: 600;
+      font-weight: 500;
       margin-bottom: 0.5rem;
-      color: #334155;
+      color: #434654;
+      letter-spacing: 0.01em;
     }
 
     input, select, textarea {
       width: 100%;
       padding: 0.75rem;
-      border: 1px solid #cbd5e1;
+      border: 1px solid #c3c6d6;
       border-radius: 8px;
-      font-family: inherit;
+      font-family: Inter, sans-serif;
       font-size: 1rem;
       transition: border-color 0.2s, box-shadow 0.2s;
-      background-color: #f8fafc;
+      background-color: #ffffff;
+      color: #0d1c2f;
     }
 
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: #004ac6;
+      box-shadow: 0 0 0 3px rgba(0, 74, 198, 0.25);
       background-color: #ffffff;
     }
 
     textarea {
       resize: vertical;
+      min-height: 4rem;
     }
 
     button {
       width: 100%;
-      background: #10b981;
+      background: #004ac6;
       color: white;
       border: none;
       padding: 0.875rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1rem;
+      border-radius: 18px;
+      font-family: Inter, sans-serif;
+      font-weight: 500;
+      font-size: 0.875rem;
       cursor: pointer;
       transition: background-color 0.2s, transform 0.1s;
+      letter-spacing: 0.01em;
+      text-transform: none;
     }
 
     button:hover:not(:disabled) {
-      background: #059669;
+      background: #003594;
     }
 
     button:active:not(:disabled) {
@@ -140,9 +147,17 @@ import { CreateProposalDto } from '../../models/proposal.model';
     }
 
     button:disabled {
-      background: #94a3b8;
+      background: #b4c5ff;
       cursor: not-allowed;
       opacity: 0.7;
+    }
+
+    .field-error {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: #ba1a1a;
     }
   `]
 })

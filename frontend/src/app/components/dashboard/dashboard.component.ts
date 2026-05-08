@@ -196,7 +196,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                   <div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div>
                   <h4>{{ survey.title }}</h4>
                   <p>{{ survey.description }}</p>
-                  <div class="chip-row"><span>{{ survey.questions?.length || 0 }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div>
+                  <div class="chip-row"><span>{{ survey.questions.length || 0 }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div>
                   <button *ngIf="survey.status === 'ACTIVE'" class="primary-btn mt-md" (click)="respondSurvey(survey)">Responder</button>
                 </article>
               } @empty { <p class="empty-state">No hay encuestas disponibles.</p> }
@@ -284,14 +284,14 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
       </div>
     </div>
   `,
-  styles: [`
+styles: [`
     .metric-card { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
     .metric-card span { @apply font-label text-label text-on-surface-variant; }
     .metric-card strong { @apply font-heading-lg text-heading-lg text-on-surface; }
     .metric-card p { @apply font-caption text-caption text-tertiary-container m-0; }
-    .section-card { @apply bg-surface-bright rounded-xl border border-outline-variant p-md md:p-lg mb-lg; }
+    .section-card { @apply bg-[#f8f9ff] rounded-[18px] border border-[#e2e8f0] p-md md:p-lg mb-lg; }
     .section-heading { @apply flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg; }
-    .section-heading p { @apply font-caption text-caption uppercase tracking-[0.14em] text-primary font-bold mb-xs; }
+    .section-heading p { @apply font-caption text-on-surface-variant uppercase tracking-[0.14em] text-[#003594] font-bold mb-xs; }
     .section-heading h3 { @apply font-heading-md text-heading-md text-on-background m-0; }
     .item-card { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
     .item-card h4 { @apply font-heading-md text-heading-md text-on-surface m-0; }
@@ -299,9 +299,9 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
     .meta-row { @apply flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant; }
     .meta-row span, .chip-row span { @apply rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant; }
     .chip-row { @apply flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant; }
-    .input-field { @apply w-full px-sm py-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow; }
-    .primary-btn { @apply bg-primary-container text-on-primary font-label text-label py-sm px-md rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
-    .secondary-btn { @apply bg-surface-container-lowest text-on-surface border border-outline-variant font-label text-label py-sm px-md rounded-sm hover:bg-surface-container-low transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
+    .input-field { @apply w-full px-sm py-sm rounded-sm border border-outline-variant focus:border-[#004ac6] focus:ring-1 focus:ring-[#004ac6] bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow; }
+    .primary-btn { @apply bg-[#004ac6] text-white font-label text-label py-sm px-md rounded-[18px] hover:bg-[#003594] transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
+    .secondary-btn { @apply bg-surface-container-lowest text-on-surface border border-outline-variant font-label text-label py-sm px-md rounded-sm hover:bg-[#eff4ff] transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
     .form-panel { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
     .empty-state { @apply text-on-surface-variant font-body text-body; }
   `]

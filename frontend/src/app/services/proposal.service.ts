@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Proposal, CreateProposalDto } from '../models/proposal.model';
+import { Proposal, CreateProposalDto, ProposalComment } from '../models/proposal.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -40,5 +40,13 @@ export class ProposalService {
         return throwError(() => payload);
       })
     );
+  }
+
+  getComments(proposalId: string): Observable<ProposalComment[]> {
+    return this.http.get<ProposalComment[]>(`${this.apiUrl}/${proposalId}/comments`);
+  }
+
+  addComment(proposalId: string, content: string): Observable<ProposalComment> {
+    return this.http.post<ProposalComment>(`${this.apiUrl}/${proposalId}/comments`, { content });
   }
 }

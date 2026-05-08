@@ -2,6 +2,8 @@
 
 Este proyecto consiste en una plataforma full-stack diseñada para la participación ciudadana, desplegada sobre una arquitectura distribuida y segura en Google Cloud Platform (GCP).
 
+> Nota actual: el desarrollo funcional se está alineando primero para ejecución local. La migración a Google Cloud queda como fase posterior.
+
 ## 🚀 Arquitectura del Sistema
 
 La aplicación está separada en dos niveles de infraestructura para garantizar la seguridad de los datos:
@@ -33,6 +35,7 @@ La aplicación está separada en dos niveles de infraestructura para garantizar 
 Para replicar este entorno o ver los detalles técnicos, consulta la carpeta `/infraestructura`:
 - [Guía Paso a Paso](infraestructura/analisis_arquitectura_final.md)
 - [Scripts de Configuración](infraestructura/)
+- [Alineación Local con Requisitos](ALINEACION_LOCAL_REQUISITOS.md)
 
 ## 💻 Ejecución Local (Para Desarrollo)
 

@@ -1,528 +1,266 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ProposalFormComponent } from '../proposal-form/proposal-form.component';
-import { Proposal } from '../../models/proposal.model';
-import { Budget, Survey } from '../../models/platform.model';
+import { Proposal, ProposalComment } from '../../models/proposal.model';
+import { Budget, Issue, ReportSummary, Survey } from '../../models/platform.model';
 import { AuthService } from '../../services/auth.service';
 import { PlatformService } from '../../services/platform.service';
 import { ProposalService } from '../../services/proposal.service';
 
-type Section = 'proposals' | 'surveys' | 'budgets';
+type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'chatbot';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule, ProposalFormComponent],
   template: `
-    <div class="page-shell">
-      <header class="hero">
-        <div>
-          <p class="eyebrow">Plataforma ciudadana segura</p>
-          <h1>Participacion Ciudadana</h1>
-          <p class="lead">Propuestas, encuestas y presupuestos participativos conectados a la API protegida con JWT y PostgreSQL.</p>
+    <div class="bg-background text-on-background font-body min-h-screen flex">
+      <nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 py-lg px-md gap-md border-r border-outline-variant bg-surface-container-low z-40">
+        <div class="flex items-center gap-sm pb-md">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary text-[20px]">groups</span>
+          </div>
+          <div>
+            <h1 class="font-heading-md text-heading-md text-primary">ProyectoAdminRedes</h1>
+            <p class="font-caption text-caption text-on-surface-variant mt-xs">Participación ciudadana</p>
+          </div>
         </div>
 
-        <section class="auth-card" *ngIf="!auth.isAuthenticated(); else profileCard">
-          <div class="auth-tabs">
-            <button [class.active]="authMode() === 'login'" (click)="authMode.set('login')">Ingresar</button>
-            <button [class.active]="authMode() === 'register'" (click)="authMode.set('register')">Registrarse</button>
-          </div>
+        <button (click)="section.set('proposals')" class="bg-primary-container text-on-primary font-label text-label py-md px-lg rounded-lg flex items-center justify-center gap-sm hover:bg-secondary transition-all mb-md shadow-sm">
+          <span class="material-symbols-outlined">add</span>
+          Nueva propuesta
+        </button>
 
-          <form (ngSubmit)="submitAuth()">
-            <div class="name-grid" *ngIf="authMode() === 'register'">
-              <input name="firstName" [(ngModel)]="authForm.firstName" placeholder="Nombre" required>
-              <input name="lastName" [(ngModel)]="authForm.lastName" placeholder="Apellido" required>
-            </div>
-            <input name="email" type="email" [(ngModel)]="authForm.email" placeholder="correo@ejemplo.com" required>
-            <input name="password" type="password" [(ngModel)]="authForm.password" placeholder="Contraseña" required minlength="8">
-            <button type="submit" [disabled]="authLoading()">{{ authLoading() ? 'Procesando...' : authMode() === 'login' ? 'Entrar' : 'Crear cuenta' }}</button>
-          </form>
-          <p class="form-error" *ngIf="authError()">{{ authError() }}</p>
-        </section>
+        <ul class="flex flex-col gap-xs flex-1">
+          <li><a (click)="section.set('proposals')" [ngClass]="navClass('proposals')"><span class="material-symbols-outlined">forum</span> Propuestas</a></li>
+          <li><a (click)="section.set('surveys')" [ngClass]="navClass('surveys')"><span class="material-symbols-outlined">fact_check</span> Encuestas</a></li>
+          <li><a (click)="section.set('budgets')" [ngClass]="navClass('budgets')"><span class="material-symbols-outlined">account_balance_wallet</span> Presupuestos</a></li>
+          <li><a (click)="section.set('issues')" [ngClass]="navClass('issues')"><span class="material-symbols-outlined">map</span> Mapeo</a></li>
+          <li *ngIf="canViewReports()"><a (click)="section.set('reports')" [ngClass]="navClass('reports')"><span class="material-symbols-outlined">assessment</span> Reportes</a></li>
+          <li><a (click)="section.set('chatbot')" [ngClass]="navClass('chatbot')"><span class="material-symbols-outlined">smart_toy</span> Asistente IA</a></li>
+        </ul>
 
-        <ng-template #profileCard>
-          <section class="auth-card profile">
-            <span class="role">{{ auth.user()?.role }}</span>
-            <h2>{{ auth.user()?.firstName }} {{ auth.user()?.lastName }}</h2>
-            <p>{{ auth.user()?.email }}</p>
-            <button type="button" class="secondary" (click)="logout()">Cerrar sesión</button>
-          </section>
-        </ng-template>
-      </header>
-
-      <section class="status-grid">
-        <article>
-          <strong>{{ proposals().length }}</strong>
-          <span>Propuestas</span>
-        </article>
-        <article>
-          <strong>{{ surveys().length }}</strong>
-          <span>Encuestas</span>
-        </article>
-        <article>
-          <strong>{{ budgets().length }}</strong>
-          <span>Presupuestos</span>
-        </article>
-        <article>
-          <strong>JWT</strong>
-          <span>Autenticación</span>
-        </article>
-      </section>
-
-      <div class="notice" *ngIf="!auth.isAuthenticated()">
-        Inicia sesión o crea una cuenta para consultar y participar en los módulos protegidos por los requisitos de seguridad.
-      </div>
-
-      <nav class="section-tabs">
-        <button [class.active]="section() === 'proposals'" (click)="section.set('proposals')">Propuestas</button>
-        <button [class.active]="section() === 'surveys'" (click)="section.set('surveys')">Encuestas</button>
-        <button [class.active]="section() === 'budgets'" (click)="section.set('budgets')">Presupuestos</button>
+        <div class="mt-auto pt-md border-t border-outline-variant flex flex-col gap-xs">
+          <a (click)="navigate('/admin-dashboard')" class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+            <span class="material-symbols-outlined">admin_panel_settings</span>
+            Panel admin
+          </a>
+          <a (click)="logout()" class="flex items-center gap-md px-md py-sm rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+            <span class="material-symbols-outlined">logout</span>
+            Cerrar sesión
+          </a>
+        </div>
       </nav>
 
-      <main class="content" *ngIf="auth.isAuthenticated()">
-        <section class="panel" *ngIf="section() === 'proposals'">
-          <div class="panel-heading">
+      <div class="flex-1 flex flex-col md:ml-64 w-full">
+        <header class="sticky top-0 z-50 flex items-center justify-between px-lg py-sm w-full bg-surface border-b border-outline-variant">
+          <div class="flex items-center gap-md flex-1">
+            <div class="md:hidden">
+              <span class="font-heading-md text-heading-md text-primary font-bold">ProyectoAdminRedes</span>
+            </div>
+            <div class="hidden md:flex relative w-full max-w-md items-center">
+              <span class="material-symbols-outlined absolute left-sm text-on-surface-variant">search</span>
+              <input class="w-full pl-xl pr-sm py-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow" placeholder="Buscar procesos, propuestas o reportes..." type="text"/>
+            </div>
+          </div>
+          <div class="flex items-center gap-md">
+            <button class="text-on-surface-variant hover:bg-surface-container-low p-sm rounded-full transition-colors cursor-pointer active:scale-95 transition-transform">
+              <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center cursor-pointer border border-outline-variant text-on-primary font-bold text-[12px]">
+              {{ userInitials }}
+            </div>
+          </div>
+        </header>
+
+        <main class="flex-1 p-md md:p-lg lg:p-xl overflow-y-auto">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-xl">
             <div>
-              <p class="eyebrow">Participacion abierta</p>
-              <h2>Propuestas ciudadanas</h2>
+              <p class="font-caption text-caption uppercase tracking-[0.14em] text-primary font-bold mb-xs">Plataforma ciudadana segura</p>
+              <h2 class="font-heading-lg text-heading-lg text-on-background">Participación ciudadana</h2>
+              <p class="font-body text-body text-on-surface-variant mt-xs">Propuestas, encuestas, presupuestos y problemáticas territoriales conectadas a la API local.</p>
             </div>
+            <button (click)="loadAll()" class="bg-primary-container text-on-primary font-label text-label py-sm px-md rounded-lg flex items-center gap-xs hover:bg-secondary transition-colors whitespace-nowrap shadow-sm">
+              <span class="material-symbols-outlined">refresh</span>
+              Actualizar datos
+            </button>
           </div>
 
-          <div class="proposal-layout">
-            <app-proposal-form (proposalCreated)="loadAll()"></app-proposal-form>
-
-            <div class="cards">
-              @for (proposal of proposals(); track proposal.id) {
-                <article class="card">
-                  <div class="meta">
-                    <span>{{ proposal.category }}</span>
-                    <time>{{ proposal.createdAt | date:'shortDate' }}</time>
-                  </div>
-                  <h3>{{ proposal.title }}</h3>
-                  <p>{{ proposal.description }}</p>
-                  <div class="card-actions">
-                    <strong>{{ proposal.votes }} votos</strong>
-                    <button type="button" (click)="voteProposal(proposal.id)">Votar</button>
-                  </div>
-                </article>
-              } @empty {
-                <p class="empty">No hay propuestas registradas.</p>
-              }
-            </div>
-          </div>
-        </section>
-
-        <section class="panel" *ngIf="section() === 'surveys'">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">RF01 y RF03</p>
-              <h2>Consultas y encuestas</h2>
-            </div>
-            <button type="button" class="secondary" (click)="loadSurveys()">Actualizar</button>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md lg:gap-lg mb-xl">
+            <article class="metric-card"><span>Propuestas</span><strong>{{ proposals().length }}</strong><p>{{ totalVotes() }} votos registrados</p></article>
+            <article class="metric-card"><span>Encuestas</span><strong>{{ surveys().length }}</strong><p>{{ totalSurveyResponses() }} respuestas</p></article>
+            <article class="metric-card"><span>Presupuestos</span><strong>{{ budgets().length }}</strong><p>{{ totalParticipants() }} participantes</p></article>
+            <article class="metric-card"><span>Problemáticas</span><strong>{{ issues().length }}</strong><p>{{ openIssues() }} abiertas</p></article>
           </div>
 
-          <div class="cards wide">
-            @for (survey of surveys(); track survey.id) {
-              <article class="card">
-                <div class="meta">
-                  <span>{{ survey.status }}</span>
-                  <time>{{ survey.createdAt | date:'shortDate' }}</time>
-                </div>
-                <h3>{{ survey.title }}</h3>
-                <p>{{ survey.description }}</p>
-                <div class="requirements">
-                  <span>{{ survey.questions.length }} preguntas</span>
-                  <span>{{ survey.responseCount }} respuestas</span>
-                </div>
-              </article>
-            } @empty {
-              <p class="empty">No hay encuestas disponibles.</p>
-            }
-          </div>
-        </section>
-
-        <section class="panel" *ngIf="section() === 'budgets'">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">RNF01 integridad de votos</p>
-              <h2>Presupuestos participativos</h2>
-            </div>
-            <button type="button" class="secondary" (click)="loadBudgets()">Actualizar</button>
+          <div class="md:hidden bg-surface-bright border border-outline-variant rounded-lg p-sm mb-lg grid grid-cols-2 gap-xs">
+            <button *ngFor="let item of mobileSections" (click)="section.set(item.key)" [ngClass]="section() === item.key ? 'bg-primary-container text-on-primary' : 'bg-surface-container-lowest text-on-surface'" class="font-label text-label rounded-sm py-sm px-sm">{{ item.label }}</button>
           </div>
 
-          <div class="cards wide">
-            @for (budget of budgets(); track budget.id) {
-              <article class="card budget-card">
-                <div class="meta">
-                  <span>{{ budget.status }}</span>
-                  <time>{{ budget.createdAt | date:'shortDate' }}</time>
-                </div>
-                <h3>{{ budget.title }}</h3>
-                <p>{{ budget.description }}</p>
-                <div class="requirements">
-                  <span>{{ budget.totalAmount | currency }}</span>
-                  <span>{{ budget.participantsCount }} participantes</span>
-                  <span>{{ budget.allowMultipleVotes ? 'Voto multiple' : 'Voto unico' }}</span>
-                </div>
-
-                <div class="budget-items">
-                  @for (item of budget.items; track item.id) {
-                    <div>
-                      <span>{{ item.title }} - {{ item.voteCount }} votos</span>
-                      <button type="button" [disabled]="budget.status !== 'ACTIVE'" (click)="voteBudget(budget.id, item.id)">Votar</button>
+          <section class="section-card" *ngIf="section() === 'proposals'">
+            <div class="section-heading"><div><p>RF03</p><h3>Propuestas ciudadanas</h3></div></div>
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
+              <div class="xl:col-span-1"><app-proposal-form (proposalCreated)="loadAll()"></app-proposal-form></div>
+              <div class="xl:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-md">
+                @for (proposal of proposals(); track proposal.id) {
+                  <article class="item-card">
+                    <div class="meta-row"><span>{{ proposal.category }}</span><time>{{ proposal.createdAt | date:'shortDate' }}</time></div>
+                    <h4>{{ proposal.title }}</h4>
+                    <p>{{ proposal.description }}</p>
+                    <div class="flex justify-between items-center mt-md"><strong>{{ proposal.votes }} votos</strong><button class="secondary-btn" (click)="voteProposal(proposal.id)">Votar</button></div>
+                    <div class="mt-md pt-md border-t border-outline-variant">
+                      <strong class="font-label text-label">Comentarios</strong>
+                      @for (comment of proposalComments()[proposal.id] || []; track comment.id) {
+                        <p class="bg-surface-container-lowest border border-outline-variant rounded-sm p-sm mt-sm text-on-surface-variant">{{ comment.content }}</p>
+                      } @empty {
+                        <p class="text-on-surface-variant mt-sm">Sin comentarios todavía.</p>
+                      }
+                      <div class="flex gap-sm mt-sm">
+                        <input [(ngModel)]="commentDrafts[proposal.id]" [name]="'comment-' + proposal.id" class="input-field" placeholder="Escribe un comentario...">
+                        <button class="primary-btn shrink-0" (click)="addProposalComment(proposal.id)">Comentar</button>
+                      </div>
                     </div>
-                  }
-                </div>
-              </article>
-            } @empty {
-              <p class="empty">No hay presupuestos disponibles.</p>
-            }
-          </div>
-        </section>
-      </main>
+                  </article>
+                } @empty { <p class="empty-state">No hay propuestas registradas.</p> }
+              </div>
+            </div>
+          </section>
 
-      <p class="form-error page-error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+          <section class="section-card" *ngIf="section() === 'surveys'">
+            <div class="section-heading"><div><p>RF01</p><h3>Consultas y encuestas</h3></div><button class="secondary-btn" (click)="loadSurveys()">Actualizar</button></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+              @for (survey of surveys(); track survey.id) {
+                <article class="item-card"><div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div><h4>{{ survey.title }}</h4><p>{{ survey.description }}</p><div class="chip-row"><span>{{ survey.questions.length }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div></article>
+              } @empty { <p class="empty-state">No hay encuestas disponibles.</p> }
+            </div>
+          </section>
+
+          <section class="section-card" *ngIf="section() === 'budgets'">
+            <div class="section-heading"><div><p>RNF01</p><h3>Presupuestos participativos</h3></div><button class="secondary-btn" (click)="loadBudgets()">Actualizar</button></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+              @for (budget of budgets(); track budget.id) {
+                <article class="item-card"><div class="meta-row"><span>{{ budget.status }}</span><time>{{ budget.createdAt | date:'shortDate' }}</time></div><h4>{{ budget.title }}</h4><p>{{ budget.description }}</p><div class="chip-row"><span>{{ budget.totalAmount | currency }}</span><span>{{ budget.participantsCount }} participantes</span><span>{{ budget.allowMultipleVotes ? 'Voto múltiple' : 'Voto único' }}</span></div><div class="mt-md pt-md border-t border-outline-variant grid gap-sm">@for (item of budget.items; track item.id) {<div class="flex justify-between gap-sm items-center"><span>{{ item.title }} - {{ item.voteCount }} votos</span><button class="secondary-btn" [disabled]="budget.status !== 'ACTIVE'" (click)="voteBudget(budget.id, item.id)">Votar</button></div>}</div></article>
+              } @empty { <p class="empty-state">No hay presupuestos disponibles.</p> }
+            </div>
+          </section>
+
+          <section class="section-card" *ngIf="section() === 'issues'">
+            <div class="section-heading"><div><p>RF02</p><h3>Mapeo participativo</h3></div><button class="secondary-btn" (click)="loadIssues()">Actualizar</button></div>
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
+              <form class="form-panel" (ngSubmit)="createIssue()">
+                <input class="input-field" name="issueTitle" [(ngModel)]="issueForm.title" placeholder="Título de la problemática" required>
+                <input class="input-field" name="issueCategory" [(ngModel)]="issueForm.category" placeholder="Categoría" required>
+                <input class="input-field" name="issueAddress" [(ngModel)]="issueForm.address" placeholder="Dirección o referencia">
+                <div class="grid grid-cols-2 gap-sm"><input class="input-field" name="issueLatitude" type="number" step="0.0000001" [(ngModel)]="issueForm.latitude" placeholder="Latitud" required><input class="input-field" name="issueLongitude" type="number" step="0.0000001" [(ngModel)]="issueForm.longitude" placeholder="Longitud" required></div>
+                <textarea class="input-field min-h-28" name="issueDescription" [(ngModel)]="issueForm.description" placeholder="Describe la necesidad territorial" required></textarea>
+                <button class="primary-btn" type="submit">Reportar problemática</button>
+              </form>
+              <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-md">
+                @for (issue of issues(); track issue.id) {
+                  <article class="item-card"><div class="meta-row"><span>{{ displayIssueStatus(issue.status) }}</span><time>{{ issue.createdAt | date:'shortDate' }}</time></div><h4>{{ issue.title }}</h4><p>{{ issue.description }}</p><div class="chip-row"><span>{{ issue.category }}</span><span>{{ issue.address || 'Sin dirección' }}</span><span>{{ issue.latitude }}, {{ issue.longitude }}</span></div></article>
+                } @empty { <p class="empty-state">No hay problemáticas territoriales registradas.</p> }
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card" *ngIf="section() === 'reports' && canViewReports()">
+            <div class="section-heading"><div><p>RF05</p><h3>Reportes integrales</h3></div><button class="secondary-btn" (click)="loadReportSummary()">Actualizar</button></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md mb-lg" *ngIf="reportSummary() as summary"><article class="metric-card"><span>Propuestas</span><strong>{{ summary.totals.proposals }}</strong><p>Total</p></article><article class="metric-card"><span>Encuestas</span><strong>{{ summary.totals.surveys }}</strong><p>Total</p></article><article class="metric-card"><span>Presupuestos</span><strong>{{ summary.totals.budgets }}</strong><p>Total</p></article><article class="metric-card"><span>Problemáticas</span><strong>{{ summary.totals.issues }}</strong><p>Total</p></article></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md" *ngIf="reportSummary() as summary">@for (proposal of summary.topProposals; track proposal.id) {<article class="item-card"><h4>{{ proposal.title }}</h4><p>{{ proposal.votes }} votos</p></article>} @empty { <p class="empty-state">No hay datos suficientes para reportes.</p> }</div>
+          </section>
+
+          <section class="section-card" *ngIf="section() === 'chatbot'">
+            <div class="section-heading"><div><p>Funcionalidad deseada</p><h3>Asistente ciudadano</h3></div></div>
+            <form class="flex flex-col md:flex-row gap-sm" (ngSubmit)="askChatbot()"><input class="input-field flex-1" name="chatMessage" [(ngModel)]="chatMessage" placeholder="Pregunta sobre propuestas, encuestas o presupuestos..." required><button class="primary-btn" type="submit" [disabled]="chatLoading()">{{ chatLoading() ? 'Consultando...' : 'Preguntar' }}</button></form>
+            <article class="item-card mt-lg" *ngIf="chatAnswer()"><div class="meta-row"><span>Modo {{ chatMode() }}</span></div><p>{{ chatAnswer() }}</p></article>
+          </section>
+
+          <p class="mt-lg p-md rounded-lg bg-error-container text-on-error-container font-label text-label" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+        </main>
+      </div>
     </div>
   `,
   styles: [`
-    :host {
-      display: block;
-      min-height: 100vh;
-      background: #0f172a;
-      color: #0f172a;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .page-shell {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 32px 16px 56px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 24px;
-      align-items: center;
-      color: white;
-      padding: 34px;
-      border-radius: 28px;
-      background: radial-gradient(circle at top left, #38bdf8 0, transparent 34%), linear-gradient(135deg, #1e3a8a, #0f172a 62%);
-      box-shadow: 0 24px 80px rgb(2 6 23 / 0.42);
-    }
-
-    @media (min-width: 860px) {
-      .hero {
-        grid-template-columns: 1fr 360px;
-      }
-    }
-
-    h1, h2, h3, p {
-      margin-top: 0;
-    }
-
-    h1 {
-      max-width: 760px;
-      margin-bottom: 14px;
-      font-size: clamp(2.4rem, 6vw, 5rem);
-      line-height: 0.95;
-      letter-spacing: -0.06em;
-    }
-
-    .lead {
-      max-width: 700px;
-      margin-bottom: 0;
-      color: #cbd5e1;
-      font-size: 1.08rem;
-      line-height: 1.7;
-    }
-
-    .eyebrow {
-      margin-bottom: 10px;
-      color: #38bdf8;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .auth-card, .status-grid article, .panel, .notice {
-      background: rgb(255 255 255 / 0.96);
-      border: 1px solid rgb(255 255 255 / 0.18);
-      border-radius: 22px;
-      box-shadow: 0 18px 44px rgb(2 6 23 / 0.18);
-    }
-
-    .auth-card {
-      padding: 20px;
-      color: #0f172a;
-    }
-
-    .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .auth-tabs button, button {
-      border: 0;
-      border-radius: 12px;
-      padding: 11px 14px;
-      font-weight: 800;
-      cursor: pointer;
-      color: white;
-      background: #2563eb;
-    }
-
-    .auth-tabs button {
-      color: #334155;
-      background: #e2e8f0;
-    }
-
-    .auth-tabs button.active, .section-tabs button.active {
-      color: white;
-      background: #2563eb;
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.55;
-    }
-
-    .secondary {
-      color: #0f172a;
-      background: #e2e8f0;
-    }
-
-    form {
-      display: grid;
-      gap: 10px;
-    }
-
-    input {
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      padding: 12px;
-      font: inherit;
-    }
-
-    .name-grid, .proposal-layout {
-      display: grid;
-      gap: 14px;
-    }
-
-    @media (min-width: 900px) {
-      .proposal-layout {
-        grid-template-columns: 360px 1fr;
-        align-items: start;
-      }
-    }
-
-    .profile h2 {
-      margin-bottom: 6px;
-    }
-
-    .role {
-      display: inline-flex;
-      margin-bottom: 12px;
-      border-radius: 999px;
-      padding: 5px 10px;
-      color: #1e40af;
-      background: #dbeafe;
-      font-size: 0.78rem;
-      font-weight: 800;
-    }
-
-    .status-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin: 18px 0;
-    }
-
-    @media (min-width: 780px) {
-      .status-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
-    .status-grid article {
-      padding: 18px;
-    }
-
-    .status-grid strong {
-      display: block;
-      font-size: 1.8rem;
-    }
-
-    .status-grid span, .meta, .requirements {
-      color: #64748b;
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
-    .notice {
-      margin-bottom: 18px;
-      padding: 18px;
-      color: #334155;
-    }
-
-    .section-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .section-tabs button {
-      color: #cbd5e1;
-      background: #1e293b;
-    }
-
-    .panel {
-      padding: clamp(18px, 4vw, 28px);
-    }
-
-    .panel-heading, .meta, .card-actions, .requirements, .budget-items div {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .panel-heading {
-      margin-bottom: 20px;
-    }
-
-    .panel-heading h2 {
-      margin-bottom: 0;
-      font-size: clamp(1.5rem, 3vw, 2rem);
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 14px;
-    }
-
-    .cards.wide {
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    }
-
-    .card {
-      display: grid;
-      gap: 12px;
-      padding: 18px;
-      border: 1px solid #e2e8f0;
-      border-radius: 18px;
-      background: white;
-    }
-
-    .card h3 {
-      margin-bottom: 0;
-    }
-
-    .card p {
-      color: #475569;
-      line-height: 1.55;
-    }
-
-    .requirements {
-      flex-wrap: wrap;
-      justify-content: flex-start;
-    }
-
-    .requirements span, .meta span {
-      border-radius: 999px;
-      padding: 5px 10px;
-      background: #f1f5f9;
-    }
-
-    .budget-items {
-      display: grid;
-      gap: 10px;
-      padding-top: 10px;
-      border-top: 1px solid #e2e8f0;
-    }
-
-    .budget-items div {
-      align-items: center;
-    }
-
-    .budget-items button {
-      padding: 8px 10px;
-    }
-
-    .empty, .form-error {
-      color: #b91c1c;
-      font-weight: 700;
-    }
-
-    .page-error {
-      margin-top: 16px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: #fee2e2;
-    }
+    .metric-card { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
+    .metric-card span { @apply font-label text-label text-on-surface-variant; }
+    .metric-card strong { @apply font-heading-lg text-heading-lg text-on-surface; }
+    .metric-card p { @apply font-caption text-caption text-tertiary-container m-0; }
+    .section-card { @apply bg-surface-bright rounded-xl border border-outline-variant p-md md:p-lg mb-lg; }
+    .section-heading { @apply flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg; }
+    .section-heading p { @apply font-caption text-caption uppercase tracking-[0.14em] text-primary font-bold mb-xs; }
+    .section-heading h3 { @apply font-heading-md text-heading-md text-on-background m-0; }
+    .item-card { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
+    .item-card h4 { @apply font-heading-md text-heading-md text-on-surface m-0; }
+    .item-card p { @apply font-body text-body text-on-surface-variant m-0; }
+    .meta-row { @apply flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant; }
+    .meta-row span, .chip-row span { @apply rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant; }
+    .chip-row { @apply flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant; }
+    .input-field { @apply w-full px-sm py-sm rounded-sm border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container bg-surface-container-lowest font-body text-body text-on-surface outline-none transition-shadow; }
+    .primary-btn { @apply bg-primary-container text-on-primary font-label text-label py-sm px-md rounded-lg hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
+    .secondary-btn { @apply bg-surface-container-lowest text-on-surface border border-outline-variant font-label text-label py-sm px-md rounded-sm hover:bg-surface-container-low transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
+    .form-panel { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
+    .empty-state { @apply text-on-surface-variant font-body text-body; }
   `]
 })
 export class DashboardComponent implements OnInit {
   auth = inject(AuthService);
   private platformService = inject(PlatformService);
   private proposalService = inject(ProposalService);
+  private router = inject(Router);
 
-  authMode = signal<'login' | 'register'>('login');
-  authLoading = signal(false);
-  authError = signal<string | undefined>(undefined);
   section = signal<Section>('proposals');
   proposals = signal<Proposal[]>([]);
   surveys = signal<Survey[]>([]);
   budgets = signal<Budget[]>([]);
+  issues = signal<Issue[]>([]);
+  proposalComments = signal<Record<string, ProposalComment[]>>({});
+  reportSummary = signal<ReportSummary | undefined>(undefined);
+  chatAnswer = signal<string | undefined>(undefined);
+  chatMode = signal<string>('local');
+  chatLoading = signal(false);
   errorMessage = signal<string | undefined>(undefined);
   totalVotes = computed(() => this.proposals().reduce((sum, proposal) => sum + proposal.votes, 0));
+  totalSurveyResponses = computed(() => this.surveys().reduce((sum, survey) => sum + survey.responseCount, 0));
+  totalParticipants = computed(() => this.budgets().reduce((sum, budget) => sum + budget.participantsCount, 0));
+  openIssues = computed(() => this.issues().filter((issue) => issue.status === 'OPEN' || issue.status === 'IN_REVIEW').length);
 
-  authForm = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  };
+  commentDrafts: Record<string, string> = {};
+  chatMessage = '';
+  issueForm = { title: '', description: '', category: '', address: '', latitude: 0, longitude: 0 };
+  mobileSections: Array<{ key: Section; label: string }> = [
+    { key: 'proposals', label: 'Propuestas' },
+    { key: 'surveys', label: 'Encuestas' },
+    { key: 'budgets', label: 'Presupuestos' },
+    { key: 'issues', label: 'Mapeo' },
+    { key: 'chatbot', label: 'Asistente' },
+  ];
 
-  ngOnInit() {
-    if (this.auth.isAuthenticated()) {
-      this.loadAll();
-    }
+  get userInitials(): string {
+    const user = this.auth.user();
+    if (user) return (user.firstName[0] + user.lastName[0]).toUpperCase();
+    return 'AD';
   }
 
-  submitAuth() {
-    this.authLoading.set(true);
-    this.authError.set(undefined);
+  ngOnInit() {
+    this.loadAll();
+  }
 
-    const request = this.authMode() === 'login'
-      ? this.auth.login(this.authForm.email, this.authForm.password)
-      : this.auth.register(this.authForm.firstName, this.authForm.lastName, this.authForm.email, this.authForm.password);
+  navClass(section: Section) {
+    const base = 'flex items-center gap-md px-md py-sm rounded-lg font-label text-label transition-all cursor-pointer';
+    return this.section() === section
+      ? `${base} bg-primary-container text-on-primary-container font-bold`
+      : `${base} text-on-surface-variant hover:bg-surface-container-high`;
+  }
 
-    request.subscribe({
-      next: () => {
-        this.authLoading.set(false);
-        this.loadAll();
-      },
-      error: () => {
-        this.authError.set('No se pudo completar la autenticacion. Revisa los datos e intenta de nuevo.');
-        this.authLoading.set(false);
-      },
-    });
+  navigate(path: string) {
+    this.router.navigate([path]);
   }
 
   logout() {
     this.auth.logout();
-    this.proposals.set([]);
-    this.surveys.set([]);
-    this.budgets.set([]);
+    this.router.navigate(['/login']);
   }
 
   loadAll() {
@@ -530,12 +268,24 @@ export class DashboardComponent implements OnInit {
     this.loadProposals();
     this.loadSurveys();
     this.loadBudgets();
+    this.loadIssues();
+    if (this.canViewReports()) this.loadReportSummary();
   }
 
   loadProposals() {
     this.proposalService.getProposals().subscribe({
-      next: (data) => this.proposals.set(data),
+      next: (data) => {
+        this.proposals.set(data);
+        data.forEach((proposal) => this.loadProposalComments(proposal.id));
+      },
       error: (err) => this.setError('No se pudieron cargar las propuestas.', err),
+    });
+  }
+
+  loadProposalComments(proposalId: string) {
+    this.proposalService.getComments(proposalId).subscribe({
+      next: (comments) => this.proposalComments.update((current) => ({ ...current, [proposalId]: comments })),
+      error: (err) => this.setError('No se pudieron cargar los comentarios.', err),
     });
   }
 
@@ -553,11 +303,23 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  loadIssues() {
+    this.platformService.getIssues().subscribe({
+      next: (data) => this.issues.set(data),
+      error: (err) => this.setError('No se pudieron cargar las problemáticas territoriales.', err),
+    });
+  }
+
+  loadReportSummary() {
+    this.platformService.getReportSummary().subscribe({
+      next: (data) => this.reportSummary.set(data),
+      error: (err) => this.setError('No se pudo cargar el resumen de reportes.', err),
+    });
+  }
+
   voteProposal(id: string) {
     this.proposalService.vote(id).subscribe({
-      next: (updated) => {
-        this.proposals.update((items) => items.map((item) => item.id === updated.id ? updated : item));
-      },
+      next: (updated) => this.proposals.update((items) => items.map((item) => item.id === updated.id ? updated : item)),
       error: (err) => this.setError('No se pudo registrar el voto de propuesta.', err),
     });
   }
@@ -567,6 +329,60 @@ export class DashboardComponent implements OnInit {
       next: () => this.loadBudgets(),
       error: (err) => this.setError('No se pudo registrar el voto de presupuesto.', err),
     });
+  }
+
+  addProposalComment(proposalId: string) {
+    const content = this.commentDrafts[proposalId]?.trim();
+    if (!content) return;
+    this.proposalService.addComment(proposalId, content).subscribe({
+      next: (comment) => {
+        this.proposalComments.update((current) => ({ ...current, [proposalId]: [comment, ...(current[proposalId] || [])] }));
+        this.commentDrafts[proposalId] = '';
+      },
+      error: (err) => this.setError('No se pudo agregar el comentario.', err),
+    });
+  }
+
+  createIssue() {
+    this.platformService.createIssue({ ...this.issueForm, latitude: Number(this.issueForm.latitude), longitude: Number(this.issueForm.longitude) }).subscribe({
+      next: (issue) => {
+        this.issues.update((items) => [issue, ...items]);
+        this.issueForm = { title: '', description: '', category: '', address: '', latitude: 0, longitude: 0 };
+      },
+      error: (err) => this.setError('No se pudo registrar la problemática territorial.', err),
+    });
+  }
+
+  askChatbot() {
+    const message = this.chatMessage.trim();
+    if (!message) return;
+    this.chatLoading.set(true);
+    this.platformService.askChatbot(message).subscribe({
+      next: (response) => {
+        this.chatAnswer.set(response.answer);
+        this.chatMode.set(response.mode);
+        this.chatLoading.set(false);
+      },
+      error: (err) => {
+        this.chatLoading.set(false);
+        this.setError('No se pudo consultar el asistente.', err);
+      },
+    });
+  }
+
+  canViewReports() {
+    const role = this.auth.user()?.role;
+    return role === 'ADMIN' || role === 'MODERATOR';
+  }
+
+  displayIssueStatus(status: Issue['status']) {
+    switch (status) {
+      case 'OPEN': return 'Abierta';
+      case 'IN_REVIEW': return 'En revisión';
+      case 'RESOLVED': return 'Resuelta';
+      case 'CLOSED': return 'Cerrada';
+      default: return status;
+    }
   }
 
   private setError(message: string, err: unknown) {

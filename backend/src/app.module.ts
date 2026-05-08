@@ -10,6 +10,9 @@ import { ProposalsModule } from './proposals/proposals.module';
 import { SurveysModule } from './surveys/surveys.module';
 import { BudgetsModule } from './budgets/budgets.module';
 import { AuditModule } from './audit/audit.module';
+import { IssuesModule } from './issues/issues.module';
+import { ReportsModule } from './reports/reports.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { AuditInterceptor } from './audit/interceptors/audit.interceptor';
@@ -24,6 +27,9 @@ import { AuditInterceptor } from './audit/interceptors/audit.interceptor';
     SurveysModule,
     BudgetsModule,
     AuditModule,
+    IssuesModule,
+    ReportsModule,
+    ChatbotModule,
   ],
   controllers: [AppController],
   providers: [

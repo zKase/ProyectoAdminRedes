@@ -69,3 +69,40 @@ export interface Incident {
   updatedAt?: string;
   resolvedAt?: string;
 }
+
+export interface Issue {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: 'OPEN' | 'IN_REVIEW' | 'RESOLVED' | 'CLOSED';
+  latitude: number;
+  longitude: number;
+  address?: string;
+  createdAt: string;
+}
+
+export interface CreateIssueDto {
+  title: string;
+  description: string;
+  category: string;
+  latitude: number;
+  longitude: number;
+  address?: string;
+}
+
+export interface ReportSummary {
+  totals: {
+    proposals: number;
+    surveys: number;
+    budgets: number;
+    issues: number;
+  };
+  statuses: Record<string, Array<{ status: string; count: string }>>;
+  topProposals: Array<{ id: string; title: string; votes: number }>;
+}
+
+export interface ChatbotResponse {
+  mode: 'local' | 'fallback' | 'openrouter';
+  answer: string;
+}

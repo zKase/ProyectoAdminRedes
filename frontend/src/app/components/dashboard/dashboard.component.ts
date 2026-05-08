@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // trigger recompile
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,13 +8,14 @@ import { Budget, CreateBudgetDto, CreateSurveyQuestionDto, CreateSurveyDto, Issu
 import { AuthService } from '../../services/auth.service';
 import { PlatformService } from '../../services/platform.service';
 import { ProposalService } from '../../services/proposal.service';
+import { ReportsComponent } from '../reports/reports';
 
 type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'chatbot';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProposalFormComponent],
+  imports: [CommonModule, FormsModule, ProposalFormComponent, ReportsComponent],
   template: `
     <div class="bg-background text-on-background font-body min-h-screen flex">
       <nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 py-lg px-md gap-md border-r border-outline-variant bg-surface-container-low z-40">
@@ -106,7 +107,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
               <div class="xl:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-md">
                 @for (proposal of proposals(); track proposal.id) {
                   <article class="item-card">
-                    <div class="meta-row"><span>{{ proposal.category }}</span><time>{{ proposal.createdAt | date:'shortDate' }}</time></div>
+                    <div class="meta-row"><span>{{ proposal.category }}</span><time>{{ proposal.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div>
                     <h4>{{ proposal.title }}</h4>
                     <p>{{ proposal.description }}</p>
                     <div class="flex justify-between items-center mt-md"><strong>{{ proposal.votes }} votos</strong><button class="secondary-btn" (click)="voteProposal(proposal.id)">Votar</button></div>
@@ -193,7 +194,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
               @for (survey of surveys(); track survey.id) {
                 <article class="item-card">
-                  <div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div>
+                  <div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div>
                   <h4>{{ survey.title }}</h4>
                   <p>{{ survey.description }}</p>
                   <div class="chip-row"><span>{{ survey.questions.length || 0 }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div>
@@ -234,7 +235,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
             <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
               @for (budget of budgets(); track budget.id) {
                 <article class="item-card">
-                  <div class="meta-row"><span>{{ budget.status }}</span><time>{{ budget.createdAt | date:'shortDate' }}</time></div>
+                  <div class="meta-row"><span>{{ budget.status }}</span><time>{{ budget.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div>
                   <h4>{{ budget.title }}</h4>
                   <p>{{ budget.description }}</p>
                   <div class="chip-row"><span>{{ budget.totalAmount | currency }}</span><span>{{ budget.participantsCount }} participantes</span><span>{{ budget.allowMultipleVotes ? 'Voto múltiple' : 'Voto único' }}</span></div>
@@ -261,16 +262,14 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
               </form>
               <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-md">
                 @for (issue of issues(); track issue.id) {
-                  <article class="item-card"><div class="meta-row"><span>{{ displayIssueStatus(issue.status) }}</span><time>{{ issue.createdAt | date:'shortDate' }}</time></div><h4>{{ issue.title }}</h4><p>{{ issue.description }}</p><div class="chip-row"><span>{{ issue.category }}</span><span>{{ issue.address || 'Sin dirección' }}</span><span>{{ issue.latitude }}, {{ issue.longitude }}</span></div></article>
+                  <article class="item-card"><div class="meta-row"><span>{{ displayIssueStatus(issue.status) }}</span><time>{{ issue.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div><h4>{{ issue.title }}</h4><p>{{ issue.description }}</p><div class="chip-row"><span>{{ issue.category }}</span><span>{{ issue.address || 'Sin dirección' }}</span><span>{{ issue.latitude }}, {{ issue.longitude }}</span></div></article>
                 } @empty { <p class="empty-state">No hay problemáticas territoriales registradas.</p> }
               </div>
             </div>
           </section>
 
           <section class="section-card" *ngIf="section() === 'reports' && canViewReports()">
-            <div class="section-heading"><div><p>RF05</p><h3>Reportes integrales</h3></div><button class="secondary-btn" (click)="loadReportSummary()">Actualizar</button></div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md mb-lg" *ngIf="reportSummary() as summary"><article class="metric-card"><span>Propuestas</span><strong>{{ summary.totals.proposals }}</strong><p>Total</p></article><article class="metric-card"><span>Encuestas</span><strong>{{ summary.totals.surveys }}</strong><p>Total</p></article><article class="metric-card"><span>Presupuestos</span><strong>{{ summary.totals.budgets }}</strong><p>Total</p></article><article class="metric-card"><span>Problemáticas</span><strong>{{ summary.totals.issues }}</strong><p>Total</p></article></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md" *ngIf="reportSummary() as summary">@for (proposal of summary.topProposals; track proposal.id) {<article class="item-card"><h4>{{ proposal.title }}</h4><p>{{ proposal.votes }} votos</p></article>} @empty { <p class="empty-state">No hay datos suficientes para reportes.</p> }</div>
+            <app-reports></app-reports>
           </section>
 
           <section class="section-card" *ngIf="section() === 'chatbot'">
@@ -293,9 +292,9 @@ styles: [`
     .section-heading { @apply flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg; }
     .section-heading p { @apply font-caption text-on-surface-variant uppercase tracking-[0.14em] text-[#003594] font-bold mb-xs; }
     .section-heading h3 { @apply font-heading-md text-heading-md text-on-background m-0; }
-    .item-card { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
-    .item-card h4 { @apply font-heading-md text-heading-md text-on-surface m-0; }
-    .item-card p { @apply font-body text-body text-on-surface-variant m-0; }
+    .item-card { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm overflow-hidden break-words; }
+    .item-card h4 { @apply font-heading-md text-heading-md text-on-surface m-0 break-words; }
+    .item-card p { @apply font-body text-body text-on-surface-variant m-0 break-words; }
     .meta-row { @apply flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant; }
     .meta-row span, .chip-row span { @apply rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant; }
     .chip-row { @apply flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant; }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Parser } from 'json2csv';
 import { Budget } from '../budgets/entities/budget.entity';
 import { Issue } from '../issues/entities/issue.entity';
 import { Proposal } from '../proposals/entities/proposal.entity';
@@ -43,6 +44,45 @@ export class ReportsService {
       },
       topProposals,
     };
+  }
+
+  async exportToCsv(type: string) {
+    let data: any[] = [];
+    let fields: string[] = [];
+
+    switch (type) {
+      case 'proposals':
+        data = await this.proposalsRepository.find();
+        fields = ['id', 'title', 'description', 'votes', 'category', 'createdAt'];
+        break;
+      case 'issues':
+        data = await this.issuesRepository.find({
+          relations: ['creator'],
+        });
+        fields = [
+          'id',
+          'title',
+          'description',
+          'category',
+          'status',
+          'latitude',
+          'longitude',
+          'creator.email',
+          'createdAt',
+        ];
+        break;
+      case 'surveys':
+        data = await this.surveysRepository.find();
+        fields = ['id', 'title', 'description', 'status', 'startDate', 'endDate', 'createdAt'];
+        break;
+      default:
+        throw new Error('Tipo de reporte no válido');
+    }
+
+    const parser = new Parser({ fields, delimiter: ';' });
+    const csv = parser.parse(data);
+    // Añadimos el BOM para que Excel reconozca UTF-8 (tildes, etc)
+    return '\ufeff' + csv;
   }
 
   private async countByStatus(table: string, column: string) {

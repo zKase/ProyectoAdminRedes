@@ -10,6 +10,10 @@ import { CreateProposalDto } from '../../models/proposal.model';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="form-container">
+      <div class="info-alert">
+        <span class="material-symbols-outlined">info</span>
+        <p>Para garantizar la calidad de las propuestas, se requiere un mínimo de <strong>10 caracteres en el título</strong> y <strong>30 en la descripción</strong>.</p>
+      </div>
       <form (ngSubmit)="onSubmit(proposalForm)" #proposalForm="ngForm" novalidate>
         <div class="form-group">
           <label for="title">Título</label>
@@ -83,6 +87,29 @@ import { CreateProposalDto } from '../../models/proposal.model';
       border-radius: 18px;
       box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       border: 1px solid #e2e8f0;
+    }
+
+    .info-alert {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background-color: #f0f4ff;
+      border: 1px solid #d0daff;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      color: #003594;
+    }
+
+    .info-alert p {
+      font-size: 0.8125rem;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .info-alert span {
+      color: #004ac6;
+      font-size: 20px;
     }
 
     .form-group {

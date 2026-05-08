@@ -4,6 +4,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DashboardNewComponent } from './components/dashboard-new/dashboard-new.component';
 import { IncidentsListComponent } from './components/incidents-list/incidents-list.component';
 import { IncidentDetailComponent } from './components/incident-detail/incident-detail.component';
+import { ReportsComponent } from './components/reports/reports';
 import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
@@ -16,6 +17,11 @@ export const routes: Routes = [
   { 
     path: 'admin-dashboard', 
     component: DashboardNewComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'reports',
+    component: ReportsComponent,
     canActivate: [authGuard]
   },
   {

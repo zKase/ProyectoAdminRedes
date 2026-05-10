@@ -9,13 +9,15 @@ import { AuthService } from '../../services/auth.service';
 import { PlatformService } from '../../services/platform.service';
 import { ProposalService } from '../../services/proposal.service';
 import { ReportsComponent } from '../reports/reports';
+import { MapPickerComponent } from '../map-picker/map-picker.component';
+import { StaticMapComponent } from '../static-map/static-map.component';
 
 type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'chatbot';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProposalFormComponent, ReportsComponent],
+  imports: [CommonModule, FormsModule, ProposalFormComponent, ReportsComponent, MapPickerComponent, StaticMapComponent],
   template: `
     <div class="bg-background text-on-background font-body min-h-screen flex">
       <nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 py-lg px-md gap-md border-r border-outline-variant bg-surface-container-low z-40">
@@ -255,14 +257,23 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
               <form class="form-panel" (ngSubmit)="createIssue()">
                 <input class="input-field" name="issueTitle" [(ngModel)]="issueForm.title" placeholder="Título de la problemática" required>
                 <input class="input-field" name="issueCategory" [(ngModel)]="issueForm.category" placeholder="Categoría" required>
-                <input class="input-field" name="issueAddress" [(ngModel)]="issueForm.address" placeholder="Dirección o referencia">
-                <div class="grid grid-cols-2 gap-sm"><input class="input-field" name="issueLatitude" type="number" step="0.0000001" [(ngModel)]="issueForm.latitude" placeholder="Latitud" required><input class="input-field" name="issueLongitude" type="number" step="0.0000001" [(ngModel)]="issueForm.longitude" placeholder="Longitud" required></div>
+                <input class="input-field" name="issueAddress" [(ngModel)]="issueForm.address" placeholder="Dirección o referencia" required>
+                <div class="flex flex-col gap-xs my-sm">
+                  <label class="font-label text-label text-on-surface-variant">Ubicación de la problemática</label>
+                  <app-map-picker (locationSelected)="onIssueLocationSelected($event)"></app-map-picker>
+                </div>
                 <textarea class="input-field min-h-28" name="issueDescription" [(ngModel)]="issueForm.description" placeholder="Describe la necesidad territorial" required></textarea>
                 <button class="primary-btn" type="submit">Reportar problemática</button>
               </form>
               <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-md">
                 @for (issue of issues(); track issue.id) {
-                  <article class="item-card"><div class="meta-row"><span>{{ displayIssueStatus(issue.status) }}</span><time>{{ issue.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div><h4>{{ issue.title }}</h4><p>{{ issue.description }}</p><div class="chip-row"><span>{{ issue.category }}</span><span>{{ issue.address || 'Sin dirección' }}</span><span>{{ issue.latitude }}, {{ issue.longitude }}</span></div></article>
+                  <article class="item-card">
+                    <div class="meta-row"><span>{{ displayIssueStatus(issue.status) }}</span><time>{{ issue.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div>
+                    <h4>{{ issue.title }}</h4>
+                    <p>{{ issue.description }}</p>
+                    <app-static-map *ngIf="issue.latitude && issue.longitude" [lat]="issue.latitude" [lng]="issue.longitude"></app-static-map>
+                    <div class="chip-row"><span>{{ issue.category }}</span><span>{{ issue.address || 'Sin dirección' }}</span><span>{{ issue.latitude | number:'1.2-5' }}, {{ issue.longitude | number:'1.2-5' }}</span></div>
+                  </article>
                 } @empty { <p class="empty-state">No hay problemáticas territoriales registradas.</p> }
               </div>
             </div>
@@ -453,6 +464,17 @@ export class DashboardComponent implements OnInit {
   }
 
   createIssue() {
+    if (!this.issueForm.title.trim() || !this.issueForm.category.trim() || !this.issueForm.address.trim() || !this.issueForm.description.trim()) {
+      this.errorMessage.set('Por favor, completa todos los campos de texto requeridos.');
+      return;
+    }
+    
+    if (!this.issueForm.latitude || !this.issueForm.longitude) {
+      this.errorMessage.set('Por favor, selecciona una ubicación en el mapa.');
+      return;
+    }
+
+    this.errorMessage.set(undefined);
     this.platformService.createIssue({ ...this.issueForm, latitude: Number(this.issueForm.latitude), longitude: Number(this.issueForm.longitude) }).subscribe({
       next: (issue) => {
         this.issues.update((items) => [issue, ...items]);
@@ -460,6 +482,11 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => this.setError('No se pudo registrar la problemática territorial.', err),
     });
+  }
+
+  onIssueLocationSelected(event: {lat: number, lng: number}) {
+    this.issueForm.latitude = Number(event.lat.toFixed(7));
+    this.issueForm.longitude = Number(event.lng.toFixed(7));
   }
 
   askChatbot() {

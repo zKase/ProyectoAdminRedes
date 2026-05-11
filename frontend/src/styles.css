@@ -366,6 +366,54 @@
     background-color: rgb(var(--surface-container-high));
   }
 
+  /* Search dropdown explicit background to prevent header/transparency bleed */
+  .search-dropdown {
+    /* Force opaque background using surface-container-lowest token at full opacity
+       Use rgba with explicit alpha to avoid any color-mix/backdrop bleed */
+    background-color: rgba(var(--surface-container-lowest), 1) !important;
+    /* Remove any inherited backdrop filters so dropdown is solid */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    /* Prevent blending with parent stacking contexts */
+    isolation: isolate;
+    /* Stronger border and elevation so it reads as a distinct surface */
+    border-color: rgba(var(--outline-variant), 0.95) !important;
+    box-shadow: 0 8px 24px rgba(var(--glass-shadow), 0.12), 0 2px 6px rgba(var(--glass-shadow), 0.06);
+    z-index: 9999;
+  }
+
+  .dark .search-dropdown {
+    background-color: rgba(var(--surface-container-lowest), 1) !important;
+    border-color: rgba(var(--outline-variant), 0.8) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.25);
+    z-index: 9999;
+  }
+
+  /* Force normal blending and create its own GPU layer to avoid parent backdrop effects */
+  .search-dropdown,
+  .search-dropdown * {
+    mix-blend-mode: normal !important;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Ensure interactive items inside read normally and don't inherit translucency */
+  .search-dropdown .material-symbols-outlined,
+  .search-dropdown button,
+  .search-dropdown div,
+  .search-dropdown span {
+    color: inherit;
+    background: transparent;
+  }
+
+  /* Make sure text inside dropdown uses high contrast tokens */
+  .search-dropdown .text-on-surface {
+    color: rgb(var(--on-surface));
+  }
+  .search-dropdown .text-on-surface-variant {
+    color: rgb(var(--on-surface-variant));
+  }
+
   /* Checkbox & Radio custom styling */
   input[type="checkbox"],
   input[type="radio"] {

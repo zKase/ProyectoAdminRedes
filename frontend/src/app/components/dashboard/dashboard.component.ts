@@ -196,7 +196,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                   <div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div>
                   <h4>{{ survey.title }}</h4>
                   <p>{{ survey.description }}</p>
-                  <div class="chip-row"><span>{{ survey.questions.length || 0 }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div>
+                  <div class="chip-row"><span>{{ (survey.questions?.length) || 0 }} preguntas</span><span>{{ (survey.responseCount || 0) }} respuestas</span></div>
                   <button *ngIf="survey.status === 'ACTIVE'" class="primary-btn mt-md" (click)="respondSurvey(survey)">Responder</button>
                 </article>
               } @empty { <p class="empty-state">No hay encuestas disponibles.</p> }

@@ -9,13 +9,14 @@ import { AuthService } from '../../services/auth.service';
 import { PlatformService } from '../../services/platform.service';
 import { ProposalService } from '../../services/proposal.service';
 import { ToastService } from '../../services/toast.service';
+import { ChatComponent } from '../chat/chat.component';
 
 type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'chatbot';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProposalFormComponent],
+  imports: [CommonModule, FormsModule, ProposalFormComponent, ChatComponent],
   template: `
     <div class="h-full">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-xl">
@@ -276,16 +277,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
           </section>
 
           <section class="animate-fade-in" *ngIf="section() === 'chatbot'">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg">
-              <div><h3>Asistente ciudadano</h3></div>
-            </div>
-            <form class="flex flex-col md:flex-row gap-sm" (ngSubmit)="askChatbot()"><input class="input-glass flex-1" name="chatMessage" [(ngModel)]="chatMessage" placeholder="Pregunta algo..." required><button class="btn btn-primary" type="submit" [disabled]="chatLoading()">{{ chatLoading() ? '...' : 'Enviar' }}</button></form>
-            <article class="glass-card p-lg flex flex-col gap-sm mt-lg" *ngIf="chatAnswer()">
-              <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
-                <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">Modo {{ chatMode() }}</span>
-              </div>
-              <p class="font-body text-body text-on-surface-variant m-0 whitespace-pre-wrap">{{ chatAnswer() }}</p>
-            </article>
+            <app-chat></app-chat>
           </section>
 
           <p class="mt-lg p-md rounded-xl bg-error-container text-on-error-container font-label text-sm" *ngIf="errorMessage()">{{ errorMessage() }}</p>
@@ -532,22 +524,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  askChatbot() {
-    const message = this.chatMessage.trim();
-    if (!message) return;
-    this.chatLoading.set(true);
-    this.platformService.askChatbot(message).subscribe({
-      next: (response) => {
-        this.chatAnswer.set(response.answer);
-        this.chatMode.set(response.mode);
-        this.chatLoading.set(false);
-      },
-      error: (err) => {
-        this.chatLoading.set(false);
-        this.setError('No se pudo consultar el asistente.', err);
-      },
-    });
-  }
+
 
   canViewReports() {
     const role = this.auth.user()?.role;

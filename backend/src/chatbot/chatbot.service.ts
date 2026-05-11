@@ -1,51 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ChatbotService {
-  constructor(private configService: ConfigService) {}
+  private readonly logger = new Logger(ChatbotService.name);
+
+  constructor(
+    private configService: ConfigService,
+    private httpService: HttpService,
+  ) {}
 
   async ask(message: string) {
     const apiKey = this.configService.get<string>('OPENROUTER_API_KEY');
-    const model = this.configService.get<string>('OPENROUTER_MODEL', 'mistralai/mistral-7b-instruct:free');
+    const model = this.configService.get<string>('OPENROUTER_MODEL', 'google/gemini-2.0-flash-001');
 
     if (!apiKey) {
+      this.logger.warn('OPENROUTER_API_KEY not set. Using fallback.');
       return {
         mode: 'local',
         answer: this.localAnswer(message),
       };
     }
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          {
-            role: 'system',
-            content: 'Eres un asistente municipal para una plataforma de participación ciudadana. Responde breve, claro y en español.',
-          },
-          { role: 'user', content: message },
-        ],
-      }),
-    });
+    const systemPrompt = 'Eres un asistente virtual de la Municipalidad de Las Condes, experto en participación ciudadana, leyes locales y resolución de dudas sobre propuestas y presupuestos. Tu tono es profesional, servicial y empresarial.';
 
-    if (!response.ok) {
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.post(
+          'https://openrouter.ai/api/v1/chat/completions',
+          {
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: message },
+            ],
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': 'http://localhost:4200',
+              'X-Title': 'Municipalidad de Las Condes',
+            },
+          },
+        ),
+      );
+
+      return {
+        mode: 'openrouter',
+        answer: data?.choices?.[0]?.message?.content ?? this.localAnswer(message),
+      };
+    } catch (error) {
+      this.logger.error('Error calling OpenRouter API', error);
       return {
         mode: 'fallback',
         answer: this.localAnswer(message),
       };
     }
-
-    const data = await response.json();
-    return {
-      mode: 'openrouter',
-      answer: data?.choices?.[0]?.message?.content ?? this.localAnswer(message),
-    };
   }
 
   private localAnswer(message: string): string {

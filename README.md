@@ -88,11 +88,11 @@ git push origin <tu-rama>
 
 ### 2. En la VM de Backend (`instancia-db-backend`)
 ```bash
-cd ~/ProyectoAdminRedes && git pull origin <tu-rama>
+cd ~/ProyectoAdminRedes && git fetch --all && git reset --hard origin/<tu-rama> && git pull origin <tu-rama>
 cd backend
 npm install
 npm run build
-npx pm2 restart backend
+npx pm2 restart backend || npx pm2 start dist/main.js --name backend
 
 # Para poblar/actualizar los datos de prueba en la DB (Opcional):
 npm run seed
@@ -100,12 +100,29 @@ npm run seed
 
 ### 3. En la VM de Frontend (`instancia-app`)
 ```bash
-cd ~/ProyectoAdminRedes && git pull origin <tu-rama>
+cd ~/ProyectoAdminRedes && git fetch --all && git reset --hard origin/<tu-rama> && git pull origin <tu-rama>
 cd frontend
-npm install   # Solo si agregaste librerías
+npm install
 npm run build -- --configuration production
 sudo cp -r dist/frontend/browser/* /var/www/frontend/
+sudo systemctl restart nginx
 ```
 
----
-Proyecto desarrollado por **zKase**.
+## ☁️ Acceso rápido desde Google Cloud Shell (Cualquier Rama)
+
+Si prefieres actualizar todo desde la terminal de Google Cloud usando una rama específica, define primero la variable `BRANCH`:
+
+```bash
+# Define la rama a desplegar (ejemplo: main, dev, feature-x)
+export BRANCH=main 
+```
+
+**Para el Backend (vía IAP):**
+```bash
+gcloud compute ssh instancia-db-backend --zone=us-central1-a --tunnel-through-iap --command="cd ~/ProyectoAdminRedes && git fetch --all && git reset --hard origin/$BRANCH && git checkout $BRANCH && git pull origin $BRANCH && cd backend && npm install && npm run build && (npx pm2 restart backend || npx pm2 start dist/main.js --name backend) && npm run seed"
+```
+
+**Para el Frontend:**
+```bash
+gcloud compute ssh instancia-app --zone=us-central1-a --command="cd ~/ProyectoAdminRedes && git fetch --all && git reset --hard origin/$BRANCH && git checkout $BRANCH && git pull origin $BRANCH && cd frontend && npm install && npm run build -- --configuration production && sudo cp -r dist/frontend/browser/* /var/www/frontend/ && sudo systemctl restart nginx"
+```

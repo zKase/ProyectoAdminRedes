@@ -9,29 +9,29 @@ import { CreateProposalDto } from '../../models/proposal.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="glass-card p-lg">
-      <h4 class="font-heading-md text-heading-md mb-md">Nueva propuesta ciudadana</h4>
-      <form (ngSubmit)="onSubmit(proposalForm)" #proposalForm="ngForm" novalidate class="flex flex-col gap-md">
+    <div class="glass-card p-8 bg-surface border border-outline-variant/30 shadow-lg">
+      <h4 class="text-xl font-bold text-on-surface mb-6">Nueva propuesta ciudadana</h4>
+      <form (ngSubmit)="onSubmit(proposalForm)" #proposalForm="ngForm" novalidate class="flex flex-col gap-5">
          <div>
-           <label class="font-label text-label text-on-surface-variant mb-xs block">Título</label>
+           <label class="text-xs font-bold text-on-surface tracking-wide mb-2 block">Título de la Propuesta</label>
            <input 
-             class="input-glass"
+             class="w-full px-4 py-3 rounded-lg border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary/10 bg-surface-container-low text-sm text-on-surface outline-none transition-all"
              type="text" 
              name="title" 
              [(ngModel)]="proposal.title" 
              required 
              minlength="10"
-             placeholder="Ej: Nuevo parque en el centro"
+             placeholder="Ej: Nuevo parque sustentable..."
            >
-           <p class="text-error text-xs mt-1" *ngIf="proposalForm.controls['title']?.touched && proposalForm.controls['title']?.invalid">
+           <p class="text-error text-[10px] font-bold mt-1" *ngIf="proposalForm.controls['title']?.touched && proposalForm.controls['title']?.invalid">
              El título debe tener al menos 10 caracteres.
            </p>
          </div>
 
          <div>
-           <label class="font-label text-label text-on-surface-variant mb-xs block">Categoría</label>
+           <label class="text-xs font-bold text-on-surface tracking-wide mb-2 block">Categoría</label>
            <select 
-             class="input-glass"
+             class="w-full px-4 py-3 rounded-lg border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary/10 bg-surface-container-low text-sm text-on-surface outline-none transition-all appearance-none"
              name="category" 
              [(ngModel)]="proposal.category" 
              required
@@ -43,32 +43,30 @@ import { CreateProposalDto } from '../../models/proposal.model';
              <option value="Cultura">Cultura</option>
              <option value="Otro">Otro</option>
            </select>
-           <p class="text-error text-xs mt-1" *ngIf="proposalForm.controls['category']?.touched && proposalForm.controls['category']?.invalid">
-             Selecciona una categoría.
-           </p>
          </div>
 
          <div>
-           <label class="font-label text-label text-on-surface-variant mb-xs block">Descripción</label>
+           <label class="text-xs font-bold text-on-surface tracking-wide mb-2 block">Descripción Detallada</label>
            <textarea 
-             class="input-glass min-h-28"
+             class="w-full px-4 py-3 rounded-lg border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary/10 bg-surface-container-low text-sm text-on-surface outline-none transition-all min-h-32"
              name="description" 
              [(ngModel)]="proposal.description" 
              required 
              minlength="30"
              rows="4"
-             placeholder="Describe tu propuesta detalladamente..."
+             placeholder="Describe tu propuesta..."
            ></textarea>
-           <p class="text-error text-xs mt-1" *ngIf="proposalForm.controls['description']?.touched && proposalForm.controls['description']?.invalid">
+           <p class="text-error text-[10px] font-bold mt-1" *ngIf="proposalForm.controls['description']?.touched && proposalForm.controls['description']?.invalid">
              La descripción debe tener al menos 30 caracteres.
            </p>
          </div>
 
-        <button class="btn btn-primary w-full mt-2" type="submit" [disabled]="!isFormValid(proposalForm) || isSubmitting()">
-          {{ isSubmitting() ? 'Enviando...' : 'Publicar Propuesta' }}
+        <button class="w-full bg-primary text-on-primary font-bold text-sm py-3.5 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-hover transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]" type="submit" [disabled]="!isFormValid(proposalForm) || isSubmitting()">
+          <span class="material-symbols-outlined text-[18px]">send</span>
+          <span>{{ isSubmitting() ? 'Publicando...' : 'Publicar Propuesta' }}</span>
         </button>
 
-        <p class="text-error text-sm text-center" *ngIf="submitError">{{ submitError }}</p>
+        <p class="text-error text-xs font-bold text-center" *ngIf="submitError">{{ submitError }}</p>
       </form>
     </div>
   `,

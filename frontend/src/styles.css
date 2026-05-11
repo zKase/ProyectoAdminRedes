@@ -7,91 +7,108 @@
 
 
 :root {
-  /* Enterprise Light Mode - Clean, Corporate & Trustworthy */
-  --background: 241, 245, 249; /* Slate 100 - Slightly darker background for better card pop */
-  --surface: 255, 255, 255;
+  /* Modern Indigo Participation System - Refined & Accessible */
+  --background: 248, 249, 255;
+  --surface: 248, 249, 255;
+  --surface-dim: 204, 219, 244;
+  --surface-bright: 248, 249, 255;
   --surface-container-lowest: 255, 255, 255;
-  --surface-container-low: 241, 245, 249; /* Slate 100 */
-  --surface-container: 226, 232, 240; /* Slate 200 */
-  --surface-container-high: 203, 213, 225; /* Slate 300 */
-  --surface-container-highest: 100, 116, 139; /* Slate 500 */
+  --surface-container-low: 239, 244, 255;
+  --surface-container: 230, 238, 255;
+  --surface-container-high: 221, 233, 255;
+  --surface-container-highest: 213, 227, 253;
   
-  --on-background: 15, 23, 42; /* Slate 900 */
-  --on-surface: 30, 41, 59; /* Slate 800 */
-  --on-surface-variant: 30, 41, 59; /* Slate 800 - Maximum contrast for secondary text */
+  --on-background: 13, 28, 47;
+  --on-surface: 13, 28, 47;
+  --on-surface-variant: 67, 70, 84;
   
-  --primary: 30, 58, 138; /* Navy Blue 900 */
+  --primary: 0, 53, 148;
   --on-primary: 255, 255, 255;
-  --primary-container: 219, 234, 254;
-  --on-primary-container: 30, 58, 138;
-  --primary-hover: 23, 37, 84; /* Navy Blue 950 */
+  --primary-container: 0, 74, 198;
+  --on-primary-container: 184, 200, 255;
+  --primary-hover: 0, 43, 120;
   
-  --secondary: 51, 65, 85; /* Slate 700 */
+  --secondary: 0, 81, 213;
   --on-secondary: 255, 255, 255;
-  --secondary-container: 241, 245, 249;
-  --on-secondary-container: 15, 23, 42;
+  --secondary-container: 49, 107, 243;
+  --on-secondary-container: 254, 252, 255;
+
+  --tertiary: 0, 71, 47;
+  --on-tertiary: 255, 255, 255;
+  --tertiary-container: 0, 97, 65;
+  --on-tertiary-container: 82, 225, 166;
   
-  --outline: 100, 116, 139; /* Slate 500 - Stronger borders */
-  --outline-variant: 148, 163, 184; /* Slate 400 - Stronger borders */
+  --outline: 115, 118, 133;
+  --outline-variant: 195, 198, 214;
   
-  --error: 185, 28, 28; /* Red 700 */
+  --error: 186, 26, 26;
   --on-error: 255, 255, 255;
-  --error-container: 254, 226, 226;
-  --on-error-container: 153, 27, 27;
+  --error-container: 255, 218, 214;
+  --on-error-container: 147, 0, 10;
   
-  --success: 21, 128, 61; /* Green 700 */
+  --success: 0, 97, 65; /* Using tertiary for success in this theme */
   --on-success: 255, 255, 255;
   
-  --accent: 109, 40, 217; /* Violet 700 */
+  --accent: 49, 107, 243;
   
-  --glass-shadow: 148, 163, 184;
-  --glass-border: 203, 213, 225;
-  --neon-glow: 30, 58, 138;
-  --secondary-glow: 51, 65, 85;
+  --glass-shadow: 13, 28, 47;
+  --glass-border: 195, 198, 214;
+  --neon-glow: 0, 53, 148;
+  --secondary-glow: 0, 81, 213;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-default: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
 }
 
 .dark {
-  /* Enterprise Dark Mode - Serious, Deep & Focused */
-  --background: 15, 23, 42; /* Slate 900 - Classic Corporate Dark */
-  --surface: 30, 41, 59; /* Slate 800 */
-  --surface-container-lowest: 15, 23, 42;
-  --surface-container-low: 22, 32, 51;
-  --surface-container: 30, 41, 59;
-  --surface-container-high: 51, 65, 85;
-  --surface-container-highest: 71, 85, 105;
+  /* Adapted Dark Indigo Theme */
+  --background: 13, 28, 47;
+  --surface: 35, 49, 68;
+  --surface-container-lowest: 13, 28, 47;
+  --surface-container-low: 20, 35, 55;
+  --surface-container: 35, 49, 68;
+  --surface-container-high: 50, 65, 85;
+  --surface-container-highest: 65, 80, 100;
   
-  --on-background: 241, 245, 249;
-  --on-surface: 248, 250, 252;
-  --on-surface-variant: 226, 232, 240; /* High contrast for dark mode */
+  --on-background: 235, 241, 255;
+  --on-surface: 248, 249, 255;
+  --on-surface-variant: 195, 198, 214;
   
-  --primary: 96, 165, 250; /* Blue 400 - Solid but visible */
-  --on-primary: 15, 23, 42;
-  --primary-container: 30, 58, 138;
-  --on-primary-container: 191, 219, 254;
-  --primary-hover: 147, 197, 253; /* Blue 300 */
+  --primary: 180, 197, 255;
+  --on-primary: 0, 23, 75;
+  --primary-container: 0, 74, 198;
+  --on-primary-container: 184, 200, 255;
+  --primary-hover: 200, 215, 255;
   
-  --secondary: 148, 163, 184; /* Slate 400 */
-  --on-secondary: 15, 23, 42;
-  --secondary-container: 51, 65, 85;
-  --on-secondary-container: 241, 245, 249;
+  --secondary: 78, 222, 163;
+  --on-secondary: 0, 35, 20;
   
-  --outline: 148, 163, 184;
-  --outline-variant: 100, 116, 139;
+  --outline: 115, 118, 133;
+  --outline-variant: 67, 70, 84;
   
-  --error: 248, 113, 113;
-  --on-error: 15, 23, 42;
-  --error-container: 153, 27, 27;
-  --on-error-container: 254, 202, 202;
+  --error: 255, 180, 171;
+  --on-error: 105, 0, 5;
   
-  --success: 74, 222, 128;
-  --on-success: 15, 23, 42;
+  --success: 78, 222, 163;
+  --on-success: 0, 35, 20;
   
-  --accent: 196, 181, 253; /* Violet 300 */
+  --accent: 180, 197, 255;
   
   --glass-shadow: 0, 0, 0;
-  --glass-border: 71, 85, 105;
-  --neon-glow: 30, 58, 138;
-  --secondary-glow: 15, 23, 42;
+  --glass-border: 115, 118, 133;
+  --neon-glow: 180, 197, 255;
+  --secondary-glow: 78, 222, 163;
 }
 
 @layer base {
@@ -117,7 +134,8 @@
   .glass-card {
     border-width: 1px;
     border-style: solid;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     background-color: rgb(var(--surface));
     border-color: rgb(var(--outline-variant));
@@ -148,9 +166,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
     padding: 0.625rem 1.25rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-default);
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 0.875rem;
@@ -198,7 +216,7 @@
   }
 
   .btn-danger {
-    background-color: #fff;
+    background-color: rgb(var(--surface));
     color: rgb(var(--error));
     border: 1px solid rgb(var(--error));
   }
@@ -212,7 +230,7 @@
   .input-glass {
     width: 100%;
     border: 1px solid rgb(var(--outline));
-    border-radius: 0.5rem;
+    border-radius: var(--radius-default);
     padding: 0.625rem 0.875rem;
     font-size: 0.875rem;
     color: rgb(var(--on-surface));

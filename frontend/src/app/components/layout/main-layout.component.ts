@@ -15,73 +15,111 @@ import { ChatComponent } from '../chat/chat.component';
       <app-chat></app-chat>
       
       <!-- Desktop Sidebar -->
-      <nav class="hidden md:flex flex-col h-screen w-72 fixed left-0 top-0 py-8 px-6 gap-6 border-r border-outline-variant bg-surface-container z-40 shadow-sm transition-all duration-500">
-        <div class="flex items-center gap-4 pb-4 border-b border-outline-variant/50">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-md">
-            <span class="material-symbols-outlined text-white text-[24px]">public</span>
+      <nav class="hidden md:flex flex-col h-screen w-72 fixed left-0 top-0 py-8 px-6 gap-6 border-r border-outline-variant bg-surface z-40 transition-all duration-500">
+        <!-- Logo Section -->
+        <div class="flex items-center gap-3 px-2 mb-2">
+          <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-sm">
+            <span class="material-symbols-outlined text-on-primary text-[22px]">public</span>
           </div>
-          <div>
-            <h1 class="font-heading-md text-lg font-bold text-on-surface tracking-tight leading-tight">Las Condes</h1>
-            <p class="font-caption text-xs text-on-surface-variant font-medium mt-1 uppercase tracking-wider">Participación</p>
+          <div class="flex flex-col">
+            <h1 class="font-heading-md text-[18px] font-bold text-on-surface leading-none">Las Condes</h1>
+            <span class="text-[11px] text-on-surface-variant font-medium mt-1">Plataforma Ciudadana</span>
           </div>
         </div>
 
-        <button (click)="navigate('/dashboard/proposals')" class="group relative overflow-hidden bg-primary text-on-primary font-label text-sm py-3 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-primary-hover transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98]">
-          <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
-          <span class="material-symbols-outlined text-[20px] relative z-10">add</span>
-          <span class="relative z-10 font-semibold">Nueva Propuesta</span>
-        </button>
+        <!-- Action Button -->
+        <div class="px-2">
+          <button (click)="navigate('/dashboard/proposals')" class="w-full bg-primary text-on-primary font-label text-sm py-3 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-hover transition-all duration-200 shadow-sm active:scale-[0.98]">
+            <span class="material-symbols-outlined text-[20px]">add</span>
+            <span class="font-semibold">Nueva Propuesta</span>
+          </button>
+        </div>
 
-        <ul class="flex flex-col gap-1 flex-1 mt-4">
-          <li><a routerLink="/dashboard/proposals" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">forum</span> Propuestas</a></li>
-          <li><a routerLink="/dashboard/surveys" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">fact_check</span> Encuestas</a></li>
-          <li><a routerLink="/dashboard/budgets" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span> Presupuestos</a></li>
-          <li><a routerLink="/dashboard/issues" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">map</span> Mapeo</a></li>
-          <li *ngIf="isAdmin()"><a routerLink="/dashboard/reports" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">assessment</span> Reportes</a></li>
-
+        <!-- Nav Menu -->
+        <ul class="flex flex-col gap-1 flex-1 px-1">
+          <li>
+            <a routerLink="/dashboard/proposals" routerLinkActive="active-nav" class="nav-item">
+              <span class="material-symbols-outlined">dashboard</span> 
+              <span>Resumen</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/dashboard/surveys" routerLinkActive="active-nav" class="nav-item">
+              <span class="material-symbols-outlined">fact_check</span> 
+              <span>Encuestas</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/dashboard/budgets" routerLinkActive="active-nav" class="nav-item">
+              <span class="material-symbols-outlined">account_balance_wallet</span> 
+              <span>Presupuestos</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/dashboard/issues" routerLinkActive="active-nav" class="nav-item">
+              <span class="material-symbols-outlined">map</span> 
+              <span>Mapa de Problemas</span>
+            </a>
+          </li>
+          <li *ngIf="isAdmin()">
+            <a routerLink="/dashboard/reports" routerLinkActive="active-nav" class="nav-item">
+              <span class="material-symbols-outlined">assessment</span> 
+              <span>Reportes Admin</span>
+            </a>
+          </li>
         </ul>
 
-        <div class="mt-auto pt-4 border-t border-outline-variant/50 flex flex-col gap-2">
-          <a *ngIf="isAdmin()" routerLink="/admin-dashboard" class="nav-item"><span class="material-symbols-outlined">admin_panel_settings</span> Panel Admin</a>
-          <a (click)="logout()" class="nav-item text-error hover:bg-error/10 hover:text-error"><span class="material-symbols-outlined">logout</span> Cerrar sesión</a>
+        <!-- Bottom Menu -->
+        <div class="mt-auto pt-6 border-t border-outline-variant/30 flex flex-col gap-1 px-1">
+          <a class="nav-item opacity-80 hover:opacity-100"><span class="material-symbols-outlined">settings</span> Configuración</a>
+          <a (click)="logout()" class="nav-item text-on-surface-variant hover:text-error">
+            <span class="material-symbols-outlined">logout</span> 
+            <span>Cerrar sesión</span>
+          </a>
         </div>
       </nav>
 
-      <div class="flex-1 flex flex-col md:ml-72 w-full bg-surface-container-lowest min-h-screen transition-colors duration-500">
+      <div class="flex-1 flex flex-col md:ml-72 w-full bg-background min-h-screen transition-colors duration-500">
         <header class="sticky top-0 z-30 flex items-center justify-between px-8 py-4 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant shadow-sm transition-all duration-500">
+          <!-- Search Bar Area -->
           <div class="flex items-center gap-4 flex-1">
-            <div class="md:hidden flex items-center gap-3">
-               <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-sm">
-                <span class="material-symbols-outlined text-white text-[16px]">public</span>
+             <div class="hidden md:flex relative w-full max-w-lg items-center group">
+              <span class="material-symbols-outlined absolute left-4 text-on-surface-variant">search</span>
+              <input class="w-full pl-12 pr-4 py-2.5 rounded-lg border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary/10 bg-surface-container-low font-body text-sm text-on-surface outline-none transition-all" placeholder="Buscar propuestas, reportes o incidencias..." type="text"/>
+            </div>
+            
+            <div class="md:hidden flex items-center gap-2">
+               <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-primary text-[16px]">public</span>
               </div>
               <span class="font-heading-md text-md font-bold text-on-surface">Las Condes</span>
             </div>
-            <div class="hidden md:flex relative w-full max-w-md items-center group">
-              <span class="material-symbols-outlined absolute left-4 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
-              <input class="w-full pl-12 pr-4 py-2.5 rounded-full border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 bg-surface-container hover:bg-surface-container-high font-body text-sm text-on-surface outline-none transition-all" placeholder="Buscar en la plataforma..." type="text"/>
-            </div>
           </div>
           
-          <div class="flex items-center gap-2 sm:gap-4">
-            <!-- Theme Toggle Button -->
-            <button (click)="toggleTheme()" class="relative text-on-surface-variant hover:bg-surface-container-high hover:text-primary p-2.5 rounded-full transition-all cursor-pointer active:scale-95 group" title="Cambiar tema">
-              <span class="material-symbols-outlined transition-transform duration-500" [class.rotate-180]="isDark()">
-                {{ isDark() ? 'light_mode' : 'dark_mode' }}
-              </span>
+          <!-- User Controls Area -->
+          <div class="flex items-center gap-3">
+            <button (click)="toggleTheme()" class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-lg transition-all" title="Cambiar tema">
+              <span class="material-symbols-outlined">{{ isDark() ? 'light_mode' : 'dark_mode' }}</span>
             </button>
 
-            <button class="relative text-on-surface-variant hover:bg-surface-container-high hover:text-primary p-2.5 rounded-full transition-all cursor-pointer active:scale-95 group">
-              <span class="material-symbols-outlined group-hover:animate-wiggle">notifications</span>
+            <button class="relative text-on-surface-variant hover:bg-surface-container-high p-2 rounded-lg transition-all">
+              <span class="material-symbols-outlined">notifications</span>
               <span class="absolute top-2 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
             </button>
             
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center cursor-pointer shadow-sm hover:shadow-md transition-all border border-white/20 text-white font-bold text-sm tracking-wider">
-              {{ userInitials }}
+            <div class="flex items-center gap-3 pl-2 ml-2 border-l border-outline-variant/30">
+              <div class="flex flex-col items-end hidden sm:flex">
+                <span class="text-xs font-bold text-on-surface">{{ auth.user()?.firstName }} {{ auth.user()?.lastName }}</span>
+                <span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">{{ auth.user()?.role }}</span>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 text-primary font-bold text-sm">
+                {{ userInitials }}
+              </div>
             </div>
           </div>
         </header>
 
-        <main class="flex-1 p-6 md:p-8 lg:p-10 overflow-y-auto w-full max-w-[1600px] mx-auto">
+        <main class="flex-1 p-8 lg:p-10 overflow-y-auto w-full max-w-[1600px] mx-auto bg-background/50">
           <router-outlet></router-outlet>
         </main>
       </div>
@@ -113,23 +151,23 @@ import { ChatComponent } from '../chat/chat.component';
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-radius: 0.75rem;
+      gap: 1rem;
+      padding: 0.875rem 1rem;
+      border-radius: 0.5rem;
       font-weight: 500;
       font-size: 0.875rem;
       color: rgb(var(--on-surface-variant));
-      transition: all 0.2s;
+      transition: all 0.2s ease;
       cursor: pointer;
     }
     .nav-item:hover {
       background-color: rgb(var(--surface-container-high));
-      color: rgb(var(--on-surface));
+      color: rgb(var(--primary));
     }
     .active-nav {
-      background-color: rgba(var(--primary), 0.1);
-      color: rgb(var(--primary));
-      font-weight: 600;
+      background-color: rgb(var(--primary)) !important;
+      color: rgb(var(--on-primary)) !important;
+      box-shadow: 0 4px 6px -1px rgba(var(--primary), 0.2);
     }
     .active-nav .material-symbols-outlined {
       font-variation-settings: 'FILL' 1;

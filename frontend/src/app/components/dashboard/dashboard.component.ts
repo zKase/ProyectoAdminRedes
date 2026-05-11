@@ -31,26 +31,71 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports';
             </button>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md lg:gap-lg mb-xl">
-            <article class="glass-card p-lg flex flex-col gap-sm">
-              <span class="font-label text-label text-on-surface-variant">Propuestas</span>
-              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ proposals().length }}</strong>
-              <p class="font-caption text-caption text-on-surface-variant m-0">{{ totalVotes() }} votos</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg mb-xl">
+            <article class="glass-card p-xl flex flex-col gap-md">
+              <div class="flex justify-between items-start">
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shadow-sm">
+                  <span class="material-symbols-outlined text-[24px]">groups</span>
+                </div>
+                <span class="text-xs font-bold text-success flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">trending_up</span>
+                  +5.2%
+                </span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-on-surface-variant">Propuestas Activas</span>
+                <strong class="text-3xl font-bold text-on-surface mt-1">{{ proposals().length }}</strong>
+                <p class="text-[11px] text-on-surface-variant/70 mt-2">{{ totalVotes() }} votos registrados</p>
+              </div>
             </article>
-            <article class="glass-card p-lg flex flex-col gap-sm">
-              <span class="font-label text-label text-on-surface-variant">Encuestas</span>
-              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ surveys().length }}</strong>
-              <p class="font-caption text-caption text-on-surface-variant m-0">{{ totalSurveyResponses() }} respuestas</p>
+
+            <article class="glass-card p-xl flex flex-col gap-md">
+              <div class="flex justify-between items-start">
+                <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary shadow-sm">
+                  <span class="material-symbols-outlined text-[24px]">fact_check</span>
+                </div>
+                <span class="text-xs font-bold text-primary flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">update</span>
+                  En curso
+                </span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-on-surface-variant">Encuestas</span>
+                <strong class="text-3xl font-bold text-on-surface mt-1">{{ surveys().length }}</strong>
+                <p class="text-[11px] text-on-surface-variant/70 mt-2">{{ totalSurveyResponses() }} respuestas</p>
+              </div>
             </article>
-            <article class="glass-card p-lg flex flex-col gap-sm">
-              <span class="font-label text-label text-on-surface-variant">Presupuestos</span>
-              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ budgets().length }}</strong>
-              <p class="font-caption text-caption text-on-surface-variant m-0">{{ totalParticipants() }} participantes</p>
+
+            <article class="glass-card p-xl flex flex-col gap-md">
+              <div class="flex justify-between items-start">
+                <div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary shadow-sm">
+                  <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+                </div>
+                <span class="text-xs font-bold text-on-surface-variant flex items-center gap-1">
+                  Meta 90%
+                </span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-on-surface-variant">Presupuestos</span>
+                <strong class="text-3xl font-bold text-on-surface mt-1">{{ budgets().length }}</strong>
+                <p class="text-[11px] text-on-surface-variant/70 mt-2">{{ totalParticipants() }} participantes</p>
+              </div>
             </article>
-            <article class="glass-card p-lg flex flex-col gap-sm">
-              <span class="font-label text-label text-on-surface-variant">Problemáticas</span>
-              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ issues().length }}</strong>
-              <p class="font-caption text-caption text-on-surface-variant m-0">{{ openIssues() }} abiertas</p>
+
+            <article class="glass-card p-xl flex flex-col gap-md">
+              <div class="flex justify-between items-start">
+                <div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center text-error shadow-sm">
+                  <span class="material-symbols-outlined text-[24px]">warning</span>
+                </div>
+                <span class="text-xs font-bold text-error flex items-center gap-1">
+                  {{ openIssues() }} Críticas
+                </span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-medium text-on-surface-variant">Problemáticas</span>
+                <strong class="text-3xl font-bold text-on-surface mt-1">{{ issues().length }}</strong>
+                <p class="text-[11px] text-on-surface-variant/70 mt-2">{{ openIssues() }} en revisión</p>
+              </div>
             </article>
           </div>
 
@@ -62,30 +107,36 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports';
               <div class="xl:col-span-1"><app-proposal-form (proposalCreated)="loadAll()"></app-proposal-form></div>
               <div class="xl:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-md">
                 @for (proposal of proposals(); track proposal.id) {
-                  <article class="glass-card p-lg flex flex-col gap-sm">
-                    <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
-                      <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ proposal.category }}</span>
-                      <time>{{ proposal.createdAt | date:'shortDate' }}</time>
+                  <article class="glass-card p-0 overflow-hidden flex flex-col group border-outline-variant/30">
+                    <div class="p-6 flex flex-col gap-4">
+                      <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-primary px-2.5 py-1 bg-primary/10 rounded-full">#PROP-{{ proposal.id.substring(0, 4) }}</span>
+                        <span class="text-[11px] font-medium text-on-surface-variant flex items-center gap-1">
+                          <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                          {{ proposal.createdAt | date:'MMM d, y' }}
+                        </span>
+                      </div>
+                      
+                      <div class="flex flex-col gap-1">
+                        <h4 class="text-lg font-bold text-on-surface leading-tight group-hover:text-primary transition-colors">{{ proposal.title }}</h4>
+                        <p class="text-sm text-on-surface-variant line-clamp-2">{{ proposal.description }}</p>
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-1 bg-surface-container-low text-primary text-[10px] font-bold rounded-lg border border-primary/10">{{ proposal.category }}</span>
+                        <div class="h-1 w-1 bg-outline-variant rounded-full"></div>
+                        <span class="text-[10px] font-bold text-success">{{ proposal.votes }} Votos</span>
+                      </div>
                     </div>
-                    <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ proposal.title }}</h4>
-                    <p class="font-body text-body text-on-surface-variant m-0">{{ proposal.description }}</p>
-                    <div class="flex justify-between items-center mt-md">
-                      <strong class="text-primary">{{ proposal.votes }} votos</strong>
-                      <button class="btn btn-primary" [disabled]="hasVotedOnProposal(proposal.id)" (click)="voteProposal(proposal.id)">
+
+                    <div class="mt-auto p-4 bg-surface-container-low/50 border-t border-outline-variant/20 flex justify-end gap-3">
+                      <button class="text-xs font-bold text-on-surface-variant hover:text-primary transition-all flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">chat_bubble</span>
+                        {{ (proposalComments()[proposal.id] || []).length }}
+                      </button>
+                      <button class="btn btn-primary !py-1.5 !px-4 !text-xs !rounded-lg" [disabled]="hasVotedOnProposal(proposal.id)" (click)="voteProposal(proposal.id)">
                         {{ hasVotedOnProposal(proposal.id) ? 'Votado' : 'Votar' }}
                       </button>
-                    </div>
-                    <div class="mt-md pt-md border-t border-outline-variant">
-                      <strong class="font-label text-label text-on-surface-variant">Comentarios</strong>
-                      @for (comment of proposalComments()[proposal.id] || []; track comment.id) {
-                        <p class="bg-surface-container-low border border-white/5 rounded-lg p-sm mt-sm text-on-surface text-sm">{{ comment.content }}</p>
-                      } @empty {
-                        <p class="text-on-surface-variant mt-sm text-sm italic">Sin comentarios todavía.</p>
-                      }
-                      <div class="flex gap-sm mt-md">
-                        <input [(ngModel)]="commentDrafts[proposal.id]" [name]="'comment-' + proposal.id" class="input-glass" placeholder="Escribe...">
-                        <button class="btn btn-secondary shrink-0 px-md" (click)="addProposalComment(proposal.id)"><span class="material-symbols-outlined">send</span></button>
-                      </div>
                     </div>
                   </article>
                 } @empty { <p class="text-on-surface-variant font-body text-body opacity-70 italic">No hay propuestas registradas.</p> }

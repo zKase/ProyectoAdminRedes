@@ -27,7 +27,7 @@ export interface Survey {
   description: string;
   status: string;
   responseCount: number;
-  questions: SurveyQuestion[];
+  questions?: SurveyQuestion[];
   createdAt: string;
 }
 

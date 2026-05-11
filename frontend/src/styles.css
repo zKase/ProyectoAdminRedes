@@ -1,11 +1,92 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL,GRAD@100..700,0..1,-50..200&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html {
-  font-family: 'Inter', sans-serif;
+@layer base {
+  html {
+    @apply antialiased bg-background text-on-background scroll-smooth;
+  }
+  
+  body {
+    @apply m-0 min-h-screen;
+    background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.05), transparent 40%),
+                radial-gradient(circle at bottom left, rgba(10, 132, 255, 0.05), transparent 40%),
+                #0a0a0c;
+  }
+}
+
+@layer components {
+  /* Cards */
+  .glass-card {
+    @apply bg-surface/60 backdrop-blur-xl border border-white/5 rounded-2xl shadow-elevated transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply bg-surface/80 border-white/10 shadow-neon transform -translate-y-1;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply relative flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-label transition-all duration-300 overflow-hidden outline-none select-none active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-on-primary shadow-[0_0_15px_rgba(0,240,255,0.3)] hover:shadow-[0_0_25px_rgba(0,240,255,0.5)] hover:bg-primary-hover;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-container text-on-surface border border-outline-variant hover:border-primary/50 hover:bg-surface-container-high hover:text-primary;
+  }
+
+  .btn-danger {
+    @apply bg-error/10 text-error border border-error/20 hover:bg-error hover:text-white hover:shadow-[0_0_15px_rgba(255,69,58,0.3)];
+  }
+
+  /* Button Loading State */
+  .btn.is-loading {
+    @apply text-transparent pointer-events-none;
+  }
+  
+  .btn.is-loading::after {
+    content: "";
+    @apply absolute w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin;
+    color: inherit;
+    color: currentColor;
+    filter: invert(1);
+  }
+  
+  .btn-primary.is-loading::after {
+    filter: none;
+    color: #000;
+  }
+  
+  .btn-secondary.is-loading::after {
+    filter: none;
+    color: #00f0ff;
+  }
+
+  /* Inputs */
+  .input-glass {
+    @apply w-full bg-surface-container-lowest/50 backdrop-blur-md border border-outline-variant rounded-xl px-4 py-3 text-body text-on-surface focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-all placeholder:text-on-surface-variant/50 hover:bg-surface-container-lowest;
+  }
+  
+  /* Scrollbar Customization */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-outline-variant/50 rounded-full hover:bg-outline-variant;
+  }
+}
+
+/* Material Icons Customization */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
 }

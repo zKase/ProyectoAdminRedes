@@ -9,29 +9,29 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="bg-background text-on-background min-h-screen flex items-center justify-center p-md">
-      <div class="w-full max-w-md">
-        <div class="bg-surface-container-low rounded-[18px] border border-outline-variant p-xl shadow-sm flex flex-col items-center gap-lg">
+    <div class="bg-background text-on-background min-h-screen flex items-center justify-center p-md selection:bg-primary selection:text-white">
+      <div class="w-full max-w-md animate-fade-in">
+        <div class="glass-card p-xl flex flex-col items-center gap-lg">
           <!-- Icon -->
-          <div class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center mb-sm">
-            <span class="material-symbols-outlined text-[48px] text-on-primary" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-sm shadow-neon">
+            <span class="material-symbols-outlined text-[40px] text-white" style="font-variation-settings: 'FILL' 1;">shield_person</span>
           </div>
           
           <!-- Title -->
-          <div class="text-center space-y-sm w-full">
-            <h1 class="font-heading-lg text-heading-lg text-[#0052b5]">Municipalidad de Las Condes</h1>
-            <p class="font-body text-body text-on-surface-variant">Portal de participación ciudadana</p>
+          <div class="text-center w-full">
+            <h1 class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]">Las Condes</h1>
+            <p class="font-body text-body text-on-surface-variant mt-2">Portal de Participación Ciudadana</p>
           </div>
           
           <!-- Form -->
-          <form class="w-full space-y-md flex flex-col mt-sm" (ngSubmit)="onLogin()">
+          <form class="w-full flex flex-col gap-md" (ngSubmit)="onLogin()">
             <!-- Email Field -->
             <div class="flex flex-col gap-xs">
-                <label class="font-label text-label text-on-surface" for="email">Correo electrónico</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">mail</span>
+              <label class="font-label text-label text-on-surface-variant" for="email">Correo electrónico</label>
+              <div class="relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">mail</span>
                 <input 
-                  class="w-full pl-xl pr-sm py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body text-body focus:ring-2 focus:ring-primary-container focus:border-primary-container transition-all outline-none" 
+                  class="input-glass pl-12" 
                   id="email" 
                   placeholder="funcionario@lascondes.cl" 
                   type="email"
@@ -44,11 +44,11 @@ import { AuthService } from '../../services/auth.service';
             
             <!-- Password Field -->
             <div class="flex flex-col gap-xs">
-                <label class="font-label text-label text-on-surface" for="password">Contraseña</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">lock</span>
+              <label class="font-label text-label text-on-surface-variant" for="password">Contraseña</label>
+              <div class="relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">lock</span>
                 <input 
-                  class="w-full pl-xl pr-sm py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body text-body focus:ring-2 focus:ring-primary-container focus:border-primary-container transition-all outline-none" 
+                  class="input-glass pl-12" 
                   id="password" 
                   placeholder="••••••••" 
                   type="password"
@@ -60,30 +60,30 @@ import { AuthService } from '../../services/auth.service';
             </div>
             
             <!-- Remember Me & Forgot Password -->
-            <div class="flex justify-between items-center w-full pt-xs pb-sm">
+            <div class="flex justify-between items-center w-full">
               <div class="flex items-center gap-xs">
-                <input class="rounded text-primary focus:ring-primary border-outline-variant" id="remember" type="checkbox" [(ngModel)]="rememberMe" name="rememberMe"/>
+                <input class="rounded border-outline-variant bg-surface-container text-primary focus:ring-primary/50" id="remember" type="checkbox" [(ngModel)]="rememberMe" name="rememberMe"/>
                 <label class="font-caption text-caption text-on-surface-variant" for="remember">Recuérdame</label>
               </div>
-              <a class="font-label text-label text-primary hover:text-primary-container transition-colors cursor-pointer" href="#">¿Olvidó su contraseña?</a>
+              <a class="font-label text-caption text-primary hover:underline transition-all cursor-pointer">¿Olvidó su contraseña?</a>
             </div>
             
             <!-- Sign In Button -->
-            <button class="w-full bg-primary-container text-on-primary font-label text-label py-md rounded-[18px] hover:bg-primary transition-colors flex justify-center items-center gap-xs disabled:opacity-50 disabled:cursor-not-allowed" type="submit" [disabled]="isLoading()">
-              <span class="material-symbols-outlined text-[20px]">{{ isLoading() ? 'hourglass_empty' : 'login' }}</span>
-              {{ isLoading() ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+            <button class="btn btn-primary w-full py-4 mt-2" type="submit" [disabled]="isLoading()" [class.is-loading]="isLoading()">
+              <span class="material-symbols-outlined text-[20px]">{{ isLoading() ? '' : 'login' }}</span>
+              {{ isLoading() ? 'Iniciando...' : 'Iniciar sesión' }}
             </button>
           </form>
           
           <!-- Error Message -->
-          <div *ngIf="errorMessage()" class="w-full bg-error-container border border-error rounded-lg p-md text-error">
-            <p class="font-body text-body">{{ errorMessage() }}</p>
+          <div *ngIf="errorMessage()" class="w-full bg-error-container/20 border border-error/30 rounded-xl p-md text-error animate-fade-in text-center text-sm">
+            {{ errorMessage() }}
           </div>
           
           <!-- Footer -->
-          <div class="w-full pt-md border-t border-outline-variant text-center">
-            <p class="font-caption text-caption text-outline">
-              Personal autorizado únicamente. El acceso está monitoreado.
+          <div class="w-full pt-md border-t border-outline-variant/50 text-center">
+            <p class="font-caption text-xs text-on-surface-variant opacity-60">
+              Personal autorizado únicamente. Acceso monitoreado.
             </p>
           </div>
         </div>
@@ -116,7 +116,7 @@ export class LoginComponent {
         this.isLoading.set(false);
         this.router.navigate(['/dashboard']);
       },
-        error: (err) => {
+      error: (err) => {
         this.isLoading.set(false);
         const errorMsg = err?.error?.message || 'Error al iniciar sesión. Compruebe sus credenciales.';
         this.errorMessage.set(errorMsg);

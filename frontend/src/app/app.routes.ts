@@ -5,29 +5,38 @@ import { DashboardNewComponent } from './components/dashboard-new/dashboard-new.
 import { IncidentsListComponent } from './components/incidents-list/incidents-list.component';
 import { IncidentDetailComponent } from './components/incident-detail/incident-detail.component';
 import { authGuard } from './core/auth.guard';
+import { MainLayoutComponent } from './components/layout/main-layout.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { 
-    path: 'dashboard', 
-    component: DashboardComponent,
-    canActivate: [authGuard]
+    path: '', 
+    component: MainLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      { 
+        path: 'dashboard', 
+        redirectTo: 'dashboard/proposals',
+        pathMatch: 'full'
+      },
+      { 
+        path: 'dashboard/:section', 
+        component: DashboardComponent 
+      },
+      { 
+        path: 'admin-dashboard', 
+        component: DashboardNewComponent 
+      },
+      {
+        path: 'incidents',
+        component: IncidentsListComponent
+      },
+      {
+        path: 'incidents/:id',
+        component: IncidentDetailComponent
+      },
+      { path: '', redirectTo: 'dashboard/proposals', pathMatch: 'full' }
+    ]
   },
-  { 
-    path: 'admin-dashboard', 
-    component: DashboardNewComponent,
-    canActivate: [authGuard]
-  },
-  {
-    path: 'incidents',
-    component: IncidentsListComponent,
-    canActivate: [authGuard]
-  },
-  {
-    path: 'incidents/:id',
-    component: IncidentDetailComponent,
-    canActivate: [authGuard]
-  },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: '**', redirectTo: '/dashboard' }
+  { path: '**', redirectTo: '/dashboard/proposals' }
 ];

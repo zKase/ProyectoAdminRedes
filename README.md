@@ -108,6 +108,37 @@ sudo cp -r dist/frontend/browser/* /var/www/frontend/
 sudo systemctl restart nginx
 ```
 
+## ⚖️ Escalabilidad y Balanceo de Carga
+
+Para mejorar el rendimiento y la disponibilidad, puedes implementar las siguientes estrategias:
+
+### 1. Balanceo Vertical (PM2 Cluster Mode)
+Ejecuta múltiples instancias del backend aprovechando todos los núcleos de la CPU:
+```bash
+# En la instancia de backend
+npx pm2 delete backend
+npx pm2 start dist/main.js --name backend -i max
+npx pm2 save
+```
+
+### 2. Balanceo Horizontal (Nginx)
+Si tienes múltiples instancias de backend, configura Nginx en la `instancia-app`:
+1. Edita la configuración de Nginx: `sudo nano /etc/nginx/sites-available/default`
+2. Define el grupo de servidores:
+```nginx
+upstream backend_servers {
+    server 10.128.0.2:3000; # Backend A
+    server 10.128.0.3:3000; # Backend B
+}
+```
+3. Actualiza el `proxy_pass`:
+```nginx
+location /api/ {
+    proxy_pass http://backend_servers/;
+    # ... otras configuraciones
+}
+```
+
 ## ☁️ Acceso rápido desde Google Cloud Shell (Cualquier Rama)
 
 Si prefieres actualizar todo desde la terminal de Google Cloud usando una rama específica, define primero la variable `BRANCH`:

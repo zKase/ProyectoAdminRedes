@@ -30,7 +30,9 @@ export class ChatService {
 
   addMessage(role: 'user' | 'assistant', content: string) {
     const newMessage: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: typeof crypto.randomUUID === 'function' 
+        ? crypto.randomUUID() 
+        : Math.random().toString(36).substring(2, 11) + Date.now().toString(36),
       role,
       content,
       timestamp: new Date()

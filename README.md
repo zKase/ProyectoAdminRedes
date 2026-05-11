@@ -61,14 +61,19 @@ npm run start
 ```
 La aplicación se abrirá en `http://localhost:4200` y se conectará automáticamente al backend en `localhost:3000`.
 
-## Credenciales de prueba (desarrollo)
+## Credenciales de prueba (Seeded Data)
 
-Para facilidad en entornos locales se ha creado un usuario admin de prueba. Úsalas solo en desarrollo.
+La plataforma viene pre-poblada con datos de prueba para facilitar la evaluación de roles:
 
-- email: admin@example.com
-- password: Password123!
+### Usuarios Administrativos (Acceso a Reportes y Gestión)
+- **Admin**: `admin@lascondes.cl` / `admin123`
+- **Moderador**: `moderador@lascondes.cl` / `admin123`
 
-Por seguridad, cambia estas credenciales y el JWT_SECRET antes de desplegar a un entorno público.
+### Usuarios Ciudadanos (Votación y Mapeo)
+- **Juan Pérez**: `juan.perez@gmail.com` / `user123`
+- **Ana Silva**: `ana.silva@gmail.com` / `user123` (y otros vecinos)
+
+*Nota: Por seguridad, cambia estas credenciales y el `JWT_SECRET` en el archivo `.env` antes de un despliegue real a producción.*
 
 ## 🔄 Cómo actualizar los cambios en producción
 
@@ -85,9 +90,12 @@ git push origin <tu-rama>
 ```bash
 cd ~/ProyectoAdminRedes && git pull origin <tu-rama>
 cd backend
-npm install   # Solo si agregaste librerías
+npm install
 npm run build
 npx pm2 restart backend
+
+# Para poblar/actualizar los datos de prueba en la DB (Opcional):
+npm run seed
 ```
 
 ### 3. En la VM de Frontend (`instancia-app`)

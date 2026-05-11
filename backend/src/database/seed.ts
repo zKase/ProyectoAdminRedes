@@ -48,17 +48,29 @@ async function seed() {
     // 1. Create Users
     console.log('Seeding users...');
     const hashedPassword = await bcrypt.hash('admin123', 10);
+    const userPassword = await bcrypt.hash('user123', 10);
     
-    let admin = await userRepository.findOneBy({ email: 'admin@lascondes.cl' });
-    if (!admin) {
-      admin = userRepository.create({
-        firstName: 'Administrador',
-        lastName: 'Sistema',
-        email: 'admin@lascondes.cl',
-        password: hashedPassword,
-        role: UserRole.ADMIN,
-      });
-      admin = await userRepository.save(admin);
+    const usersData = [
+      { firstName: 'Administrador', lastName: 'Sistema', email: 'admin@lascondes.cl', password: hashedPassword, role: UserRole.ADMIN },
+      { firstName: 'Moderador', lastName: 'Municipal', email: 'moderador@lascondes.cl', password: hashedPassword, role: UserRole.MODERATOR },
+      { firstName: 'Juan', lastName: 'Pérez', email: 'juan.perez@gmail.com', password: userPassword, role: UserRole.CITIZEN },
+      { firstName: 'María', lastName: 'González', email: 'maria.gonzalez@hotmail.com', password: userPassword, role: UserRole.CITIZEN },
+      { firstName: 'Roberto', lastName: 'Sánchez', email: 'roberto.sanchez@yahoo.com', password: userPassword, role: UserRole.CITIZEN },
+      { firstName: 'Ana', lastName: 'Silva', email: 'ana.silva@gmail.com', password: userPassword, role: UserRole.CITIZEN },
+    ];
+
+    let admin;
+    for (const u of usersData) {
+      let user = await userRepository.findOneBy({ email: u.email });
+      if (!user) {
+        user = userRepository.create(u);
+        user = await userRepository.save(user);
+        console.log(`User created: ${u.email} (${u.role})`);
+      } else {
+        user.role = u.role; // Ensure role is correct even if user existed
+        await userRepository.save(user);
+      }
+      if (u.role === UserRole.ADMIN) admin = user;
     }
 
     // 2. Create Proposals

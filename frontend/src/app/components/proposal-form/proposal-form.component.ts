@@ -9,7 +9,7 @@ import { CreateProposalDto } from '../../models/proposal.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="glass-card p-8 bg-surface border border-outline-variant/30 shadow-lg">
+    <div class="glass-card p-8 border border-outline-variant/30 shadow-elevated">
       <h4 class="text-xl font-bold text-on-surface mb-6">Nueva propuesta ciudadana</h4>
       <form (ngSubmit)="onSubmit(proposalForm)" #proposalForm="ngForm" novalidate class="flex flex-col gap-5">
          <div>

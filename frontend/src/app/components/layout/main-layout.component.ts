@@ -15,7 +15,7 @@ import { ChatComponent } from '../chat/chat.component';
       <app-chat></app-chat>
       
       <!-- Desktop Sidebar -->
-      <nav class="hidden md:flex flex-col h-screen w-72 fixed left-0 top-0 py-8 px-6 gap-6 border-r border-outline-variant bg-surface z-40 transition-all duration-500">
+      <nav class="hidden md:flex flex-col h-screen w-72 fixed left-0 top-0 py-8 px-6 gap-6 border-r border-outline-variant bg-surface/90 backdrop-blur-lg z-40 transition-all duration-500">
         <!-- Logo Section -->
         <div class="flex items-center gap-3 px-2 mb-2">
           <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-sm">
@@ -80,7 +80,7 @@ import { ChatComponent } from '../chat/chat.component';
       </nav>
 
       <div class="flex-1 flex flex-col md:ml-72 w-full bg-background min-h-screen transition-colors duration-500">
-        <header class="sticky top-0 z-30 flex items-center justify-between px-8 py-4 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant shadow-sm transition-all duration-500">
+        <header class="sticky top-0 z-30 flex items-center justify-between px-8 py-4 w-full bg-surface/60 backdrop-blur-md border-b border-outline-variant transition-all duration-500">
           <!-- Search Bar Area -->
           <div class="flex items-center gap-4 flex-1">
              <div class="hidden md:flex relative w-full max-w-lg items-center group">

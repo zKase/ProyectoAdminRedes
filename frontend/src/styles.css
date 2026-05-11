@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL,GRAD@100..700,0..1,-50..200&display=swap');
 @import "leaflet/dist/leaflet.css";
 @import "tailwindcss/base";
@@ -7,7 +7,7 @@
 
 
 :root {
-  /* Modern Indigo Participation System - Refined & Accessible */
+  /* Modern Indigo Participation System - Light Theme */
   --background: 248, 249, 255;
   --surface: 248, 249, 255;
   --surface-dim: 204, 219, 244;
@@ -17,17 +17,17 @@
   --surface-container: 230, 238, 255;
   --surface-container-high: 221, 233, 255;
   --surface-container-highest: 213, 227, 253;
-  
+
   --on-background: 13, 28, 47;
   --on-surface: 13, 28, 47;
   --on-surface-variant: 67, 70, 84;
-  
+
   --primary: 0, 53, 148;
   --on-primary: 255, 255, 255;
   --primary-container: 0, 74, 198;
   --on-primary-container: 184, 200, 255;
-  --primary-hover: 0, 43, 120;
-  
+  --primary-hover: 10, 84, 210;
+
   --secondary: 0, 81, 213;
   --on-secondary: 255, 255, 255;
   --secondary-container: 49, 107, 243;
@@ -37,20 +37,23 @@
   --on-tertiary: 255, 255, 255;
   --tertiary-container: 0, 97, 65;
   --on-tertiary-container: 82, 225, 166;
-  
+
   --outline: 115, 118, 133;
   --outline-variant: 195, 198, 214;
-  
+
   --error: 186, 26, 26;
   --on-error: 255, 255, 255;
   --error-container: 255, 218, 214;
   --on-error-container: 147, 0, 10;
-  
-  --success: 0, 97, 65; /* Using tertiary for success in this theme */
+
+  --success: 0, 97, 65;
   --on-success: 255, 255, 255;
-  
+
   --accent: 49, 107, 243;
-  
+  --inverse-surface: 35, 49, 68;
+  --inverse-on-surface: 235, 241, 255;
+  --surface-tint: 27, 85, 208;
+
   --glass-shadow: 13, 28, 47;
   --glass-border: 195, 198, 214;
   --neon-glow: 0, 53, 148;
@@ -62,6 +65,7 @@
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
+  --spacing-2xl: 48px;
 
   /* Radius */
   --radius-sm: 0.25rem;
@@ -72,43 +76,57 @@
 }
 
 .dark {
-  /* Adapted Dark Indigo Theme */
-  --background: 13, 28, 47;
-  --surface: 35, 49, 68;
-  --surface-container-lowest: 13, 28, 47;
-  --surface-container-low: 20, 35, 55;
-  --surface-container: 35, 49, 68;
-  --surface-container-high: 50, 65, 85;
-  --surface-container-highest: 65, 80, 100;
-  
-  --on-background: 235, 241, 255;
-  --on-surface: 248, 249, 255;
-  --on-surface-variant: 195, 198, 214;
-  
+  /* Modern Indigo Dark Theme */
+  --background: 11, 19, 38;
+  --surface: 11, 19, 38;
+  --surface-dim: 11, 19, 38;
+  --surface-bright: 49, 57, 77;
+  --surface-container-lowest: 6, 14, 32;
+  --surface-container-low: 19, 27, 46;
+  --surface-container: 23, 31, 51;
+  --surface-container-high: 34, 42, 61;
+  --surface-container-highest: 45, 52, 73;
+
+  --on-background: 218, 226, 253;
+  --on-surface: 218, 226, 253;
+  --on-surface-variant: 195, 198, 215;
+
   --primary: 180, 197, 255;
-  --on-primary: 0, 23, 75;
-  --primary-container: 0, 74, 198;
-  --on-primary-container: 184, 200, 255;
-  --primary-hover: 200, 215, 255;
-  
-  --secondary: 78, 222, 163;
-  --on-secondary: 0, 35, 20;
-  
-  --outline: 115, 118, 133;
-  --outline-variant: 67, 70, 84;
-  
+  --on-primary: 0, 42, 120;
+  --primary-container: 37, 99, 235;
+  --on-primary-container: 238, 239, 255;
+  --primary-hover: 59, 117, 240;
+
+  --secondary: 123, 208, 255;
+  --on-secondary: 0, 53, 74;
+  --secondary-container: 0, 166, 224;
+  --on-secondary-container: 0, 55, 77;
+
+  --tertiary: 192, 193, 255;
+  --on-tertiary: 16, 0, 169;
+  --tertiary-container: 88, 91, 230;
+  --on-tertiary-container: 241, 238, 255;
+
+  --outline: 141, 144, 160;
+  --outline-variant: 67, 70, 85;
+
   --error: 255, 180, 171;
   --on-error: 105, 0, 5;
-  
+  --error-container: 147, 0, 10;
+  --on-error-container: 255, 218, 214;
+
   --success: 78, 222, 163;
   --on-success: 0, 35, 20;
-  
-  --accent: 180, 197, 255;
-  
+
+  --accent: 0, 166, 224;
+  --inverse-surface: 218, 226, 253;
+  --inverse-on-surface: 40, 48, 68;
+  --surface-tint: 180, 197, 255;
+
   --glass-shadow: 0, 0, 0;
-  --glass-border: 115, 118, 133;
+  --glass-border: 67, 70, 85;
   --neon-glow: 180, 197, 255;
-  --secondary-glow: 78, 222, 163;
+  --secondary-glow: 123, 208, 255;
 }
 
 @layer base {
@@ -119,7 +137,7 @@
     color: rgb(var(--on-background));
     scroll-behavior: smooth;
   }
-  
+
   body {
     margin: 0;
     min-height: 100vh;
@@ -127,37 +145,52 @@
     background: radial-gradient(circle at top right, rgba(var(--primary), 0.03), transparent 30%),
                 rgb(var(--background));
   }
+
+  ::selection {
+    background-color: rgb(var(--primary));
+    color: rgb(var(--on-primary));
+  }
 }
 
 @layer components {
-  /* Cards */
+  /* Cards - Tonal layering with 1px border */
   .glass-card {
     border-width: 1px;
     border-style: solid;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    background-color: rgb(var(--surface));
+    background-color: rgb(var(--surface-container-low));
     border-color: rgb(var(--outline-variant));
-    box-shadow: 0 4px 6px -1px rgba(var(--glass-shadow), 0.1), 0 2px 4px -2px rgba(var(--glass-shadow), 0.1);
+    box-shadow: 0 1px 3px rgba(var(--glass-shadow), 0.04), 0 1px 2px rgba(var(--glass-shadow), 0.06);
   }
-  
+
   .dark .glass-card {
-    background-color: rgba(var(--surface), 0.6);
-    backdrop-filter: blur(12px);
-    border-color: rgba(var(--outline), 0.2);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    background-color: rgb(var(--surface-container));
+    border-color: rgb(var(--outline-variant));
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-  
+
   .glass-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(var(--glass-shadow), 0.15);
     border-color: rgb(var(--outline));
   }
-  
+
   .dark .glass-card:hover {
-    border-color: rgba(var(--primary), 0.3);
-    background-color: rgba(var(--surface), 0.8);
+    border-color: rgba(var(--primary), 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Glass effect for sidebars and headers */
+  .glass-surface {
+    background-color: rgba(var(--surface), 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(var(--outline-variant), 0.5);
+  }
+
+  .dark .glass-surface {
+    background-color: rgba(var(--surface-container), 0.6);
+    border-color: rgba(var(--outline-variant), 0.3);
   }
 
   /* Buttons */
@@ -172,58 +205,64 @@
     font-family: 'Inter', sans-serif;
     font-weight: 600;
     font-size: 0.875rem;
+    line-height: 1.25rem;
     transition: all 0.2s ease;
     overflow: hidden;
     outline: none;
     user-select: none;
     cursor: pointer;
   }
-  
+
   .btn:active {
     transform: scale(0.98);
   }
-  
+
   .btn:disabled {
     opacity: 0.5;
     pointer-events: none;
   }
 
   .btn-primary {
-    background-color: rgb(var(--primary));
+    background-color: rgb(var(--primary-container));
     color: rgb(var(--on-primary));
     border: 1px solid transparent;
   }
-  
+
   .btn-primary:hover {
     background-color: rgb(var(--primary-hover));
-    box-shadow: 0 4px 12px rgba(var(--primary), 0.25);
+    box-shadow: 0 4px 12px rgba(var(--primary-container), 0.25);
   }
-  
+
   .btn-secondary {
-    background-color: rgb(var(--surface));
+    background-color: transparent;
     color: rgb(var(--on-surface));
     border: 1px solid rgb(var(--outline));
   }
-  
+
   .btn-secondary:hover {
-    background-color: rgb(var(--surface-container-low));
-    border-color: rgb(var(--outline-variant));
+    background-color: rgb(var(--surface-container-high));
+    border-color: rgb(var(--outline));
   }
-  
+
   .dark .btn-secondary {
-    background-color: rgb(var(--surface-container-low));
+    color: rgb(var(--on-surface));
+    border-color: rgba(var(--outline), 0.4);
+  }
+
+  .dark .btn-secondary:hover {
+    background-color: rgb(var(--surface-container-high));
     border-color: rgb(var(--outline));
   }
 
   .btn-danger {
-    background-color: rgb(var(--surface));
+    background-color: transparent;
     color: rgb(var(--error));
     border: 1px solid rgb(var(--error));
   }
-  
+
   .btn-danger:hover {
     background-color: rgb(var(--error));
-    color: white;
+    color: rgb(var(--on-error));
   }
 
   /* Inputs */
@@ -233,28 +272,147 @@
     border-radius: var(--radius-default);
     padding: 0.625rem 0.875rem;
     font-size: 0.875rem;
+    font-family: 'Inter', sans-serif;
     color: rgb(var(--on-surface));
-    background-color: rgb(var(--surface));
+    background-color: rgb(var(--surface-container-low));
     outline: none;
     transition: all 0.2s;
   }
-  
+
   .input-glass::placeholder {
     color: rgb(var(--on-surface-variant));
-    opacity: 0.8; /* Increased from 0.6 */
+    opacity: 0.7;
   }
-  
+
   .input-glass:focus {
-    border-color: rgb(var(--primary));
-    box-shadow: 0 0 0 3px rgba(var(--primary), 0.1);
+    border-color: rgb(var(--primary-container));
+    box-shadow: 0 0 0 2px rgba(var(--primary-container), 0.15);
   }
-  
+
   .dark .input-glass {
-    background-color: rgb(var(--surface-container-lowest));
+    background-color: rgb(var(--surface-container-low));
+    border-color: rgb(var(--outline-variant));
+  }
+
+  .dark .input-glass:focus {
+    border-color: rgb(var(--primary));
+    box-shadow: 0 0 0 2px rgba(var(--primary), 0.1);
+  }
+
+  /* Badges / Chips */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .badge-success {
+    background-color: rgba(var(--success), 0.1);
+    color: rgb(var(--success));
+  }
+
+  .badge-error {
+    background-color: rgba(var(--error), 0.1);
+    color: rgb(var(--error));
+  }
+
+  .badge-primary {
+    background-color: rgba(var(--primary), 0.1);
+    color: rgb(var(--primary));
+  }
+
+  .badge-neutral {
+    background-color: rgb(var(--surface-container-high));
+    color: rgb(var(--on-surface-variant));
+  }
+
+  /* Dividers */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background-color: rgb(var(--outline-variant));
+    border: none;
+  }
+
+  .dark .divider {
+    background-color: rgba(var(--outline-variant), 0.5);
+  }
+
+  /* List items */
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid rgb(var(--outline-variant));
+    transition: background-color 0.15s;
+  }
+
+  .dark .list-item {
+    border-color: rgba(var(--outline-variant), 0.4);
+  }
+
+  .list-item:last-child {
+    border-bottom: none;
+  }
+
+  .list-item:hover {
+    background-color: rgb(var(--surface-container-high));
+  }
+
+  /* Checkbox & Radio custom styling */
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: rgb(var(--primary-container));
     border-color: rgb(var(--outline));
   }
-  
-  /* Scrollbar Customization */
+
+  .dark input[type="checkbox"],
+  .dark input[type="radio"] {
+    border-color: rgb(var(--outline-variant));
+  }
+
+  /* Section heading pattern */
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .section-header .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgb(var(--primary));
+  }
+
+  .section-header .title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 2.5rem;
+    letter-spacing: -0.02em;
+    color: rgb(var(--on-surface));
+  }
+
+  .section-header .description {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5rem;
+    color: rgb(var(--on-surface-variant));
+  }
+
+  /* Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;

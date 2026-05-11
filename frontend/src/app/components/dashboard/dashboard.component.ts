@@ -479,6 +479,8 @@ export class DashboardComponent implements OnInit {
       const currentSection = this.section();
       if (currentSection === 'issues') {
         setTimeout(() => this.initMap(), 100);
+      } else {
+        this.destroyMap();
       }
     });
 
@@ -706,6 +708,13 @@ export class DashboardComponent implements OnInit {
       this.toast.success('Ubicación capturada para nuevo reporte');
       document.querySelector('form[name="issueForm"]')?.scrollIntoView({ behavior: 'smooth' });
     });
+  }
+
+  private destroyMap() {
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
   }
 
   updateMapMarkers(issues: Issue[]) {

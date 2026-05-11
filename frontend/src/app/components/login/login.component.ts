@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   template: `
     <div class="bg-background text-on-background min-h-screen flex items-center justify-center p-6 selection:bg-primary selection:text-white transition-colors duration-500">
       <div class="w-full max-w-md animate-fade-in">
-        <div class="glass-card p-10 flex flex-col items-center gap-8 bg-surface border border-outline-variant/30 shadow-xl">
+          <div class="glass-card p-10 flex flex-col items-center gap-8 border border-outline-variant/30 shadow-elevated">
           <!-- Icon Circle -->
           <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg">
             <span class="material-symbols-outlined text-[32px] text-on-primary" style="font-variation-settings: 'FILL' 1;">shield_person</span>

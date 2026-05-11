@@ -283,6 +283,91 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports';
 
 
 
+          <section class="animate-fade-in" *ngIf="section() === 'reports' && canViewReports()">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg">
+              <div><h3>Reportes Administrativos</h3></div>
+              <button class="btn btn-secondary" (click)="loadReportSummary()">Actualizar</button>
+            </div>
+            
+            @if (reportSummary()) {
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-lg">
+                <!-- Totals -->
+                <div class="glass-card p-lg flex flex-col gap-md">
+                  <h4 class="font-heading-md text-heading-md text-primary">Totales Generales</h4>
+                  <ul class="flex flex-col gap-sm">
+                    <li class="flex justify-between border-b border-outline-variant pb-xs"><span>Propuestas</span> <strong>{{ reportSummary()!.totals.proposals }}</strong></li>
+                    <li class="flex justify-between border-b border-outline-variant pb-xs"><span>Encuestas</span> <strong>{{ reportSummary()!.totals.surveys }}</strong></li>
+                    <li class="flex justify-between border-b border-outline-variant pb-xs"><span>Presupuestos</span> <strong>{{ reportSummary()!.totals.budgets }}</strong></li>
+                    <li class="flex justify-between border-b border-outline-variant pb-xs"><span>Problemáticas</span> <strong>{{ reportSummary()!.totals.issues }}</strong></li>
+                  </ul>
+                </div>
+                
+                <!-- Status Breakdown -->
+                <div class="glass-card p-lg flex flex-col gap-md lg:col-span-2">
+                  <h4 class="font-heading-md text-heading-md text-primary">Desglose por Estado</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+                    <div>
+                      <strong class="text-sm text-on-surface-variant block mb-xs">Encuestas</strong>
+                      <ul class="text-sm">
+                        @for (s of reportSummary()!.statuses['surveys']; track s.status) {
+                          <li class="flex justify-between"><span>{{ s.status }}</span> <strong>{{ s.count }}</strong></li>
+                        } @empty { <li class="opacity-50">Sin datos</li> }
+                      </ul>
+                    </div>
+                    <div>
+                      <strong class="text-sm text-on-surface-variant block mb-xs">Presupuestos</strong>
+                      <ul class="text-sm">
+                        @for (s of reportSummary()!.statuses['budgets']; track s.status) {
+                          <li class="flex justify-between"><span>{{ s.status }}</span> <strong>{{ s.count }}</strong></li>
+                        } @empty { <li class="opacity-50">Sin datos</li> }
+                      </ul>
+                    </div>
+                    <div>
+                      <strong class="text-sm text-on-surface-variant block mb-xs">Problemáticas</strong>
+                      <ul class="text-sm">
+                        @for (s of reportSummary()!.statuses['issues']; track s.status) {
+                          <li class="flex justify-between"><span>{{ s.status }}</span> <strong>{{ s.count }}</strong></li>
+                        } @empty { <li class="opacity-50">Sin datos</li> }
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top Proposals -->
+              <div class="glass-card p-lg flex flex-col gap-md">
+                <h4 class="font-heading-md text-heading-md text-primary">Propuestas más votadas</h4>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="border-b border-outline-variant">
+                        <th class="p-sm font-label text-label text-on-surface-variant">Título</th>
+                        <th class="p-sm font-label text-label text-on-surface-variant">Categoría</th>
+                        <th class="p-sm font-label text-label text-on-surface-variant text-right">Votos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (p of reportSummary()!.topProposals; track p.id) {
+                        <tr class="border-b border-outline-variant/50 hover:bg-surface-container-low transition-colors">
+                          <td class="p-sm">{{ p.title }}</td>
+                          <td class="p-sm"><span class="bg-surface-container-high px-xs py-1 rounded text-xs">{{ p.category }}</span></td>
+                          <td class="p-sm text-right font-bold text-primary">{{ p.votes }}</td>
+                        </tr>
+                      } @empty {
+                        <tr><td colspan="3" class="p-sm text-center opacity-50">Sin propuestas</td></tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            } @else {
+              <div class="flex flex-col items-center justify-center p-xl opacity-50">
+                <span class="material-symbols-outlined text-4xl mb-sm animate-spin">sync</span>
+                <p>Cargando datos...</p>
+              </div>
+            }
+          </section>
+
           <p class="mt-lg p-md rounded-xl bg-error-container text-on-error-container font-label text-sm" *ngIf="errorMessage()">{{ errorMessage() }}</p>
     </div>
   `,

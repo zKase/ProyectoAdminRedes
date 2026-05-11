@@ -98,8 +98,12 @@ export interface ReportSummary {
     budgets: number;
     issues: number;
   };
-  statuses: Record<string, Array<{ status: string; count: string }>>;
-  topProposals: Array<{ id: string; title: string; votes: number }>;
+  statuses: {
+    surveys: Array<{ status: string; count: string }>;
+    budgets: Array<{ status: string; count: string }>;
+    issues: Array<{ status: string; count: string }>;
+  };
+  topProposals: Array<{ id: string; title: string; votes: number; category: string }>;
 }
 
 export interface ChatbotResponse {

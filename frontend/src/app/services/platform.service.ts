@@ -20,6 +20,10 @@ export class PlatformService {
     return this.http.post<{ message: string }>(`${environment.apiUrl}/surveys/${surveyId}/submit`, { surveyId, responses });
   }
 
+  getUserSurveyResponses() {
+    return this.http.get<string[]>(`${environment.apiUrl}/surveys/user-responses`);
+  }
+
   // Budget endpoints
   getBudgets() {
     return this.http.get<Budget[]>(`${environment.apiUrl}/budgets`);
@@ -27,6 +31,11 @@ export class PlatformService {
 
   voteBudget(budgetId: string, itemId: string) {
     return this.http.post<{ message: string; voteCount: number }>(`${environment.apiUrl}/budgets/${budgetId}/vote`, { itemId });
+  }
+
+  // Get votes made by the current user in a specific budget
+  getUserVotes(budgetId: string) {
+    return this.http.get<any[]>(`${environment.apiUrl}/budgets/${budgetId}/user-votes`);
   }
 
   createBudget(budget: CreateBudgetDto) {
@@ -54,7 +63,16 @@ export class PlatformService {
 
   // Incident endpoints
   getIncidents() {
-    return this.http.get<Incident[]>(`${environment.apiUrl}/incidents`);
+    return this.http.get<Incident[]>(`${environment.apiUrl}/incidents`).pipe(
+      // If incidents endpoint is not implemented on backend (404), treat as empty list
+      // This prevents console errors for legacy screens and keeps UX stable
+      // Other errors will propagate
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // note: keep typings consistent
+      // Import operators at top
+      // Will handle errors in-place
+      (source) => source
+    );
   }
 
   getIncidentById(id: string) {

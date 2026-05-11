@@ -219,6 +219,15 @@ export class SurveysService {
     };
   }
 
+  async getUserResponses(userId: string): Promise<string[]> {
+    const responses = await this.responsesRepository
+      .createQueryBuilder('response')
+      .select('DISTINCT response.surveyId', 'surveyId')
+      .where('response.userId = :userId', { userId })
+      .getRawMany();
+    return responses.map((r) => r.surveyId);
+  }
+
   /**
    * Obtener respuestas de una encuesta (para análisis)
    */

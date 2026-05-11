@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proposal } from './entities/proposal.entity';
+import { ProposalVote } from './entities/proposal-vote.entity';
 import { CreateProposalDto } from './dto/create-proposal.dto';
 import { CreateProposalCommentDto, UpdateProposalCommentDto } from './dto/proposal-comment.dto';
 import { ProposalComment, ProposalCommentStatus } from './entities/proposal-comment.entity';
@@ -13,6 +14,8 @@ export class ProposalsService {
     private proposalsRepository: Repository<Proposal>,
     @InjectRepository(ProposalComment)
     private commentsRepository: Repository<ProposalComment>,
+    @InjectRepository(ProposalVote)
+    private votesRepository: Repository<ProposalVote>,
   ) {}
 
   async create(createProposalDto: CreateProposalDto): Promise<Proposal> {
@@ -24,13 +27,37 @@ export class ProposalsService {
     return this.proposalsRepository.find({ order: { createdAt: 'DESC' } });
   }
 
-  async vote(id: string): Promise<Proposal> {
+  async vote(id: string, userId: string): Promise<Proposal> {
     const proposal = await this.proposalsRepository.findOneBy({ id });
     if (!proposal) {
       throw new NotFoundException(`Proposal with ID "${id}" not found`);
     }
+
+    const existingVote = await this.votesRepository.findOne({
+      where: { proposalId: id, userId },
+    });
+
+    if (existingVote) {
+      throw new ConflictException('User has already voted for this proposal');
+    }
+
+    const vote = this.votesRepository.create({
+      proposalId: id,
+      userId,
+    });
+
+    await this.votesRepository.save(vote);
+
     proposal.votes += 1;
     return this.proposalsRepository.save(proposal);
+  }
+
+  async getUserVotes(userId: string): Promise<string[]> {
+    const votes = await this.votesRepository.find({
+      where: { userId },
+      select: ['proposalId'],
+    });
+    return votes.map((v) => v.proposalId);
   }
 
   async addComment(

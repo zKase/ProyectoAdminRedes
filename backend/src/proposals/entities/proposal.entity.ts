@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
+import { ProposalVote } from './proposal-vote.entity';
 
 @Entity('proposals')
 export class Proposal {
@@ -16,6 +17,9 @@ export class Proposal {
 
   @Column()
   category: string;
+
+  @OneToMany(() => ProposalVote, (vote) => vote.proposal)
+  votes_relation: ProposalVote[];
 
   @CreateDateColumn()
   createdAt: Date;

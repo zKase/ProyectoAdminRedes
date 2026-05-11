@@ -23,8 +23,8 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
             <span class="material-symbols-outlined text-on-primary text-[20px]">groups</span>
           </div>
           <div>
-            <h1 class="font-heading-md text-heading-md text-primary">ProyectoAdminRedes</h1>
-            <p class="font-caption text-caption text-on-surface-variant mt-xs">Participación ciudadana</p>
+            <h1 class="font-heading-md text-heading-md text-[#0052b5]">Municipalidad de Las Condes</h1>
+            <p class="font-caption text-caption text-on-surface-variant mt-xs">Plataforma de participación ciudadana</p>
           </div>
         </div>
 
@@ -58,7 +58,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
         <header class="sticky top-0 z-50 flex items-center justify-between px-lg py-sm w-full bg-surface border-b border-outline-variant">
           <div class="flex items-center gap-md flex-1">
             <div class="md:hidden">
-              <span class="font-heading-md text-heading-md text-primary font-bold">ProyectoAdminRedes</span>
+              <span class="font-heading-md text-heading-md text-[#0052b5] font-bold">Municipalidad de Las Condes</span>
             </div>
             <div class="hidden md:flex relative w-full max-w-md items-center">
               <span class="material-symbols-outlined absolute left-sm text-on-surface-variant">search</span>
@@ -109,7 +109,12 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                     <div class="meta-row"><span>{{ proposal.category }}</span><time>{{ proposal.createdAt | date:'shortDate' }}</time></div>
                     <h4>{{ proposal.title }}</h4>
                     <p>{{ proposal.description }}</p>
-                    <div class="flex justify-between items-center mt-md"><strong>{{ proposal.votes }} votos</strong><button class="secondary-btn" (click)="voteProposal(proposal.id)">Votar</button></div>
+                    <div class="flex justify-between items-center mt-md">
+                      <strong>{{ proposal.votes }} votos</strong>
+                      <button class="secondary-btn" [disabled]="hasVotedOnProposal(proposal.id)" (click)="voteProposal(proposal.id)">
+                        {{ hasVotedOnProposal(proposal.id) ? 'Votado' : 'Votar' }}
+                      </button>
+                    </div>
                     <div class="mt-md pt-md border-t border-outline-variant">
                       <strong class="font-label text-label">Comentarios</strong>
                       @for (comment of proposalComments()[proposal.id] || []; track comment.id) {
@@ -196,8 +201,10 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                   <div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div>
                   <h4>{{ survey.title }}</h4>
                   <p>{{ survey.description }}</p>
-                  <div class="chip-row"><span>{{ (survey.questions?.length) || 0 }} preguntas</span><span>{{ (survey.responseCount || 0) }} respuestas</span></div>
-                  <button *ngIf="survey.status === 'ACTIVE'" class="primary-btn mt-md" (click)="respondSurvey(survey)">Responder</button>
+                  <div class="chip-row"><span>{{ survey.questions.length }} preguntas</span><span>{{ (survey.responseCount || 0) }} respuestas</span></div>
+                  <button *ngIf="survey.status === 'ACTIVE'" class="primary-btn mt-md" [disabled]="hasRespondedToSurvey(survey.id)" (click)="respondSurvey(survey)">
+                    {{ hasRespondedToSurvey(survey.id) ? 'Respondida' : 'Responder' }}
+                  </button>
                 </article>
               } @empty { <p class="empty-state">No hay encuestas disponibles.</p> }
             </div>
@@ -240,7 +247,11 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                   <div class="chip-row"><span>{{ budget.totalAmount | currency }}</span><span>{{ budget.participantsCount }} participantes</span><span>{{ budget.allowMultipleVotes ? 'Voto múltiple' : 'Voto único' }}</span></div>
                   <div class="mt-md pt-md border-t border-outline-variant grid gap-sm">
                     @for (item of budget.items || []; track item.id) {
-                      <div class="flex justify-between gap-sm items-center"><span>{{ item.title }} - {{ item.voteCount }} votos</span><button class="secondary-btn" [disabled]="budget.status !== 'ACTIVE'" (click)="voteBudget(budget.id, item.id)">Votar</button></div>
+                      <div class="flex justify-between gap-sm items-center"><span>{{ item.title }} - {{ item.voteCount }} votos</span>
+                        <button class="secondary-btn" [disabled]="budget.status !== 'ACTIVE' || hasVotedOnBudget(budget.id)" (click)="voteBudget(budget.id, item.id)">
+                          {{ hasVotedOnItem(budget.id, item.id) ? 'Votado' : (hasVotedOnBudget(budget.id) ? 'Ya votaste' : 'Votar') }}
+                        </button>
+                      </div>
                     }
                   </div>
                 </article>
@@ -314,8 +325,12 @@ export class DashboardComponent implements OnInit {
 
   section = signal<Section>('proposals');
   proposals = signal<Proposal[]>([]);
+  proposalVotes = signal<string[]>([]);
   surveys = signal<Survey[]>([]);
+  surveyResponsesList = signal<string[]>([]);
   budgets = signal<Budget[]>([]);
+  // userVotes maps budgetId -> array of itemIds the current user has voted for
+  userVotes = signal<Record<string, string[]>>({});
   issues = signal<Issue[]>([]);
   proposalComments = signal<Record<string, ProposalComment[]>>({});
   reportSummary = signal<ReportSummary | undefined>(undefined);
@@ -387,8 +402,16 @@ export class DashboardComponent implements OnInit {
       next: (data) => {
         this.proposals.set(data);
         data.forEach((proposal) => this.loadProposalComments(proposal.id));
+        this.loadUserProposalVotes();
       },
       error: (err) => this.setError('No se pudieron cargar las propuestas.', err),
+    });
+  }
+
+  loadUserProposalVotes() {
+    this.proposalService.getUserVotes().subscribe({
+      next: (votes) => this.proposalVotes.set(votes),
+      error: () => this.proposalVotes.set([]),
     });
   }
 
@@ -401,15 +424,46 @@ export class DashboardComponent implements OnInit {
 
   loadSurveys() {
     this.platformService.getSurveys().subscribe({
-      next: (data) => this.surveys.set(data),
+      next: (data) => {
+        this.surveys.set(data);
+        this.loadUserSurveyResponses();
+      },
       error: (err) => this.setError('No se pudieron cargar las encuestas.', err),
+    });
+  }
+
+  loadUserSurveyResponses() {
+    this.platformService.getUserSurveyResponses().subscribe({
+      next: (responses) => this.surveyResponsesList.set(responses),
+      error: () => this.surveyResponsesList.set([]),
     });
   }
 
   loadBudgets() {
     this.platformService.getBudgets().subscribe({
-      next: (data) => this.budgets.set(data),
+      next: (data) => {
+        this.budgets.set(data);
+        this.refreshUserVotesForBudgets();
+      },
       error: (err) => this.setError('No se pudieron cargar los presupuestos.', err),
+    });
+  }
+    
+
+  private refreshUserVotesForBudgets() {
+    // for each budget, fetch the current user's votes and store item ids
+    const budgets = this.budgets();
+    budgets.forEach((b) => {
+      this.platformService.getUserVotes(b.id).subscribe({
+        next: (votes) => {
+          const itemIds = (votes || []).map(v => v.item?.id || v.itemId).filter(Boolean);
+          this.userVotes.update(curr => ({ ...curr, [b.id]: itemIds }));
+        },
+        error: () => {
+          // ignore errors for user votes (user may not be logged in or endpoint missing)
+          this.userVotes.update(curr => ({ ...curr, [b.id]: [] }));
+        }
+      });
     });
   }
 
@@ -429,7 +483,10 @@ export class DashboardComponent implements OnInit {
 
   voteProposal(id: string) {
     this.proposalService.vote(id).subscribe({
-      next: (updated) => this.proposals.update((items) => items.map((item) => item.id === updated.id ? updated : item)),
+      next: (updated) => {
+        this.proposals.update((items) => items.map((item) => item.id === updated.id ? updated : item));
+        this.loadUserProposalVotes();
+      },
       error: (err) => this.setError('No se pudo registrar el voto de propuesta.', err),
     });
   }
@@ -439,6 +496,24 @@ export class DashboardComponent implements OnInit {
       next: () => this.loadBudgets(),
       error: (err) => this.setError('No se pudo registrar el voto de presupuesto.', err),
     });
+  }
+
+  hasVotedOnItem(budgetId: string, itemId: string) {
+    const map = this.userVotes();
+    return !!(map[budgetId] && map[budgetId].includes(itemId));
+  }
+
+  hasVotedOnBudget(budgetId: string) {
+    const map = this.userVotes();
+    return !!(map[budgetId] && map[budgetId].length > 0);
+  }
+
+  hasVotedOnProposal(proposalId: string) {
+    return this.proposalVotes().includes(proposalId);
+  }
+
+  hasRespondedToSurvey(surveyId: string) {
+    return this.surveyResponsesList().includes(surveyId);
   }
 
   addProposalComment(proposalId: string) {
@@ -546,6 +621,7 @@ export class DashboardComponent implements OnInit {
     this.platformService.submitSurveyResponse(surveyId, responses).subscribe({
       next: () => {
         this.loadSurveys();
+        this.loadUserSurveyResponses();
         this.selectedSurvey.set(null);
       },
       error: (err) => this.setError('No se pudo enviar la respuesta.', err),

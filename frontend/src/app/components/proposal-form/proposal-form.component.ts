@@ -11,60 +11,60 @@ import { CreateProposalDto } from '../../models/proposal.model';
   template: `
     <div class="form-container">
       <form (ngSubmit)="onSubmit(proposalForm)" #proposalForm="ngForm" novalidate>
-        <div class="form-group">
-          <label for="title">Título</label>
-          <input 
-            type="text" 
-            id="title" 
-            name="title" 
-            [(ngModel)]="proposal.title" 
-            required 
-            minlength="10"
-            placeholder="Ej: Nuevo parque en el centro"
-            aria-label="Título de la propuesta"
-          >
-          <div class="field-error" *ngIf="titleInvalid(proposalForm)">
-            El título es obligatorio y debe tener al menos 10 caracteres.
-          </div>
-        </div>
+         <div class="form-group">
+           <label for="title">Título</label>
+           <input 
+             type="text" 
+             id="title" 
+             name="title" 
+             [(ngModel)]="proposal.title" 
+             required 
+             minlength="10"
+             placeholder="Ej: Nuevo parque en el centro"
+             aria-label="Título de la propuesta"
+           >
+<div class="field-error" *ngIf="proposalForm && proposalForm.controls['title']?.touched && proposalForm.controls['title']?.invalid">
+              El título es obligatorio y debe tener al menos 10 caracteres.
+            </div>
+         </div>
 
-        <div class="form-group">
-          <label for="category">Categoría</label>
-          <select 
-            id="category" 
-            name="category" 
-            [(ngModel)]="proposal.category" 
-            required
-            aria-label="Categoría de la propuesta"
-          >
-            <option value="" disabled>Selecciona una categoría</option>
-            <option value="Infraestructura">Infraestructura</option>
-            <option value="Medio Ambiente">Medio Ambiente</option>
-            <option value="Seguridad">Seguridad</option>
-            <option value="Cultura">Cultura</option>
-            <option value="Otro">Otro</option>
-          </select>
-          <div class="field-error" *ngIf="categoryInvalid(proposalForm)">
-            Selecciona una categoría.
-          </div>
-        </div>
+         <div class="form-group">
+           <label for="category">Categoría</label>
+           <select 
+             id="category" 
+             name="category" 
+             [(ngModel)]="proposal.category" 
+             required
+             aria-label="Categoría de la propuesta"
+           >
+             <option value="" disabled>Selecciona una categoría</option>
+             <option value="Infraestructura">Infraestructura</option>
+             <option value="Medio Ambiente">Medio Ambiente</option>
+             <option value="Seguridad">Seguridad</option>
+             <option value="Cultura">Cultura</option>
+             <option value="Otro">Otro</option>
+           </select>
+<div class="field-error" *ngIf="proposalForm && proposalForm.controls['category']?.touched && proposalForm.controls['category']?.invalid">
+              Selecciona una categoría.
+            </div>
+         </div>
 
-        <div class="form-group">
-          <label for="description">Descripción</label>
-          <textarea 
-            id="description" 
-            name="description" 
-            [(ngModel)]="proposal.description" 
-            required 
-            minlength="30"
-            rows="4"
-            placeholder="Describe tu propuesta detalladamente..."
-            aria-label="Descripción de la propuesta"
-          ></textarea>
-          <div class="field-error" *ngIf="descriptionInvalid(proposalForm)">
-            La descripción es obligatoria y debe contener al menos 30 caracteres.
-          </div>
-        </div>
+         <div class="form-group">
+           <label for="description">Descripción</label>
+           <textarea 
+             id="description" 
+             name="description" 
+             [(ngModel)]="proposal.description" 
+             required 
+             minlength="30"
+             rows="4"
+             placeholder="Describe tu propuesta detalladamente..."
+             aria-label="Descripción de la propuesta"
+           ></textarea>
+<div class="field-error" *ngIf="proposalForm && proposalForm.controls['description']?.touched && proposalForm.controls['description']?.invalid">
+              La descripción es obligatoria y debe contener al menos 30 caracteres.
+            </div>
+         </div>
 
         <div class="form-actions">
           <button type="submit" [disabled]="!isFormValid(proposalForm) || isSubmitting">
@@ -193,20 +193,23 @@ export class ProposalFormComponent {
     });
   }
 
-  isFormValid(form: any): boolean {
-    if (!form) return false;
-    return form.form && form.form.valid;
-  }
+isFormValid(form: any): boolean {
+      if (!form) return false;
+      return form.form && 
+        form.form.controls?.['title']?.valid && 
+        form.form.controls?.['category']?.valid && 
+        form.form.controls?.['description']?.valid;
+    }
 
-  titleInvalid(form: any): boolean {
-    return !!form && form.submitted && form.form.controls?.title?.invalid;
-  }
+    titleInvalid(form: any): boolean {
+      return !!form && form.form.controls?.['title']?.touched && form.form.controls?.['title']?.invalid;
+    }
 
-  categoryInvalid(form: any): boolean {
-    return !!form && form.submitted && form.form.controls?.category?.invalid;
-  }
+    categoryInvalid(form: any): boolean {
+      return !!form && form.form.controls?.['category']?.touched && form.form.controls?.['category']?.invalid;
+    }
 
-  descriptionInvalid(form: any): boolean {
-    return !!form && form.submitted && form.form.controls?.description?.invalid;
-  }
+    descriptionInvalid(form: any): boolean {
+      return !!form && form.form.controls?.['description']?.touched && form.form.controls?.['description']?.invalid;
+    }
 }

@@ -22,7 +22,7 @@ interface TimelineItem {
       <!-- SideNavBar -->
       <nav class="hidden md:flex flex-col h-full py-lg px-md gap-md bg-surface-container-low text-primary border-r border-outline-variant w-64 fixed left-0 top-0 transition-all duration-200 ease-in-out">
         <div class="flex items-center gap-sm mb-lg">
-          <span class="font-heading-md text-heading-md text-primary">ProyectoAdminRedes</span>
+          <span class="font-heading-md text-heading-md text-[#0052b5]">Municipalidad de Las Condes</span>
         </div>
         
         <div class="flex flex-col gap-sm flex-grow">
@@ -67,7 +67,7 @@ interface TimelineItem {
             <button class="md:hidden text-on-surface-variant cursor-pointer active:scale-95 transition-transform">
               <span class="material-symbols-outlined">menu</span>
             </button>
-            <div class="md:hidden font-heading-md text-heading-md text-primary">ProyectoAdminRedes</div>
+            <div class="md:hidden font-heading-md text-heading-md text-[#0052b5]">Municipalidad de Las Condes</div>
             
               <div class="hidden md:flex items-center bg-surface-container-low rounded-lg px-md py-xs border border-outline-variant focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container transition-all">
               <span class="material-symbols-outlined text-on-surface-variant mr-sm">search</span>

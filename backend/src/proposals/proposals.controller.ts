@@ -20,8 +20,13 @@ export class ProposalsController {
   }
 
   @Patch(':id/vote')
-  vote(@Param('id') id: string) {
-    return this.proposalsService.vote(id);
+  vote(@Param('id') id: string, @Request() req) {
+    return this.proposalsService.vote(id, req.user.userId);
+  }
+  
+  @Get('user-votes')
+  getUserVotes(@Request() req) {
+    return this.proposalsService.getUserVotes(req.user.userId);
   }
 
   @Post(':id/comments')

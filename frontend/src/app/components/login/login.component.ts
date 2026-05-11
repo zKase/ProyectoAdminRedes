@@ -19,8 +19,8 @@ import { AuthService } from '../../services/auth.service';
           
           <!-- Title -->
           <div class="text-center space-y-sm w-full">
-            <h1 class="font-heading-lg text-heading-lg text-primary">ProyectoAdminRedes</h1>
-            <p class="font-body text-body text-on-surface-variant">Acceso administrativo seguro</p>
+            <h1 class="font-heading-lg text-heading-lg text-[#0052b5]">Municipalidad de Las Condes</h1>
+            <p class="font-body text-body text-on-surface-variant">Portal de participación ciudadana</p>
           </div>
           
           <!-- Form -->
@@ -33,7 +33,7 @@ import { AuthService } from '../../services/auth.service';
                 <input 
                   class="w-full pl-xl pr-sm py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body text-body focus:ring-2 focus:ring-primary-container focus:border-primary-container transition-all outline-none" 
                   id="email" 
-                  placeholder="admin@proyectoredes.gov" 
+                  placeholder="funcionario@lascondes.cl" 
                   type="email"
                   [(ngModel)]="email"
                   name="email"

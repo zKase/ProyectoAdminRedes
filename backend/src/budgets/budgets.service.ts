@@ -150,28 +150,13 @@ export class BudgetsService {
       throw new NotFoundException('Budget item not found');
     }
 
-    // Verificar que el usuario no haya votado por este item
-    const existingVote = await this.votesRepository.findOne({
-      where: {
-        budgetId,
-        itemId: voteBudgetItemDto.itemId,
-        userId,
-      },
+    // Solo se permite un voto por presupuesto (una vez por publicación)
+    const hasVotedInBudget = await this.votesRepository.findOne({
+      where: { budgetId, userId },
     });
 
-    if (existingVote) {
-      throw new ConflictException('User has already voted for this item');
-    }
-
-    // Si no permite múltiples votos, verificar que no haya votado en el presupuesto
-    if (!budget.allowMultipleVotes) {
-      const hasVotedInBudget = await this.votesRepository.findOne({
-        where: { budgetId, userId },
-      });
-
-      if (hasVotedInBudget) {
-        throw new ConflictException('User can only vote once in this budget');
-      }
+    if (hasVotedInBudget) {
+      throw new ConflictException('User can only vote once in this budget');
     }
 
     // Registrar el voto

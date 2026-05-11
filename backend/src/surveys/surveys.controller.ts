@@ -36,6 +36,11 @@ export class SurveysController {
     return this.surveysService.findAll(status as any);
   }
 
+  @Get('user-responses')
+  async getUserResponses(@Request() req) {
+    return this.surveysService.getUserResponses(req.user.userId);
+  }
+
   @ApiOperation({ summary: 'Get survey by ID with visible questions' })
   @Get(':id')
   async findById(@Param('id') id: string, @Query('responses') responses?: string) {

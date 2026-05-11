@@ -42,6 +42,15 @@ export class ProposalService {
     );
   }
 
+  getUserVotes(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/user-votes`).pipe(
+      catchError((err: HttpErrorResponse) => {
+        console.error('Error al obtener votos de usuario', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
   getComments(proposalId: string): Observable<ProposalComment[]> {
     return this.http.get<ProposalComment[]>(`${this.apiUrl}/${proposalId}/comments`);
   }

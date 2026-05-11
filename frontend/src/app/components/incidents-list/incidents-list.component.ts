@@ -19,8 +19,8 @@ import { Incident } from '../../models/platform.model';
             <span class="material-symbols-outlined text-on-primary text-[20px]">shield</span>
           </div>
           <div>
-            <h1 class="font-heading-md text-heading-md text-primary">Panel de Administración</h1>
-            <p class="font-caption text-caption text-on-surface-variant mt-xs">Gestión de la red</p>
+            <h1 class="font-heading-md text-heading-md text-[#0052b5]">Municipalidad de Las Condes</h1>
+            <p class="font-caption text-caption text-on-surface-variant mt-xs">Gestión de participación</p>
           </div>
         </div>
         
@@ -68,7 +68,7 @@ import { Incident } from '../../models/platform.model';
         <header class="sticky top-0 z-50 flex items-center justify-between px-lg py-sm w-full bg-surface border-b border-outline-variant">
           <div class="flex items-center gap-md flex-1">
             <div class="md:hidden">
-              <span class="font-heading-md text-heading-md text-primary font-bold">ProyectoAdminRedes</span>
+              <span class="font-heading-md text-heading-md text-[#0052b5] font-bold">Municipalidad de Las Condes</span>
             </div>
                <div class="hidden md:flex relative w-full max-w-md items-center">
                 <span class="material-symbols-outlined absolute left-sm text-on-surface-variant">search</span>

@@ -9,14 +9,13 @@ import { AuthService } from '../../services/auth.service';
 import { PlatformService } from '../../services/platform.service';
 import { ProposalService } from '../../services/proposal.service';
 import { ToastService } from '../../services/toast.service';
-import { ChatComponent } from '../chat/chat.component';
 
-type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'chatbot';
+type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProposalFormComponent, ChatComponent],
+  imports: [CommonModule, FormsModule, ProposalFormComponent],
   template: `
     <div class="h-full">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-xl">
@@ -276,9 +275,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
             </div>
           </section>
 
-          <section class="animate-fade-in" *ngIf="section() === 'chatbot'">
-            <app-chat></app-chat>
-          </section>
+
 
           <p class="mt-lg p-md rounded-xl bg-error-container text-on-error-container font-label text-sm" *ngIf="errorMessage()">{{ errorMessage() }}</p>
     </div>
@@ -330,7 +327,7 @@ export class DashboardComponent implements OnInit {
     { key: 'surveys', label: 'Encuestas' },
     { key: 'budgets', label: 'Presupuestos' },
     { key: 'issues', label: 'Mapeo' },
-    { key: 'chatbot', label: 'Asistente' },
+    { key: 'issues', label: 'Mapeo' },
   ];
 
   get userInitials(): string {

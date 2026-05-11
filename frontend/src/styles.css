@@ -1,13 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL,GRAD@100..700,0..1,-50..200&display=swap');
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL,GRAD@100..700,0..1,-50..200&display=swap');
 
 :root {
   /* Enterprise Light Mode - Clean, Corporate & Trustworthy */
-  --background: 248, 250, 252; /* Slate 50 */
+  --background: 241, 245, 249; /* Slate 100 - Slightly darker background for better card pop */
   --surface: 255, 255, 255;
   --surface-container-lowest: 255, 255, 255;
   --surface-container-low: 241, 245, 249; /* Slate 100 */
@@ -17,7 +18,7 @@
   
   --on-background: 15, 23, 42; /* Slate 900 */
   --on-surface: 30, 41, 59; /* Slate 800 */
-  --on-surface-variant: 71, 85, 105; /* Slate 600 */
+  --on-surface-variant: 30, 41, 59; /* Slate 800 - Maximum contrast for secondary text */
   
   --primary: 30, 58, 138; /* Navy Blue 900 */
   --on-primary: 255, 255, 255;
@@ -30,8 +31,8 @@
   --secondary-container: 241, 245, 249;
   --on-secondary-container: 15, 23, 42;
   
-  --outline: 203, 213, 225;
-  --outline-variant: 226, 232, 240;
+  --outline: 100, 116, 139; /* Slate 500 - Stronger borders */
+  --outline-variant: 148, 163, 184; /* Slate 400 - Stronger borders */
   
   --error: 185, 28, 28; /* Red 700 */
   --on-error: 255, 255, 255;
@@ -61,7 +62,7 @@
   
   --on-background: 241, 245, 249;
   --on-surface: 248, 250, 252;
-  --on-surface-variant: 148, 163, 184;
+  --on-surface-variant: 226, 232, 240; /* High contrast for dark mode */
   
   --primary: 96, 165, 250; /* Blue 400 - Solid but visible */
   --on-primary: 15, 23, 42;
@@ -74,8 +75,8 @@
   --secondary-container: 51, 65, 85;
   --on-secondary-container: 241, 245, 249;
   
-  --outline: 71, 85, 105;
-  --outline-variant: 51, 65, 85;
+  --outline: 148, 163, 184;
+  --outline-variant: 100, 116, 139;
   
   --error: 248, 113, 113;
   --on-error: 15, 23, 42;
@@ -222,7 +223,7 @@
   
   .input-glass::placeholder {
     color: rgb(var(--on-surface-variant));
-    opacity: 0.6;
+    opacity: 0.8; /* Increased from 0.6 */
   }
   
   .input-glass:focus {

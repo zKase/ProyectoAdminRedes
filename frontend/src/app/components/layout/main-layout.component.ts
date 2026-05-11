@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastComponent } from '../toast/toast.component';
+import { ChatComponent } from '../chat/chat.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, ToastComponent],
+  imports: [CommonModule, RouterModule, ToastComponent, ChatComponent],
   template: `
     <div class="bg-background text-on-background font-body min-h-screen flex selection:bg-primary selection:text-white transition-colors duration-500">
       <app-toast></app-toast>
+      <app-chat></app-chat>
       
       <!-- Desktop Sidebar -->
       <nav class="hidden md:flex flex-col h-screen w-72 fixed left-0 top-0 py-8 px-6 gap-6 border-r border-outline-variant bg-surface-container z-40 shadow-sm transition-all duration-500">
@@ -36,7 +38,7 @@ import { ToastComponent } from '../toast/toast.component';
           <li><a routerLink="/dashboard/budgets" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">account_balance_wallet</span> Presupuestos</a></li>
           <li><a routerLink="/dashboard/issues" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">map</span> Mapeo</a></li>
           <li *ngIf="isAdmin()"><a routerLink="/dashboard/reports" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">assessment</span> Reportes</a></li>
-          <li><a routerLink="/dashboard/chatbot" routerLinkActive="active-nav" class="nav-item"><span class="material-symbols-outlined">smart_toy</span> Asistente IA</a></li>
+
         </ul>
 
         <div class="mt-auto pt-4 border-t border-outline-variant/50 flex flex-col gap-2">

@@ -31,22 +31,43 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md lg:gap-lg mb-xl">
-            <article class="metric-card"><span>Propuestas</span><strong>{{ proposals().length }}</strong><p>{{ totalVotes() }} votos</p></article>
-            <article class="metric-card"><span>Encuestas</span><strong>{{ surveys().length }}</strong><p>{{ totalSurveyResponses() }} respuestas</p></article>
-            <article class="metric-card"><span>Presupuestos</span><strong>{{ budgets().length }}</strong><p>{{ totalParticipants() }} participantes</p></article>
-            <article class="metric-card"><span>Problemáticas</span><strong>{{ issues().length }}</strong><p>{{ openIssues() }} abiertas</p></article>
+            <article class="glass-card p-lg flex flex-col gap-sm">
+              <span class="font-label text-label text-on-surface-variant">Propuestas</span>
+              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ proposals().length }}</strong>
+              <p class="font-caption text-caption text-on-surface-variant m-0">{{ totalVotes() }} votos</p>
+            </article>
+            <article class="glass-card p-lg flex flex-col gap-sm">
+              <span class="font-label text-label text-on-surface-variant">Encuestas</span>
+              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ surveys().length }}</strong>
+              <p class="font-caption text-caption text-on-surface-variant m-0">{{ totalSurveyResponses() }} respuestas</p>
+            </article>
+            <article class="glass-card p-lg flex flex-col gap-sm">
+              <span class="font-label text-label text-on-surface-variant">Presupuestos</span>
+              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ budgets().length }}</strong>
+              <p class="font-caption text-caption text-on-surface-variant m-0">{{ totalParticipants() }} participantes</p>
+            </article>
+            <article class="glass-card p-lg flex flex-col gap-sm">
+              <span class="font-label text-label text-on-surface-variant">Problemáticas</span>
+              <strong class="font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(var(--primary),0.3)]">{{ issues().length }}</strong>
+              <p class="font-caption text-caption text-on-surface-variant m-0">{{ openIssues() }} abiertas</p>
+            </article>
           </div>
 
-          <section class="section-card" *ngIf="section() === 'proposals'">
-            <div class="section-heading"><div><h3>Propuestas ciudadanas</h3></div></div>
+          <section class="animate-fade-in" *ngIf="section() === 'proposals'">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg">
+              <div><h3>Propuestas ciudadanas</h3></div>
+            </div>
             <div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
               <div class="xl:col-span-1"><app-proposal-form (proposalCreated)="loadAll()"></app-proposal-form></div>
               <div class="xl:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-md">
                 @for (proposal of proposals(); track proposal.id) {
-                  <article class="item-card">
-                    <div class="meta-row"><span>{{ proposal.category }}</span><time>{{ proposal.createdAt | date:'shortDate' }}</time></div>
-                    <h4>{{ proposal.title }}</h4>
-                    <p>{{ proposal.description }}</p>
+                  <article class="glass-card p-lg flex flex-col gap-sm">
+                    <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+                      <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ proposal.category }}</span>
+                      <time>{{ proposal.createdAt | date:'shortDate' }}</time>
+                    </div>
+                    <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ proposal.title }}</h4>
+                    <p class="font-body text-body text-on-surface-variant m-0">{{ proposal.description }}</p>
                     <div class="flex justify-between items-center mt-md">
                       <strong class="text-primary">{{ proposal.votes }} votos</strong>
                       <button class="btn btn-primary" [disabled]="hasVotedOnProposal(proposal.id)" (click)="voteProposal(proposal.id)">
@@ -66,16 +87,22 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                       </div>
                     </div>
                   </article>
-                } @empty { <p class="empty-state">No hay propuestas registradas.</p> }
+                } @empty { <p class="text-on-surface-variant font-body text-body opacity-70 italic">No hay propuestas registradas.</p> }
               </div>
             </div>
           </section>
 
-          <section class="section-card" *ngIf="section() === 'surveys'">
-            <div class="section-heading"><div><h3>Consultas y encuestas</h3></div><div class="flex gap-sm"><button *ngIf="isAdmin()" class="btn btn-primary" (click)="showSurveyForm.set(!showSurveyForm())">{{ showSurveyForm() ? 'Cancelar' : 'Crear encuesta' }}</button><button class="btn btn-secondary" (click)="loadSurveys()">Actualizar</button></div></div>
+          <section class="animate-fade-in" *ngIf="section() === 'surveys'">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg">
+              <div><h3>Consultas y encuestas</h3></div>
+              <div class="flex gap-sm">
+                <button *ngIf="isAdmin()" class="btn btn-primary" (click)="showSurveyForm.set(!showSurveyForm())">{{ showSurveyForm() ? 'Cancelar' : 'Crear encuesta' }}</button>
+                <button class="btn btn-secondary" (click)="loadSurveys()">Actualizar</button>
+              </div>
+            </div>
 
             @if (showSurveyForm()) {
-              <form class="form-panel mb-lg" (ngSubmit)="createSurvey()">
+              <form class="glass-card p-lg flex flex-col gap-md mb-lg" (ngSubmit)="createSurvey()">
                 <h4 class="font-heading-md text-heading-md mb-md">Nueva encuesta</h4>
                 <input class="input-glass" name="surveyTitle" [(ngModel)]="surveyForm.title" placeholder="Título" required>
                 <textarea class="input-glass min-h-20" name="surveyDescription" [(ngModel)]="surveyForm.description" placeholder="Descripción"></textarea>
@@ -103,7 +130,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
             }
 
             @if (selectedSurvey()) {
-              <form class="form-panel mb-lg" (ngSubmit)="submitSurveyResponse(selectedSurvey()!.id)">
+              <form class="glass-card p-lg flex flex-col gap-md mb-lg" (ngSubmit)="submitSurveyResponse(selectedSurvey()!.id)">
                 <div class="flex justify-between items-center mb-md">
                   <h4 class="font-heading-md text-heading-md">{{ selectedSurvey()!.title }}</h4>
                   <button type="button" class="btn btn-secondary" (click)="cancelSurveyResponse()">Cerrar</button>
@@ -135,24 +162,36 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
               @for (survey of surveys(); track survey.id) {
-                <article class="item-card">
-                  <div class="meta-row"><span>{{ survey.status }}</span><time>{{ survey.createdAt | date:'shortDate' }}</time></div>
-                  <h4>{{ survey.title }}</h4>
-                  <p>{{ survey.description }}</p>
-                  <div class="chip-row"><span>{{ survey.questions?.length || 0 }} preguntas</span><span>{{ (survey.responseCount || 0) }} respuestas</span></div>
+                <article class="glass-card p-lg flex flex-col gap-sm">
+                  <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+                    <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ survey.status }}</span>
+                    <time>{{ survey.createdAt | date:'shortDate' }}</time>
+                  </div>
+                  <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ survey.title }}</h4>
+                  <p class="font-body text-body text-on-surface-variant m-0">{{ survey.description }}</p>
+                  <div class="flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant">
+                    <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ survey.questions?.length || 0 }} preguntas</span>
+                    <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ (survey.responseCount || 0) }} respuestas</span>
+                  </div>
                   <button *ngIf="survey.status === 'ACTIVE'" class="btn btn-primary mt-md" [disabled]="hasRespondedToSurvey(survey.id)" (click)="respondSurvey(survey)">
                     {{ hasRespondedToSurvey(survey.id) ? 'Respondida' : 'Responder' }}
                   </button>
                 </article>
-              } @empty { <p class="empty-state">No hay encuestas disponibles.</p> }
+              } @empty { <p class="text-on-surface-variant font-body text-body opacity-70 italic">No hay encuestas disponibles.</p> }
             </div>
           </section>
 
-          <section class="section-card" *ngIf="section() === 'budgets'">
-            <div class="section-heading"><div><h3>Presupuestos participativos</h3></div><div class="flex gap-sm"><button *ngIf="isAdmin()" class="btn btn-primary" (click)="showBudgetForm.set(!showBudgetForm())">{{ showBudgetForm() ? 'Cancelar' : 'Crear' }}</button><button class="btn btn-secondary" (click)="loadBudgets()">Actualizar</button></div></div>
+          <section class="animate-fade-in" *ngIf="section() === 'budgets'">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg">
+              <div><h3>Presupuestos participativos</h3></div>
+              <div class="flex gap-sm">
+                <button *ngIf="isAdmin()" class="btn btn-primary" (click)="showBudgetForm.set(!showBudgetForm())">{{ showBudgetForm() ? 'Cancelar' : 'Crear' }}</button>
+                <button class="btn btn-secondary" (click)="loadBudgets()">Actualizar</button>
+              </div>
+            </div>
 
             @if (showBudgetForm()) {
-              <form class="form-panel mb-lg" (ngSubmit)="createBudget()">
+              <form class="glass-card p-lg flex flex-col gap-md mb-lg" (ngSubmit)="createBudget()">
                 <h4 class="font-heading-md text-heading-md mb-md">Nuevo presupuesto</h4>
                 <input class="input-glass" name="budgetTitle" [(ngModel)]="budgetForm.title" placeholder="Título" required>
                 <textarea class="input-glass min-h-20" name="budgetDescription" [(ngModel)]="budgetForm.description" placeholder="Descripción"></textarea>
@@ -177,11 +216,17 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
               @for (budget of budgets(); track budget.id) {
-                <article class="item-card">
-                  <div class="meta-row"><span>{{ budget.status }}</span><time>{{ budget.createdAt | date:'shortDate' }}</time></div>
-                  <h4>{{ budget.title }}</h4>
-                  <p>{{ budget.description }}</p>
-                  <div class="chip-row"><span>{{ budget.totalAmount | currency }}</span><span>{{ budget.participantsCount }} participantes</span></div>
+                <article class="glass-card p-lg flex flex-col gap-sm">
+                  <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+                    <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ budget.status }}</span>
+                    <time>{{ budget.createdAt | date:'shortDate' }}</time>
+                  </div>
+                  <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ budget.title }}</h4>
+                  <p class="font-body text-body text-on-surface-variant m-0">{{ budget.description }}</p>
+                  <div class="flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant">
+                    <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ budget.totalAmount | currency }}</span>
+                    <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ budget.participantsCount }} participantes</span>
+                  </div>
                   <div class="mt-md pt-md border-t border-outline-variant grid gap-sm">
                     @for (item of budget.items || []; track item.id) {
                       <div class="flex justify-between gap-sm items-center">
@@ -193,14 +238,17 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                     }
                   </div>
                 </article>
-              } @empty { <p class="empty-state">No hay presupuestos disponibles.</p> }
+              } @empty { <p class="text-on-surface-variant font-body text-body opacity-70 italic">No hay presupuestos disponibles.</p> }
             </div>
           </section>
 
-          <section class="section-card" *ngIf="section() === 'issues'">
-            <div class="section-heading"><div><h3>Mapeo territorial</h3></div><button class="btn btn-secondary" (click)="loadIssues()">Actualizar</button></div>
+          <section class="animate-fade-in" *ngIf="section() === 'issues'">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg">
+              <div><h3>Mapeo territorial</h3></div>
+              <button class="btn btn-secondary" (click)="loadIssues()">Actualizar</button>
+            </div>
             <div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
-              <form class="form-panel" (ngSubmit)="createIssue()">
+              <form class="glass-card p-lg flex flex-col gap-md" (ngSubmit)="createIssue()">
                 <h4 class="font-heading-md text-heading-md mb-xs">Reportar</h4>
                 <input class="input-glass" name="issueTitle" [(ngModel)]="issueForm.title" placeholder="Título" required>
                 <input class="input-glass" name="issueCategory" [(ngModel)]="issueForm.category" placeholder="Categoría" required>
@@ -210,39 +258,40 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
               </form>
               <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-md">
                 @for (issue of issues(); track issue.id) {
-                  <article class="item-card"><div class="meta-row"><span>{{ displayIssueStatus(issue.status) }}</span><time>{{ issue.createdAt | date:'shortDate' }}</time></div><h4>{{ issue.title }}</h4><p>{{ issue.description }}</p><div class="chip-row"><span>{{ issue.category }}</span><span>{{ issue.latitude }}, {{ issue.longitude }}</span></div></article>
-                } @empty { <p class="empty-state">No hay problemáticas registradas.</p> }
+                  <article class="glass-card p-lg flex flex-col gap-sm">
+                    <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+                      <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ displayIssueStatus(issue.status) }}</span>
+                      <time>{{ issue.createdAt | date:'shortDate' }}</time>
+                    </div>
+                    <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ issue.title }}</h4>
+                    <p class="font-body text-body text-on-surface-variant m-0">{{ issue.description }}</p>
+                    <div class="flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant">
+                      <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ issue.category }}</span>
+                      <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">{{ issue.latitude }}, {{ issue.longitude }}</span>
+                    </div>
+                  </article>
+                } @empty { <p class="text-on-surface-variant font-body text-body opacity-70 italic">No hay problemáticas registradas.</p> }
               </div>
             </div>
           </section>
 
-          <section class="section-card" *ngIf="section() === 'chatbot'">
-            <div class="section-heading"><div><p>IA</p><h3>Asistente ciudadano</h3></div></div>
+          <section class="animate-fade-in" *ngIf="section() === 'chatbot'">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg">
+              <div><h3>Asistente ciudadano</h3></div>
+            </div>
             <form class="flex flex-col md:flex-row gap-sm" (ngSubmit)="askChatbot()"><input class="input-glass flex-1" name="chatMessage" [(ngModel)]="chatMessage" placeholder="Pregunta algo..." required><button class="btn btn-primary" type="submit" [disabled]="chatLoading()">{{ chatLoading() ? '...' : 'Enviar' }}</button></form>
-            <article class="item-card mt-lg" *ngIf="chatAnswer()"><div class="meta-row"><span>Modo {{ chatMode() }}</span></div><p class="whitespace-pre-wrap">{{ chatAnswer() }}</p></article>
+            <article class="glass-card p-lg flex flex-col gap-sm mt-lg" *ngIf="chatAnswer()">
+              <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+                <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5">Modo {{ chatMode() }}</span>
+              </div>
+              <p class="font-body text-body text-on-surface-variant m-0 whitespace-pre-wrap">{{ chatAnswer() }}</p>
+            </article>
           </section>
 
           <p class="mt-lg p-md rounded-xl bg-error-container text-on-error-container font-label text-sm" *ngIf="errorMessage()">{{ errorMessage() }}</p>
     </div>
   `,
-  styles: [`
-    .metric-card { @apply glass-card p-lg flex flex-col gap-sm; }
-    .metric-card span { @apply font-label text-label text-on-surface-variant; }
-    .metric-card strong { @apply font-heading-lg text-heading-lg text-primary drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]; }
-    .metric-card p { @apply font-caption text-caption text-on-surface-variant m-0; }
-    .section-card { @apply bg-transparent p-0 mb-lg animate-fade-in; }
-    .section-heading { @apply flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-lg; }
-    .section-heading p { @apply font-caption text-on-surface-variant uppercase tracking-[0.2em] text-primary font-bold mb-xs; }
-    .section-heading h3 { @apply font-heading-md text-heading-md text-on-background m-0; }
-    .item-card { @apply glass-card p-lg flex flex-col gap-sm; }
-    .item-card h4 { @apply font-heading-md text-heading-md text-on-surface m-0; }
-    .item-card p { @apply font-body text-body text-on-surface-variant m-0; }
-    .meta-row { @apply flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant; }
-    .meta-row span, .chip-row span { @apply rounded-full px-sm py-xs bg-surface-container-lowest border border-white/5; }
-    .chip-row { @apply flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant; }
-    .form-panel { @apply glass-card p-lg flex flex-col gap-md mb-lg; }
-    .empty-state { @apply text-on-surface-variant font-body text-body opacity-70 italic; }
-  `]
+  styles: []
 })
 export class DashboardComponent implements OnInit {
   auth = inject(AuthService);

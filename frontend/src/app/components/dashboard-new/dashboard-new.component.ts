@@ -220,7 +220,7 @@ export class DashboardNewComponent implements OnInit {
       case 'Critical':
         return 'bg-error-container/20 text-error border-error/20';
       case 'Medium':
-        return 'bg-secondary-fixed/30 text-primary-container border-secondary-fixed';
+        return 'bg-secondary-container text-on-secondary-container border-secondary/20';
       case 'Low':
         return 'bg-surface-variant text-on-surface-variant border-outline-variant';
       default:
@@ -245,12 +245,12 @@ export class DashboardNewComponent implements OnInit {
   getStatusClass(status: string): string {
     switch (status) {
       case 'Open':
-        return 'bg-surface-variant text-on-surface-variant';
+        return 'bg-surface-container-high text-on-surface-variant border border-outline-variant';
       case 'In Progress':
-        return 'bg-tertiary-fixed/30 text-tertiary-container';
+        return 'bg-primary-container text-primary border border-primary/20';
       case 'Resolved':
       case 'Closed':
-        return 'bg-tertiary-fixed/30 text-tertiary-container';
+        return 'bg-success/10 text-success border border-success/20';
       default:
         return '';
     }

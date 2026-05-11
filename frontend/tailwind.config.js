@@ -7,47 +7,46 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Dark Mode Elegant with Electric Blue accents
-        "background": "#0a0a0c",
-        "surface": "#121217",
-        "surface-container-lowest": "#16161c",
-        "surface-container-low": "#1c1c24",
-        "surface-container": "#22222d",
-        "surface-container-high": "#2b2b36",
-        "surface-container-highest": "#353542",
+        "background": "rgb(var(--background) / <alpha-value>)",
+        "surface": "rgb(var(--surface) / <alpha-value>)",
+        "surface-container-lowest": "rgb(var(--surface-container-lowest) / <alpha-value>)",
+        "surface-container-low": "rgb(var(--surface-container-low) / <alpha-value>)",
+        "surface-container": "rgb(var(--surface-container) / <alpha-value>)",
+        "surface-container-high": "rgb(var(--surface-container-high) / <alpha-value>)",
+        "surface-container-highest": "rgb(var(--surface-container-highest) / <alpha-value>)",
         
-        "on-background": "#f0f2f5",
-        "on-surface": "#e0e2e8",
-        "on-surface-variant": "#a1a5b5",
+        "on-background": "rgb(var(--on-background) / <alpha-value>)",
+        "on-surface": "rgb(var(--on-surface) / <alpha-value>)",
+        "on-surface-variant": "rgb(var(--on-surface-variant) / <alpha-value>)",
         
-        "primary": "#00f0ff", // Electric Blue
-        "on-primary": "#000000",
-        "primary-container": "rgba(0, 240, 255, 0.15)",
-        "on-primary-container": "#b3fbff",
-        "primary-hover": "#00d5e3",
+        "primary": "rgb(var(--primary) / <alpha-value>)",
+        "on-primary": "rgb(var(--on-primary) / <alpha-value>)",
+        "primary-container": "rgb(var(--primary-container) / <alpha-value>)",
+        "on-primary-container": "rgb(var(--on-primary-container) / <alpha-value>)",
+        "primary-hover": "rgb(var(--primary-hover) / <alpha-value>)",
         
-        "secondary": "#0a84ff",
-        "on-secondary": "#ffffff",
-        "secondary-container": "rgba(10, 132, 255, 0.15)",
-        "on-secondary-container": "#bce0ff",
+        "secondary": "rgb(var(--secondary) / <alpha-value>)",
+        "on-secondary": "rgb(var(--on-secondary) / <alpha-value>)",
+        "secondary-container": "rgb(var(--secondary-container) / <alpha-value>)",
+        "on-secondary-container": "rgb(var(--on-secondary-container) / <alpha-value>)",
         
-        "outline": "#3d4154",
-        "outline-variant": "#2b2d3b",
+        "outline": "rgb(var(--outline) / <alpha-value>)",
+        "outline-variant": "rgb(var(--outline-variant) / <alpha-value>)",
         
-        "error": "#ff453a",
-        "on-error": "#ffffff",
-        "error-container": "rgba(255, 69, 58, 0.15)",
-        "on-error-container": "#ffd1ce",
+        "error": "rgb(var(--error) / <alpha-value>)",
+        "on-error": "rgb(var(--on-error) / <alpha-value>)",
+        "error-container": "rgb(var(--error-container) / <alpha-value>)",
+        "on-error-container": "rgb(var(--on-error-container) / <alpha-value>)",
         
-        "success": "#32d74b",
-        "on-success": "#ffffff",
+        "success": "rgb(var(--success) / <alpha-value>)",
+        "on-success": "rgb(var(--on-success) / <alpha-value>)",
         
-        "accent": "#bf5af2",
+        "accent": "rgb(var(--accent) / <alpha-value>)",
       },
       boxShadow: {
-        'glass': '0 4px 30px rgba(0, 0, 0, 0.5)',
-        'neon': '0 0 10px rgba(0, 240, 255, 0.3), 0 0 20px rgba(0, 240, 255, 0.1)',
-        'elevated': '0 10px 40px -10px rgba(0,0,0,0.5)'
+        'glass': '0 4px 30px rgba(var(--glass-shadow), 0.5)',
+        'neon': '0 0 10px rgba(var(--neon-glow), 0.3), 0 0 20px rgba(var(--neon-glow), 0.1)',
+        'elevated': '0 10px 40px -10px rgba(var(--glass-shadow), 0.5)'
       },
       borderRadius: {
         DEFAULT: "0.5rem",

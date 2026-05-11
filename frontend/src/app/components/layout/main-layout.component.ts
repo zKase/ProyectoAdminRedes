@@ -145,14 +145,12 @@ export class MainLayoutComponent {
   auth = inject(AuthService);
   router = inject(Router);
 
-  isDark = signal<boolean>(true);
+  isDark = signal<boolean>(false);
 
   constructor() {
     // Initialize theme from localStorage or system preference
     const savedTheme = localStorage.getItem('theme');
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    this.isDark.set(savedTheme ? savedTheme === 'dark' : systemDark);
+    this.isDark.set(savedTheme === 'dark');
 
     // Apply theme effect
     effect(() => {

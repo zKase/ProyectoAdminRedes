@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import * as L from 'leaflet';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProposalFormComponent } from '../proposal-form/proposal-form.component';
 import { Proposal, ProposalComment } from '../../models/proposal.model';
@@ -247,8 +248,13 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports';
               <div><h3>Mapeo territorial</h3></div>
               <button class="btn btn-secondary" (click)="loadIssues()">Actualizar</button>
             </div>
+            
+            <div class="glass-card mb-lg w-full h-[400px] overflow-hidden relative rounded-xl">
+               <div id="map" class="w-full h-full z-0" style="filter: grayscale(100%) sepia(20%) hue-rotate(180deg) contrast(1.1);"></div>
+            </div>
+
             <div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
-              <form class="glass-card p-lg flex flex-col gap-md" (ngSubmit)="createIssue()">
+              <form name="issueForm" class="glass-card p-lg flex flex-col gap-md" (ngSubmit)="createIssue()">
                 <h4 class="font-heading-md text-heading-md mb-xs">Reportar</h4>
                 <input class="input-glass" name="issueTitle" [(ngModel)]="issueForm.title" placeholder="Título" required>
                 <input class="input-glass" name="issueCategory" [(ngModel)]="issueForm.category" placeholder="Categoría" required>
@@ -327,8 +333,26 @@ export class DashboardComponent implements OnInit {
     { key: 'surveys', label: 'Encuestas' },
     { key: 'budgets', label: 'Presupuestos' },
     { key: 'issues', label: 'Mapeo' },
-    { key: 'issues', label: 'Mapeo' },
   ];
+
+  private map: L.Map | undefined;
+  private markersLayer = L.layerGroup();
+
+  constructor() {
+    effect(() => {
+      const currentSection = this.section();
+      if (currentSection === 'issues') {
+        setTimeout(() => this.initMap(), 100);
+      }
+    });
+
+    effect(() => {
+      const issuesList = this.issues();
+      if (this.map) {
+         this.updateMapMarkers(issuesList);
+      }
+    });
+  }
 
   get userInitials(): string {
     const user = this.auth.user();
@@ -521,7 +545,66 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  initMap() {
+    if (this.map) {
+      this.map.invalidateSize();
+      return;
+    }
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
 
+    this.map = L.map('map').setView([-33.4116, -70.5794], 14);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(this.map);
+
+    this.markersLayer.addTo(this.map);
+    this.updateMapMarkers(this.issues());
+
+    this.map.on('click', (e: L.LeafletMouseEvent) => {
+      this.issueForm.latitude = Number(e.latlng.lat.toFixed(7));
+      this.issueForm.longitude = Number(e.latlng.lng.toFixed(7));
+      this.toast.success('Ubicación capturada para nuevo reporte');
+      document.querySelector('form[name="issueForm"]')?.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  updateMapMarkers(issues: Issue[]) {
+    this.markersLayer.clearLayers();
+    issues.forEach(issue => {
+      if (issue.latitude && issue.longitude) {
+        let statusColor = '#60a5fa'; // Default blue
+        if (issue.status === 'OPEN') statusColor = '#ef4444'; // Red
+        else if (issue.status === 'IN_REVIEW') statusColor = '#eab308'; // Yellow
+        else if (issue.status === 'RESOLVED') statusColor = '#22c55e'; // Green
+
+        const customIcon = L.divIcon({
+          className: 'custom-leaflet-marker',
+          html: `<div style="background-color: ${statusColor}; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"></div>`,
+          iconSize: [18, 18],
+          iconAnchor: [9, 9],
+          popupAnchor: [0, -9]
+        });
+
+        const marker = L.marker([issue.latitude, issue.longitude], { icon: customIcon });
+
+        marker.bindPopup(`
+          <div style="font-family: 'Inter', sans-serif; padding: 4px;">
+            <strong style="display: block; color: #1e293b; font-size: 14px; margin-bottom: 4px;">${issue.title}</strong>
+            <span style="display: inline-block; font-size: 11px; background: #e2e8f0; color: #1e293b; padding: 2px 8px; border-radius: 12px; margin-bottom: 8px;">${issue.category}</span>
+            <p style="margin: 0; font-size: 13px; color: ${statusColor}; font-weight: 600;">${this.displayIssueStatus(issue.status)}</p>
+          </div>
+        `, {
+          className: 'enterprise-popup'
+        });
+        
+        this.markersLayer.addLayer(marker);
+      }
+    });
+  }
 
   canViewReports() {
     const role = this.auth.user()?.role;

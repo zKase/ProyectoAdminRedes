@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Query, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Query, Request, Delete } from '@nestjs/common';
 import { ProposalsService } from './proposals.service';
 import { CreateProposalDto } from './dto/create-proposal.dto';
 import { CreateProposalCommentDto, UpdateProposalCommentDto } from './dto/proposal-comment.dto';
@@ -20,8 +20,8 @@ export class ProposalsController {
   }
 
   @Patch(':id/vote')
-  vote(@Param('id') id: string) {
-    return this.proposalsService.vote(id);
+  vote(@Param('id') id: string, @Request() req) {
+    return this.proposalsService.vote(id, req.user.userId);
   }
 
   @Post(':id/comments')
@@ -45,5 +45,11 @@ export class ProposalsController {
     @Body() dto: UpdateProposalCommentDto,
   ) {
     return this.proposalsService.updateComment(commentId, dto);
+  }
+
+  @Roles(UserRole.ADMIN, UserRole.MODERATOR)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.proposalsService.remove(id);
   }
 }

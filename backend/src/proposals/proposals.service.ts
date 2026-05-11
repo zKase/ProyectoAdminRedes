@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proposal } from './entities/proposal.entity';
@@ -24,12 +24,19 @@ export class ProposalsService {
     return this.proposalsRepository.find({ order: { createdAt: 'DESC' } });
   }
 
-  async vote(id: string): Promise<Proposal> {
+  async vote(id: string, userId: string): Promise<Proposal> {
     const proposal = await this.proposalsRepository.findOneBy({ id });
     if (!proposal) {
       throw new NotFoundException(`Proposal with ID "${id}" not found`);
     }
+    
+    if (!proposal.votedBy) proposal.votedBy = [];
+    if (proposal.votedBy.includes(userId)) {
+      throw new ConflictException('Ya has votado por esta propuesta');
+    }
+
     proposal.votes += 1;
+    proposal.votedBy.push(userId);
     return this.proposalsRepository.save(proposal);
   }
 
@@ -79,5 +86,10 @@ export class ProposalsService {
       throw new NotFoundException(`Proposal with ID "${id}" not found`);
     }
     return proposal;
+  }
+
+  async remove(id: string): Promise<void> {
+    const proposal = await this.findById(id);
+    await this.proposalsRepository.remove(proposal);
   }
 }

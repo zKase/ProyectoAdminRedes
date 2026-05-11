@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../guards/roles.decorator';
 import { UserRole } from '../users/entities/user.entity';
@@ -42,5 +42,12 @@ export class IssuesController {
   @Patch(':id/status/:status')
   async updateStatus(@Param('id') id: string, @Param('status') status: IssueStatus) {
     return this.issuesService.updateStatus(id, status);
+  }
+
+  @ApiOperation({ summary: 'Eliminar problemática territorial (Admin/Moderador)' })
+  @Roles(UserRole.ADMIN, UserRole.MODERATOR)
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.issuesService.remove(id);
   }
 }

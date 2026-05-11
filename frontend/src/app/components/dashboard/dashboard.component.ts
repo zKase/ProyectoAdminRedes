@@ -12,7 +12,7 @@ import { ReportsComponent } from '../reports/reports';
 import { MapPickerComponent } from '../map-picker/map-picker.component';
 import { StaticMapComponent } from '../static-map/static-map.component';
 
-type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'chatbot';
+type Section = 'proposals' | 'new_proposal' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'chatbot';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,7 +31,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
           </div>
         </div>
 
-        <button (click)="section.set('proposals')" class="bg-primary-container text-on-primary font-label text-label py-md px-lg rounded-lg flex items-center justify-center gap-sm hover:bg-secondary transition-all mb-md shadow-sm">
+        <button (click)="section.set('new_proposal')" class="bg-primary-container text-on-primary font-label text-label py-md px-lg rounded-lg flex items-center justify-center gap-sm hover:bg-secondary transition-all mb-md shadow-sm">
           <span class="material-symbols-outlined">add</span>
           Nueva propuesta
         </button>
@@ -102,32 +102,36 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
             <button *ngFor="let item of mobileSections" (click)="section.set(item.key)" [ngClass]="section() === item.key ? 'bg-primary-container text-on-primary' : 'bg-surface-container-lowest text-on-surface'" class="font-label text-label rounded-sm py-sm px-sm">{{ item.label }}</button>
           </div>
 
+          <section class="section-card" *ngIf="section() === 'new_proposal'">
+            <div class="section-heading"><div><p>RF03</p><h3>Nueva propuesta ciudadana</h3></div></div>
+            <div class="max-w-2xl">
+              <app-proposal-form (proposalCreated)="loadAll(); section.set('proposals')"></app-proposal-form>
+            </div>
+          </section>
+
           <section class="section-card" *ngIf="section() === 'proposals'">
-            <div class="section-heading"><div><p>RF03</p><h3>Propuestas ciudadanas</h3></div></div>
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
-              <div class="xl:col-span-1"><app-proposal-form (proposalCreated)="loadAll()"></app-proposal-form></div>
-              <div class="xl:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-md">
-                @for (proposal of proposals(); track proposal.id) {
-                  <article class="item-card">
-                    <div class="meta-row"><span>{{ proposal.category }}</span><time>{{ proposal.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div>
-                    <h4>{{ proposal.title }}</h4>
-                    <p>{{ proposal.description }}</p>
-                    <div class="flex justify-between items-center mt-md"><strong>{{ proposal.votes }} votos</strong><button class="secondary-btn" (click)="voteProposal(proposal.id)">Votar</button></div>
-                    <div class="mt-md pt-md border-t border-outline-variant">
-                      <strong class="font-label text-label">Comentarios</strong>
-                      @for (comment of proposalComments()[proposal.id] || []; track comment.id) {
-                        <p class="bg-surface-container-lowest border border-outline-variant rounded-sm p-sm mt-sm text-on-surface-variant">{{ comment.content }}</p>
-                      } @empty {
-                        <p class="text-on-surface-variant mt-sm">Sin comentarios todavía.</p>
-                      }
-                      <div class="flex gap-sm mt-sm">
-                        <input [(ngModel)]="commentDrafts[proposal.id]" [name]="'comment-' + proposal.id" class="input-field" placeholder="Escribe un comentario...">
-                        <button class="primary-btn shrink-0" (click)="addProposalComment(proposal.id)">Comentar</button>
-                      </div>
+            <div class="section-heading"><div><p>RF03</p><h3>Propuestas Ciudadanas</h3></div></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+              @for (proposal of proposals(); track proposal.id) {
+                <article class="item-card">
+                  <div class="meta-row"><span>{{ proposal.category }}</span><time>{{ proposal.createdAt | date:'dd/MM/yyyy HH:mm' }}</time></div>
+                  <h4>{{ proposal.title }}</h4>
+                  <p>{{ proposal.description }}</p>
+                  <div class="flex justify-between items-center mt-md"><strong>{{ proposal.votes }} votos</strong><button class="secondary-btn" [disabled]="hasVotedProposal(proposal)" (click)="voteProposal(proposal.id)">Votar</button></div>
+                  <div class="mt-md pt-md border-t border-outline-variant">
+                    <strong class="font-label text-label">Comentarios</strong>
+                    @for (comment of proposalComments()[proposal.id] || []; track comment.id) {
+                      <p class="bg-surface-container-lowest border border-outline-variant rounded-sm p-sm mt-sm text-on-surface-variant">{{ comment.content }}</p>
+                    } @empty {
+                      <p class="text-on-surface-variant mt-sm">Sin comentarios todavía.</p>
+                    }
+                    <div class="flex gap-sm mt-sm">
+                      <input [(ngModel)]="commentDrafts[proposal.id]" [name]="'comment-' + proposal.id" class="input-field" placeholder="Escribe un comentario...">
+                      <button class="primary-btn shrink-0" (click)="addProposalComment(proposal.id)">Comentar</button>
                     </div>
-                  </article>
-                } @empty { <p class="empty-state">No hay propuestas registradas.</p> }
-              </div>
+                  </div>
+                </article>
+              } @empty { <p class="empty-state">No hay propuestas registradas.</p> }
             </div>
           </section>
 
@@ -200,7 +204,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                   <h4>{{ survey.title }}</h4>
                   <p>{{ survey.description }}</p>
                   <div class="chip-row"><span>{{ survey.questions.length || 0 }} preguntas</span><span>{{ survey.responseCount }} respuestas</span></div>
-                  <button *ngIf="survey.status === 'ACTIVE'" class="primary-btn mt-md" (click)="respondSurvey(survey)">Responder</button>
+                  <button *ngIf="survey.status === 'ACTIVE'" class="primary-btn mt-md" [disabled]="localRespondedSurveys[survey.id]" (click)="respondSurvey(survey)">Responder</button>
                 </article>
               } @empty { <p class="empty-state">No hay encuestas disponibles.</p> }
             </div>
@@ -243,7 +247,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
                   <div class="chip-row"><span>{{ budget.totalAmount | currency }}</span><span>{{ budget.participantsCount }} participantes</span><span>{{ budget.allowMultipleVotes ? 'Voto múltiple' : 'Voto único' }}</span></div>
                   <div class="mt-md pt-md border-t border-outline-variant grid gap-sm">
                     @for (item of budget.items || []; track item.id) {
-                      <div class="flex justify-between gap-sm items-center"><span>{{ item.title }} - {{ item.voteCount }} votos</span><button class="secondary-btn" [disabled]="budget.status !== 'ACTIVE'" (click)="voteBudget(budget.id, item.id)">Votar</button></div>
+                      <div class="flex justify-between gap-sm items-center"><span>{{ item.title }} - {{ item.voteCount }} votos</span><button class="secondary-btn" [disabled]="budget.status !== 'ACTIVE' || localVotedBudgets[budget.id]" (click)="voteBudget(budget.id, item.id)">Votar</button></div>
                     }
                   </div>
                 </article>
@@ -294,7 +298,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports' | 'cha
       </div>
     </div>
   `,
-styles: [`
+  styles: [`
     .metric-card { @apply bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm; }
     .metric-card span { @apply font-label text-label text-on-surface-variant; }
     .metric-card strong { @apply font-heading-lg text-heading-lg text-on-surface; }
@@ -348,6 +352,9 @@ export class DashboardComponent implements OnInit {
   surveyForm = { title: '', description: '', questions: [] as CreateSurveyQuestionDto[] };
   budgetForm: CreateBudgetDto = { title: '', description: '', totalAmount: 0, items: [] };
   surveyResponses: Record<string, string | string[] | number> = {};
+
+  localVotedBudgets: Record<string, boolean> = {};
+  localRespondedSurveys: Record<string, boolean> = {};
 
   mobileSections: Array<{ key: Section; label: string }> = [
     { key: 'proposals', label: 'Propuestas' },
@@ -439,15 +446,34 @@ export class DashboardComponent implements OnInit {
 
   voteProposal(id: string) {
     this.proposalService.vote(id).subscribe({
-      next: (updated) => this.proposals.update((items) => items.map((item) => item.id === updated.id ? updated : item)),
-      error: (err) => this.setError('No se pudo registrar el voto de propuesta.', err),
+      next: (updated) => {
+        this.proposals.update((items) => items.map((item) => item.id === updated.id ? updated : item));
+        this.errorMessage.set(undefined);
+      },
+      error: (err) => {
+        if (err.status === 409) this.setError('Ya has votado por esta propuesta.', err);
+        else this.setError('No se pudo registrar el voto de propuesta.', err);
+      },
     });
+  }
+
+  hasVotedProposal(proposal: Proposal): boolean {
+    const userId = this.auth.user()?.id;
+    if (!userId || !proposal.votedBy) return false;
+    return proposal.votedBy.includes(userId);
   }
 
   voteBudget(budgetId: string, itemId: string) {
     this.platformService.voteBudget(budgetId, itemId).subscribe({
-      next: () => this.loadBudgets(),
-      error: (err) => this.setError('No se pudo registrar el voto de presupuesto.', err),
+      next: () => {
+        this.localVotedBudgets[budgetId] = true;
+        this.loadBudgets();
+        this.errorMessage.set(undefined);
+      },
+      error: (err) => {
+        if (err.status === 409) this.setError('Ya has votado en este presupuesto.', err);
+        else this.setError('No se pudo registrar el voto de presupuesto.', err);
+      },
     });
   }
 
@@ -468,7 +494,7 @@ export class DashboardComponent implements OnInit {
       this.errorMessage.set('Por favor, completa todos los campos de texto requeridos.');
       return;
     }
-    
+
     if (!this.issueForm.latitude || !this.issueForm.longitude) {
       this.errorMessage.set('Por favor, selecciona una ubicación en el mapa.');
       return;
@@ -484,7 +510,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  onIssueLocationSelected(event: {lat: number, lng: number}) {
+  onIssueLocationSelected(event: { lat: number, lng: number }) {
     this.issueForm.latitude = Number(event.lat.toFixed(7));
     this.issueForm.longitude = Number(event.lng.toFixed(7));
   }
@@ -571,10 +597,15 @@ export class DashboardComponent implements OnInit {
     const responses: { questionId: string; response: string | string[] | number }[] = Object.entries(this.surveyResponses).map(([questionId, response]) => ({ questionId, response }));
     this.platformService.submitSurveyResponse(surveyId, responses).subscribe({
       next: () => {
+        this.localRespondedSurveys[surveyId] = true;
         this.loadSurveys();
         this.selectedSurvey.set(null);
+        this.errorMessage.set(undefined);
       },
-      error: (err) => this.setError('No se pudo enviar la respuesta.', err),
+      error: (err) => {
+        if (err.status === 409) this.setError('Ya has respondido esta encuesta.', err);
+        else this.setError('No se pudo enviar la respuesta.', err);
+      },
     });
   }
 

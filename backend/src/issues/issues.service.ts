@@ -47,4 +47,9 @@ export class IssuesService {
   async updateStatus(id: string, status: IssueStatus): Promise<Issue> {
     return this.update(id, { status });
   }
+
+  async remove(id: string): Promise<void> {
+    const issue = await this.findById(id);
+    await this.issuesRepository.remove(issue);
+  }
 }

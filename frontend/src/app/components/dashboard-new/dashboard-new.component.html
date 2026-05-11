@@ -12,13 +12,30 @@
     </div>
     
     <div class="flex-1 flex flex-col gap-sm mt-md">
-      <a class="flex items-center gap-md p-sm bg-primary-container text-on-primary-container font-label text-label font-bold rounded-lg transition-all duration-200 ease-in-out hover:bg-surface-container-high dark:hover:bg-surface-container-highest cursor-pointer">
+      <a (click)="activeTab.set('incidents')" [ngClass]="activeTab() === 'incidents' ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-variant'" class="flex items-center gap-md p-sm font-label text-label rounded-lg transition-all duration-200 ease-in-out cursor-pointer">
         <span class="material-symbols-outlined">dashboard</span>
-        <span>Tablero</span>
+        <span>Tablero de Red</span>
       </a>
-      <a (click)="navigate('/incidents')" class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant font-label text-label hover:bg-surface-variant transition-all duration-200 ease-in-out rounded-lg cursor-pointer">
-        <span class="material-symbols-outlined">report_problem</span>
-        <span>Incidentes</span>
+      
+      <div class="pt-sm pb-xs">
+        <span class="px-sm font-caption text-caption text-on-surface-variant uppercase tracking-wider font-bold">Moderación</span>
+      </div>
+      
+      <a (click)="activeTab.set('mod_proposals')" [ngClass]="activeTab() === 'mod_proposals' ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-variant'" class="flex items-center gap-md p-sm font-label text-label rounded-lg transition-all duration-200 ease-in-out cursor-pointer">
+        <span class="material-symbols-outlined">forum</span>
+        <span>Propuestas</span>
+      </a>
+      <a (click)="activeTab.set('mod_surveys')" [ngClass]="activeTab() === 'mod_surveys' ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-variant'" class="flex items-center gap-md p-sm font-label text-label rounded-lg transition-all duration-200 ease-in-out cursor-pointer">
+        <span class="material-symbols-outlined">fact_check</span>
+        <span>Encuestas</span>
+      </a>
+      <a (click)="activeTab.set('mod_budgets')" [ngClass]="activeTab() === 'mod_budgets' ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-variant'" class="flex items-center gap-md p-sm font-label text-label rounded-lg transition-all duration-200 ease-in-out cursor-pointer">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        <span>Presupuestos</span>
+      </a>
+      <a (click)="activeTab.set('mod_issues')" [ngClass]="activeTab() === 'mod_issues' ? 'bg-primary-container text-on-primary-container font-bold' : 'text-on-surface-variant hover:bg-surface-variant'" class="flex items-center gap-md p-sm font-label text-label rounded-lg transition-all duration-200 ease-in-out cursor-pointer">
+        <span class="material-symbols-outlined">map</span>
+        <span>Mapeos (Issues)</span>
       </a>
       <a class="flex items-center gap-md p-sm text-on-surface-variant dark:text-on-surface-variant font-label text-label hover:bg-surface-variant transition-all duration-200 ease-in-out rounded-lg cursor-pointer">
         <span class="material-symbols-outlined">assessment</span>
@@ -82,7 +99,7 @@
       </div>
       
       <!-- Metrics Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md lg:gap-lg">
+      <div *ngIf="activeTab() === 'incidents'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md lg:gap-lg">
         <div class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm">
           <div class="flex justify-between items-start">
             <span class="font-label text-label text-on-surface-variant">Usuarios totales</span>
@@ -132,7 +149,7 @@
       </div>
       
       <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg lg:gap-xl">
+      <div *ngIf="activeTab() === 'incidents'" class="grid grid-cols-1 lg:grid-cols-3 gap-lg lg:gap-xl">
         <!-- Chart Area -->
         <div class="lg:col-span-2 bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-md">
           <div class="flex justify-between items-center mb-md">
@@ -218,6 +235,127 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      
+      <!-- Moderation: Mapeo (Issues) -->
+      <div *ngIf="activeTab() === 'mod_issues'" class="flex flex-col gap-lg">
+        <h3 class="font-heading-md text-heading-md text-on-surface">Problemáticas Territoriales (Mapeo)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+          <div *ngFor="let issue of issues()" class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm overflow-hidden break-words">
+            <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+              <span [class]="getStatusBadgeClass(issue.status)">{{ displayIssueStatus(issue.status) }}</span>
+              <time>{{ issue.createdAt | date:'dd/MM/yyyy HH:mm' }}</time>
+            </div>
+            <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ issue.title }}</h4>
+            <p class="font-body text-body text-on-surface-variant m-0">{{ issue.description }}</p>
+            
+            <app-static-map *ngIf="issue.latitude && issue.longitude" [lat]="issue.latitude" [lng]="issue.longitude"></app-static-map>
+            
+            <div class="flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant">
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ issue.category }}</span>
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ issue.address || 'Sin dirección' }}</span>
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ issue.latitude | number:'1.2-5' }}, {{ issue.longitude | number:'1.2-5' }}</span>
+            </div>
+
+            <div class="mt-md pt-md border-t border-outline-variant flex justify-between items-center">
+              <select [ngModel]="issue.status" (ngModelChange)="updateIssueStatus(issue.id, $event)" class="px-sm py-xs bg-surface-container-lowest border border-outline-variant rounded-sm text-caption outline-none focus:border-primary">
+                <option value="OPEN">Abierto</option>
+                <option value="IN_REVIEW">En revisión</option>
+                <option value="RESOLVED">Resuelto</option>
+                <option value="CLOSED">Cerrado</option>
+              </select>
+              <button (click)="deleteIssue(issue.id)" class="text-error hover:bg-error-container/30 p-xs rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="issues().length === 0" class="col-span-full p-md text-on-surface-variant font-body text-body">No hay problemáticas registradas.</div>
+        </div>
+      </div>
+
+      <!-- Moderation: Proposals -->
+      <div *ngIf="activeTab() === 'mod_proposals'" class="flex flex-col gap-lg">
+        <h3 class="font-heading-md text-heading-md text-on-surface">Propuestas Ciudadanas</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+          <div *ngFor="let proposal of proposals()" class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm overflow-hidden break-words">
+            <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ proposal.category }}</span>
+              <time>{{ proposal.createdAt | date:'dd/MM/yyyy HH:mm' }}</time>
+            </div>
+            <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ proposal.title }}</h4>
+            <p class="font-body text-body text-on-surface-variant m-0">{{ proposal.description }}</p>
+            <div class="flex justify-between items-center mt-md font-body text-body">
+              <strong>{{ proposal.votes }} votos</strong>
+            </div>
+            <div class="mt-md pt-md border-t border-outline-variant flex justify-between items-center">
+              <span class="font-caption text-caption text-error">Moderación</span>
+              <button (click)="deleteProposal(proposal.id)" class="text-error hover:bg-error-container/30 p-xs rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="proposals().length === 0" class="col-span-full p-md text-on-surface-variant font-body text-body">No hay propuestas registradas.</div>
+        </div>
+      </div>
+
+      <!-- Moderation: Surveys -->
+      <div *ngIf="activeTab() === 'mod_surveys'" class="flex flex-col gap-lg">
+        <h3 class="font-heading-md text-heading-md text-on-surface">Encuestas</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+          <div *ngFor="let survey of surveys()" class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm overflow-hidden break-words">
+            <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+              <span [class]="getStatusBadgeClass(survey.status)">{{ displaySurveyBudgetStatus(survey.status) }}</span>
+              <time>{{ survey.createdAt | date:'dd/MM/yyyy HH:mm' }}</time>
+            </div>
+            <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ survey.title }}</h4>
+            <p class="font-body text-body text-on-surface-variant m-0">{{ survey.description }}</p>
+            <div class="flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant">
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ survey.questions.length || 0 }} preguntas</span>
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ survey.responseCount }} respuestas</span>
+            </div>
+            <div class="mt-md pt-md border-t border-outline-variant flex justify-between items-center">
+              <select [ngModel]="survey.status" (ngModelChange)="updateSurveyStatus(survey.id, $event)" class="px-sm py-xs bg-surface-container-lowest border border-outline-variant rounded-sm text-caption outline-none focus:border-primary">
+                <option value="DRAFT">Borrador</option>
+                <option value="ACTIVE">Activa</option>
+                <option value="CLOSED">Cerrada</option>
+              </select>
+              <button (click)="deleteSurvey(survey.id)" class="text-error hover:bg-error-container/30 p-xs rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="surveys().length === 0" class="col-span-full p-md text-on-surface-variant font-body text-body">No hay encuestas registradas.</div>
+        </div>
+      </div>
+
+      <!-- Moderation: Budgets -->
+      <div *ngIf="activeTab() === 'mod_budgets'" class="flex flex-col gap-lg">
+        <h3 class="font-heading-md text-heading-md text-on-surface">Presupuestos Participativos</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+          <div *ngFor="let budget of budgets()" class="bg-[#f1f5f9] border border-[#e2e8f0] rounded-[18px] p-lg flex flex-col gap-sm overflow-hidden break-words">
+            <div class="flex justify-between items-center gap-sm font-caption text-caption text-on-surface-variant">
+              <span [class]="getStatusBadgeClass(budget.status)">{{ displaySurveyBudgetStatus(budget.status) }}</span>
+              <time>{{ budget.createdAt | date:'dd/MM/yyyy HH:mm' }}</time>
+            </div>
+            <h4 class="font-heading-md text-heading-md text-on-surface m-0">{{ budget.title }}</h4>
+            <p class="font-body text-body text-on-surface-variant m-0">{{ budget.description }}</p>
+            <div class="flex flex-wrap gap-xs mt-sm font-caption text-caption text-on-surface-variant">
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ budget.totalAmount | currency }}</span>
+              <span class="rounded-full px-sm py-xs bg-surface-container-lowest border border-outline-variant">{{ budget.participantsCount }} participantes</span>
+            </div>
+            <div class="mt-md pt-md border-t border-outline-variant flex justify-between items-center">
+              <select [ngModel]="budget.status" (ngModelChange)="updateBudgetStatus(budget.id, $event)" class="px-sm py-xs bg-surface-container-lowest border border-outline-variant rounded-sm text-caption outline-none focus:border-primary">
+                <option value="DRAFT">Borrador</option>
+                <option value="ACTIVE">Activo</option>
+                <option value="CLOSED">Cerrado</option>
+              </select>
+              <button (click)="deleteBudget(budget.id)" class="text-error hover:bg-error-container/30 p-xs rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="budgets().length === 0" class="col-span-full p-md text-on-surface-variant font-body text-body">No hay presupuestos registrados.</div>
         </div>
       </div>
     </main>

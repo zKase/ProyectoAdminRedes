@@ -17,6 +17,9 @@ export class Proposal {
   @Column()
   category: string;
 
+  @Column('simple-array', { default: [] })
+  votedBy: string[];
+
   @CreateDateColumn()
   createdAt: Date;
 }

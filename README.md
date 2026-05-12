@@ -138,6 +138,48 @@ location /api/ {
     # ... otras configuraciones
 }
 ```
+## 🗄️ Gestión de Backups (Base de Datos)
+
+Para asegurar la integridad de los datos o realizar tareas de mantenimiento, sigue estas instrucciones dentro de la **VM de Backend**:
+
+### 1. Crear un Backup (Exportar)
+Antes de empezar, asegúrate de que la carpeta existe en tu home:
+```bash
+mkdir -p ~/backups
+```
+Ejecuta el siguiente comando para generar un volcado de la base de datos:
+```bash
+# Backup en formato SQL plano
+pg_dump -h localhost -U postgres -d proyecto_db > ~/backups/backup_$(date +%Y%m%d_%H%M%S).sql
+```
+*Nota: Asegúrate de tener la carpeta `~/backups` creada.*
+
+### 2. Restaurar un Backup (Importar)
+Si necesitas limpiar la base de datos y cargar un backup existente:
+
+1. **Detener el Backend** (para liberar conexiones):
+   ```bash
+   pm2 stop backend
+   ```
+2. **Borrar y Recrear la DB**:
+   ```bash
+   sudo -u postgres dropdb proyecto_db
+   sudo -u postgres createdb proyecto_db
+   ```
+3. **Cargar el Backup**:
+   ```bash
+   sudo -u postgres psql proyecto_db < ~/backups/tu_archivo_backup.sql
+   ```
+4. **Reiniciar el Backend**:
+   ```bash
+   pm2 start backend
+   ```
+
+### 3. Uso de Scripts Automatizados (Windows Local)
+Si estás trabajando localmente en Windows, puedes usar el script incluido en el repositorio:
+```powershell
+.\backend\scripts\backup-db.ps1
+```
 
 ## ☁️ Acceso rápido desde Google Cloud Shell (Cualquier Rama)
 

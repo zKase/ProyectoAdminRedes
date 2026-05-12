@@ -16,7 +16,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProposalFormComponent],
+  imports: [CommonModule, FormsModule, ProposalFormComponent, ReportsComponent, MapPickerComponent, StaticMapComponent],
   template: `
     <div class="h-full">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-xl">
@@ -464,6 +464,9 @@ export class DashboardComponent implements OnInit {
   budgetForm: CreateBudgetDto = { title: '', description: '', totalAmount: 0, items: [] };
   surveyResponses: Record<string, string | string[] | number> = {};
 
+  localVotedBudgets: Record<string, boolean> = {};
+  localRespondedSurveys: Record<string, boolean> = {};
+
   mobileSections: Array<{ key: Section; label: string }> = [
     { key: 'proposals', label: 'Propuestas' },
     { key: 'surveys', label: 'Encuestas' },
@@ -624,6 +627,12 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => this.setError('No se pudo registrar el voto de propuesta.', err),
     });
+  }
+
+  hasVotedProposal(proposal: Proposal): boolean {
+    const userId = this.auth.user()?.id;
+    if (!userId || !proposal.votedBy) return false;
+    return proposal.votedBy.includes(userId);
   }
 
   voteBudget(budgetId: string, itemId: string) {
@@ -829,6 +838,7 @@ export class DashboardComponent implements OnInit {
     this.isSubmitting.set(true);
     this.platformService.submitSurveyResponse(surveyId, responses).subscribe({
       next: () => {
+        this.localRespondedSurveys[surveyId] = true;
         this.loadSurveys();
         this.loadUserSurveyResponses();
         this.selectedSurvey.set(null);

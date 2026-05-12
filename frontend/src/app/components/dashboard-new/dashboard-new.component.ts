@@ -3,7 +3,10 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { PlatformService } from '../../services/platform.service';
-import { Incident } from '../../models/platform.model';
+import { Incident, Issue, Survey, Budget } from '../../models/platform.model';
+import { Proposal } from '../../models/proposal.model';
+import { ProposalService } from '../../services/proposal.service';
+import { StaticMapComponent } from '../static-map/static-map.component';
 
 @Component({
   selector: 'app-dashboard-new',
@@ -175,10 +178,18 @@ import { Incident } from '../../models/platform.model';
 export class DashboardNewComponent implements OnInit {
   private authService = inject(AuthService);
   private platformService = inject(PlatformService);
+  private proposalService = inject(ProposalService);
   private router = inject(Router);
 
   incidents = signal<Incident[]>([]);
   openIncidents = signal(0);
+  
+  issues = signal<Issue[]>([]);
+  proposals = signal<Proposal[]>([]);
+  surveys = signal<Survey[]>([]);
+  budgets = signal<Budget[]>([]);
+  
+  activeTab = signal<'incidents' | 'mod_proposals' | 'mod_surveys' | 'mod_budgets' | 'mod_issues'>('incidents');
 
   get userInitials(): string {
     const user = this.authService.user();
@@ -190,6 +201,83 @@ export class DashboardNewComponent implements OnInit {
 
   ngOnInit() {
     this.loadIncidents();
+    this.loadModerationData();
+  }
+
+  loadModerationData() {
+    this.platformService.getIssues().subscribe({
+      next: (data) => this.issues.set(data),
+      error: (err) => console.error(err)
+    });
+    this.proposalService.getProposals().subscribe({
+      next: (data) => this.proposals.set(data),
+      error: (err) => console.error(err)
+    });
+    this.platformService.getSurveys().subscribe({
+      next: (data) => this.surveys.set(data),
+      error: (err) => console.error(err)
+    });
+    this.platformService.getBudgets().subscribe({
+      next: (data) => this.budgets.set(data),
+      error: (err) => console.error(err)
+    });
+  }
+
+  deleteIssue(id: string) {
+    if (confirm('¿Estás seguro de eliminar esta problemática?')) {
+      this.platformService.deleteIssue(id).subscribe({
+        next: () => this.issues.update(list => list.filter(i => i.id !== id)),
+        error: (err) => console.error(err)
+      });
+    }
+  }
+
+  updateIssueStatus(id: string, status: string) {
+    this.platformService.updateIssueStatus(id, status).subscribe({
+      next: (updated) => this.issues.update(list => list.map(i => i.id === id ? updated : i)),
+      error: (err) => console.error(err)
+    });
+  }
+
+  deleteProposal(id: string) {
+    if (confirm('¿Estás seguro de eliminar esta propuesta?')) {
+      this.proposalService.deleteProposal(id).subscribe({
+        next: () => this.proposals.update(list => list.filter(p => p.id !== id)),
+        error: (err) => console.error(err)
+      });
+    }
+  }
+
+  updateSurveyStatus(id: string, status: string) {
+    this.platformService.updateSurveyStatus(id, status).subscribe({
+      next: (updated) => this.surveys.update(list => list.map(s => s.id === id ? updated : s)),
+      error: (err) => console.error(err)
+    });
+  }
+
+  deleteSurvey(id: string) {
+    if (confirm('¿Estás seguro de eliminar esta encuesta?')) {
+      this.platformService.deleteSurvey(id).subscribe({
+        next: () => this.surveys.update(list => list.filter(s => s.id !== id)),
+        error: (err) => console.error(err)
+      });
+    }
+  }
+
+  updateBudgetStatus(id: string, status: string) {
+    this.platformService.updateBudgetStatus(id, status).subscribe({
+      next: (updated) => this.budgets.update(list => list.map(b => b.id === id ? updated : b)),
+      error: (err) => console.error(err)
+    });
+  }
+
+  deleteBudget(id: string) {
+    if (confirm('¿Estás seguro de eliminar este presupuesto?')) {
+      this.platformService.deleteBudget(id).subscribe({
+        next: () => this.budgets.update(list => list.filter(b => b.id !== id)),
+        error: (err) => console.error(err)
+      });
+    }
   }
 
   loadIncidents() {
@@ -285,6 +373,44 @@ export class DashboardNewComponent implements OnInit {
         return 'Cerrado';
       default:
         return status;
+    }
+  }
+
+  displayIssueStatus(status: string): string {
+    switch (status) {
+      case 'OPEN': return 'Abierta';
+      case 'IN_REVIEW': return 'En revisión';
+      case 'RESOLVED': return 'Resuelta';
+      case 'CLOSED': return 'Cerrada';
+      default: return status;
+    }
+  }
+
+  displaySurveyBudgetStatus(status: string): string {
+    switch (status) {
+      case 'DRAFT': return 'Borrador';
+      case 'ACTIVE': return 'Activo';
+      case 'CLOSED': return 'Cerrado';
+      default: return status;
+    }
+  }
+
+  getStatusBadgeClass(status: string): string {
+    const base = 'rounded-full px-sm py-xs border font-bold text-xs uppercase tracking-wider ';
+    switch (status) {
+      case 'OPEN':
+      case 'ACTIVE':
+        return base + 'bg-[#dcfce7] text-[#166534] border-[#bbf7d0]'; // green
+      case 'IN_REVIEW':
+        return base + 'bg-[#dbeafe] text-[#1e40af] border-[#bfdbfe]'; // blue
+      case 'DRAFT':
+        return base + 'bg-[#fef9c3] text-[#854d0e] border-[#fef08a]'; // yellow
+      case 'RESOLVED':
+        return base + 'bg-[#ccfbf1] text-[#115e59] border-[#99f6e4]'; // teal
+      case 'CLOSED':
+        return base + 'bg-[#fee2e2] text-[#991b1b] border-[#fca5a5]'; // red
+      default:
+        return base + 'bg-surface-container-lowest text-on-surface-variant border-outline-variant';
     }
   }
 }

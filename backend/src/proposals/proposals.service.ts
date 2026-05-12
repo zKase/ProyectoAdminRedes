@@ -49,6 +49,7 @@ export class ProposalsService {
     await this.votesRepository.save(vote);
 
     proposal.votes += 1;
+    proposal.votedBy.push(userId);
     return this.proposalsRepository.save(proposal);
   }
 
@@ -106,5 +107,10 @@ export class ProposalsService {
       throw new NotFoundException(`Proposal with ID "${id}" not found`);
     }
     return proposal;
+  }
+
+  async remove(id: string): Promise<void> {
+    const proposal = await this.findById(id);
+    await this.proposalsRepository.remove(proposal);
   }
 }

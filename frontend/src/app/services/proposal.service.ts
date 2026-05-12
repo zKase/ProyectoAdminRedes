@@ -58,4 +58,13 @@ export class ProposalService {
   addComment(proposalId: string, content: string): Observable<ProposalComment> {
     return this.http.post<ProposalComment>(`${this.apiUrl}/${proposalId}/comments`, { content });
   }
+
+  deleteProposal(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      catchError((err: HttpErrorResponse) => {
+        console.error('Error al eliminar propuesta', err);
+        return throwError(() => ({ message: err.message || 'Error al eliminar propuesta', status: err.status }));
+      })
+    );
+  }
 }

@@ -42,6 +42,14 @@ export class PlatformService {
     return this.http.post<Budget>(`${environment.apiUrl}/budgets`, budget);
   }
 
+  updateBudgetStatus(id: string, status: string) {
+    return this.http.patch<Budget>(`${environment.apiUrl}/budgets/${id}/status/${status}`, {});
+  }
+
+  deleteBudget(id: string) {
+    return this.http.delete<{ message: string }>(`${environment.apiUrl}/budgets/${id}`);
+  }
+
   // Participatory mapping endpoints
   getIssues() {
     return this.http.get<Issue[]>(`${environment.apiUrl}/issues`);
@@ -49,6 +57,14 @@ export class PlatformService {
 
   createIssue(issue: CreateIssueDto) {
     return this.http.post<Issue>(`${environment.apiUrl}/issues`, issue);
+  }
+
+  updateIssueStatus(id: string, status: string) {
+    return this.http.patch<Issue>(`${environment.apiUrl}/issues/${id}/status/${status}`, {});
+  }
+
+  deleteIssue(id: string) {
+    return this.http.delete<{ message: string }>(`${environment.apiUrl}/issues/${id}`);
   }
 
   // Reports endpoints

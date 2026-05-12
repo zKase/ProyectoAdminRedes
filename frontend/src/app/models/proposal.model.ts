@@ -4,6 +4,7 @@ export interface Proposal {
   description: string;
   votes: number;
   category: string;
+  votedBy?: string[];
   createdAt: Date;
 }
 

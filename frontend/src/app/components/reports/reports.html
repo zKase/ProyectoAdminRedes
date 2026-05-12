@@ -1,0 +1,78 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Panel de Reportes y Estadísticas</h1>
+      <button (click)="loadData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-md">
+        Actualizar Datos
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <div *ngIf="!loading && summary">
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <p class="text-sm text-gray-500 font-medium uppercase mb-1">Propuestas</p>
+          <p class="text-3xl font-bold text-blue-600">{{ summary.totals.proposals }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <p class="text-sm text-gray-500 font-medium uppercase mb-1">Encuestas</p>
+          <p class="text-3xl font-bold text-indigo-600">{{ summary.totals.surveys }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <p class="text-sm text-gray-500 font-medium uppercase mb-1">Presupuestos</p>
+          <p class="text-3xl font-bold text-purple-600">{{ summary.totals.budgets }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <p class="text-sm text-gray-500 font-medium uppercase mb-1">Incidentes</p>
+          <p class="text-3xl font-bold text-orange-600">{{ summary.totals.issues }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Chart 1: Totals -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h2 class="text-xl font-semibold mb-4 text-gray-700">Resumen General de Participación</h2>
+          <div class="h-64">
+            <canvas baseChart
+                    [data]="barChartData"
+                    [options]="barChartOptions"
+                    [type]="barChartType">
+            </canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Issue Statuses -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h2 class="text-xl font-semibold mb-4 text-gray-700">Estado de Problemáticas Territoriales</h2>
+          <div class="h-64 flex justify-center">
+            <canvas baseChart
+                    [data]="pieChartData"
+                    [options]="pieChartOptions"
+                    [type]="pieChartType">
+            </canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export Section -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <h2 class="text-xl font-semibold mb-6 text-gray-700">Exportar Datos Detallados</h2>
+        <div class="flex flex-wrap gap-4">
+          <button (click)="downloadCsv('proposals')" class="flex items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition border border-gray-200">
+            <span class="mr-2">📥</span> Exportar Propuestas (CSV)
+          </button>
+          <button (click)="downloadCsv('issues')" class="flex items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition border border-gray-200">
+            <span class="mr-2">📥</span> Exportar Incidentes (CSV)
+          </button>
+          <button (click)="downloadCsv('surveys')" class="flex items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition border border-gray-200">
+            <span class="mr-2">📥</span> Exportar Encuestas (CSV)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

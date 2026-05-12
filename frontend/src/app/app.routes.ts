@@ -4,6 +4,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DashboardNewComponent } from './components/dashboard-new/dashboard-new.component';
 import { IncidentsListComponent } from './components/incidents-list/incidents-list.component';
 import { IncidentDetailComponent } from './components/incident-detail/incident-detail.component';
+import { ReportsComponent } from './components/reports/reports';
 import { authGuard } from './core/auth.guard';
 import { MainLayoutComponent } from './components/layout/main-layout.component';
 

@@ -24,6 +24,14 @@ export class PlatformService {
     return this.http.get<string[]>(`${environment.apiUrl}/surveys/user-responses`);
   }
 
+  updateSurveyStatus(id: string, status: string) {
+    return this.http.patch<Survey>(`${environment.apiUrl}/surveys/${id}/status/${status}`, {});
+  }
+
+  deleteSurvey(id: string) {
+    return this.http.delete<{ message: string }>(`${environment.apiUrl}/surveys/${id}`);
+  }
+
   // Budget endpoints
   getBudgets() {
     return this.http.get<Budget[]>(`${environment.apiUrl}/budgets`);

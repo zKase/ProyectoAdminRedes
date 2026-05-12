@@ -60,14 +60,14 @@ export class ReportsComponent implements OnInit {
     console.log('ReportsComponent: Fetching summary data...');
     this.loading = true;
     this.reportsService.getSummary().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         console.log('ReportsComponent: Data received successfully', data);
         this.summary = data;
         this.updateCharts();
         this.loading = false;
         this.cd.detectChanges(); // Forzar actualización de la vista
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('ReportsComponent: Error loading summary', err);
         this.loading = false;
         this.cd.detectChanges();
@@ -108,7 +108,7 @@ export class ReportsComponent implements OnInit {
   }
 
   downloadCsv(type: string) {
-    this.reportsService.exportCsv(type).subscribe(blob => {
+    this.reportsService.exportCsv(type).subscribe((blob: Blob) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

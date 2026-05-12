@@ -6,7 +6,6 @@ import { PlatformService } from '../../services/platform.service';
 import { Incident, Issue, Survey, Budget } from '../../models/platform.model';
 import { Proposal } from '../../models/proposal.model';
 import { ProposalService } from '../../services/proposal.service';
-import { StaticMapComponent } from '../static-map/static-map.component';
 
 @Component({
   selector: 'app-dashboard-new',
@@ -206,20 +205,20 @@ export class DashboardNewComponent implements OnInit {
 
   loadModerationData() {
     this.platformService.getIssues().subscribe({
-      next: (data) => this.issues.set(data),
-      error: (err) => console.error(err)
+      next: (data: Issue[]) => this.issues.set(data),
+      error: (err: any) => console.error(err)
     });
     this.proposalService.getProposals().subscribe({
-      next: (data) => this.proposals.set(data),
-      error: (err) => console.error(err)
+      next: (data: Proposal[]) => this.proposals.set(data),
+      error: (err: any) => console.error(err)
     });
     this.platformService.getSurveys().subscribe({
-      next: (data) => this.surveys.set(data),
-      error: (err) => console.error(err)
+      next: (data: Survey[]) => this.surveys.set(data),
+      error: (err: any) => console.error(err)
     });
     this.platformService.getBudgets().subscribe({
-      next: (data) => this.budgets.set(data),
-      error: (err) => console.error(err)
+      next: (data: Budget[]) => this.budgets.set(data),
+      error: (err: any) => console.error(err)
     });
   }
 
@@ -227,15 +226,15 @@ export class DashboardNewComponent implements OnInit {
     if (confirm('¿Estás seguro de eliminar esta problemática?')) {
       this.platformService.deleteIssue(id).subscribe({
         next: () => this.issues.update(list => list.filter(i => i.id !== id)),
-        error: (err) => console.error(err)
+        error: (err: any) => console.error(err)
       });
     }
   }
 
   updateIssueStatus(id: string, status: string) {
     this.platformService.updateIssueStatus(id, status).subscribe({
-      next: (updated) => this.issues.update(list => list.map(i => i.id === id ? updated : i)),
-      error: (err) => console.error(err)
+      next: (updated: Issue) => this.issues.update(list => list.map(i => i.id === id ? updated : i)),
+      error: (err: any) => console.error(err)
     });
   }
 
@@ -243,15 +242,15 @@ export class DashboardNewComponent implements OnInit {
     if (confirm('¿Estás seguro de eliminar esta propuesta?')) {
       this.proposalService.deleteProposal(id).subscribe({
         next: () => this.proposals.update(list => list.filter(p => p.id !== id)),
-        error: (err) => console.error(err)
+        error: (err: any) => console.error(err)
       });
     }
   }
 
   updateSurveyStatus(id: string, status: string) {
     this.platformService.updateSurveyStatus(id, status).subscribe({
-      next: (updated) => this.surveys.update(list => list.map(s => s.id === id ? updated : s)),
-      error: (err) => console.error(err)
+      next: (updated: Survey) => this.surveys.update(list => list.map(s => s.id === id ? updated : s)),
+      error: (err: any) => console.error(err)
     });
   }
 
@@ -259,15 +258,15 @@ export class DashboardNewComponent implements OnInit {
     if (confirm('¿Estás seguro de eliminar esta encuesta?')) {
       this.platformService.deleteSurvey(id).subscribe({
         next: () => this.surveys.update(list => list.filter(s => s.id !== id)),
-        error: (err) => console.error(err)
+        error: (err: any) => console.error(err)
       });
     }
   }
 
   updateBudgetStatus(id: string, status: string) {
     this.platformService.updateBudgetStatus(id, status).subscribe({
-      next: (updated) => this.budgets.update(list => list.map(b => b.id === id ? updated : b)),
-      error: (err) => console.error(err)
+      next: (updated: Budget) => this.budgets.update(list => list.map(b => b.id === id ? updated : b)),
+      error: (err: any) => console.error(err)
     });
   }
 
@@ -275,7 +274,7 @@ export class DashboardNewComponent implements OnInit {
     if (confirm('¿Estás seguro de eliminar este presupuesto?')) {
       this.platformService.deleteBudget(id).subscribe({
         next: () => this.budgets.update(list => list.filter(b => b.id !== id)),
-        error: (err) => console.error(err)
+        error: (err: any) => console.error(err)
       });
     }
   }

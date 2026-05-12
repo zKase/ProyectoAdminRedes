@@ -16,7 +16,7 @@ type Section = 'proposals' | 'surveys' | 'budgets' | 'issues' | 'reports';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProposalFormComponent, ReportsComponent, MapPickerComponent, StaticMapComponent],
+  imports: [CommonModule, FormsModule, ProposalFormComponent],
   template: `
     <div class="h-full">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md mb-xl">

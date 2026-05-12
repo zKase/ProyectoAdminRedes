@@ -21,6 +21,9 @@ export class Proposal {
   @OneToMany(() => ProposalVote, (vote) => vote.proposal)
   votes_relation: ProposalVote[];
 
+  @Column('simple-array', { default: '' })
+  votedBy: string[] = [];
+
   @CreateDateColumn()
   createdAt: Date;
 }

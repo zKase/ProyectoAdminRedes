@@ -92,7 +92,7 @@ cd ~/ProyectoAdminRedes && git fetch --all && git reset --hard origin/<tu-rama> 
 cd backend
 npm install
 npm run build
-npx pm2 restart backend || npx pm2 start dist/main.js --name backend
+npx pm2 restart backend -i max || npx pm2 start dist/main.js --name backend -i max
 
 # Para poblar/actualizar los datos de prueba en la DB (Opcional):
 npm run seed
@@ -192,7 +192,7 @@ export BRANCH=main
 
 **Para el Backend (vía IAP):**
 ```bash
-gcloud compute ssh instancia-db-backend --zone=us-central1-a --tunnel-through-iap --command="cd ~/ProyectoAdminRedes && git fetch --all && git reset --hard origin/$BRANCH && git checkout $BRANCH && git pull origin $BRANCH && cd backend && npm install && npm run build && (npx pm2 restart backend || npx pm2 start dist/main.js --name backend) && npm run seed"
+gcloud compute ssh instancia-db-backend --zone=us-central1-a --tunnel-through-iap --command="cd ~/ProyectoAdminRedes && git fetch --all && git reset --hard origin/$BRANCH && git checkout $BRANCH && git pull origin $BRANCH && cd backend && npm install && npm run build && (npx pm2 restart backend -i max || npx pm2 start dist/main.js --name backend -i max) && npm run seed"
 ```
 
 **Para el Frontend:**

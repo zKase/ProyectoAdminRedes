@@ -143,16 +143,16 @@ location /api/ {
 Para asegurar la integridad de los datos o realizar tareas de mantenimiento, sigue estas instrucciones dentro de la **VM de Backend**:
 
 ### 1. Crear un Backup (Exportar)
-Antes de empezar, asegúrate de que la carpeta existe en tu home:
+Antes de empezar, asegúrate de que la carpeta existe dentro del proyecto:
 ```bash
-mkdir -p ~/backups
+mkdir -p backend/backups
 ```
 Ejecuta el siguiente comando para generar un volcado de la base de datos:
 ```bash
 # Backup en formato SQL plano
-pg_dump -h localhost -U postgres -d proyecto_db > ~/backups/backup_$(date +%Y%m%d_%H%M%S).sql
+pg_dump -h localhost -U postgres -d proyecto_db > backend/backups/backup_$(date +%Y%m%d_%H%M%S).sql
 ```
-*Nota: Asegúrate de tener la carpeta `~/backups` creada.*
+*Nota: Los archivos se guardarán en la carpeta `backend/backups/`.*
 
 ### 2. Restaurar un Backup (Importar)
 Si necesitas limpiar la base de datos y cargar un backup existente:
@@ -168,7 +168,7 @@ Si necesitas limpiar la base de datos y cargar un backup existente:
    ```
 3. **Cargar el Backup**:
    ```bash
-   sudo -u postgres psql proyecto_db < ~/backups/tu_archivo_backup.sql
+   sudo -u postgres psql proyecto_db < backend/backups/tu_archivo_backup.sql
    ```
 4. **Reiniciar el Backend**:
    ```bash
